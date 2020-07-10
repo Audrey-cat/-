@@ -3,10 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}-大学公共课程共享资源管理平台</title>
-     <style>
-        #hide{display: none }
-    </style>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -54,11 +50,19 @@
                 <button type="submit" class="btn btn-default">查找</button>
             </form>
             <ul class="nav navbar-nav navbar-right" id="show" >
-                <li><a href="{{ url_for('login')}}" id="login">登录</a></li>
-                <li><a href="{{ url_for('register') }}" >注册</a></li>
+                {% if user == 1 %}
+                    <li><a href="#" >欢迎你</a></li>
+                    <li><a href="{{ url_for('register') }}" >注销</a></li>
+                {% else %}
+
+                    <li><a href="{{ url_for('login')}}" >登录</a></li>
+                    <li><a href="{{ url_for('register') }}" >注册</a></li>
+
+                {% endif %} 
+
                 <li> </li>
             </ul>
-            <button id="hide"  style="margin-right:10px;margin-top:10px">退出登录</button>
+           <!-- <button id="hide"  style="margin-right:10px;margin-top:10px">退出登录</button>-->
 
         </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
