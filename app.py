@@ -29,7 +29,7 @@ def login():
 def register():
     if request.method == 'GET':
         return render_template('register.html')
-        print('注册页面打开成功')
+        print('注册页面打开成功！')
     else:
         pass
 
