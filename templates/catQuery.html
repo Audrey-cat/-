@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}查询{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/catQuery.css') }}">
+{% endblock %}
+
+{% block main %}
+    <h3 class="page-title">专业大类查询</h3>
+
+    <div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    专业选择 <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="#">计算机</a></li>
+    <li><a href="#">经济学</a></li>
+    <li><a href="#">心理学</a></li>
+  </ul><br><br>
+</div>
+
+
+    <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>全部课程</th>
+        <th>开课大学</th>
+        <th>课程详情</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <th scope="row">课程一</th>
+        <td>大学一</td>
+        <td><a href="http://www.runoob.com">课程详情</a></td>
+    </tr>
+     <tr>
+        <th scope="row">课程二</th>
+        <td>大学二</td>
+        <td><a href="http://www.runoob.com">课程详情</a></td>
+    </tr>
+     <tr>
+        <th scope="row">课程三</th>
+        <td>大学三</td>
+        <td><a href="http://www.runoob.com">课程详情</a></td>
+    </tr>
+    </tbody>
+</table>
+
+{% endblock %}
