@@ -9,3 +9,4 @@ class User(db.Model):
     password = db.Column(db.String(50),nullable=False)
 
 # gaiyixia
+#尝试push的没用注释
