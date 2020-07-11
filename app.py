@@ -1,8 +1,6 @@
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
-# JSON文件
-import json
 
 # import其他py文件
 import config
@@ -13,7 +11,7 @@ from models import User, Course, Majors, Category
 
 app = Flask(__name__)
 # app.secret_key="123"
-app.config.from_object(config)# 就完成了项目的数据库的配置
+app.config.from_object(config)# 完成了项目的数据库的配置
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 db.init_app(app)
 var=[]
@@ -79,36 +77,56 @@ def register():
                 return redirect(url_for('login'))
 
 
-#获取数据库中课程的信息
+#选择“学校专业查询”显示课程列表：全部课程+课程详情
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
         allcourses=[]
-        course1 = Course.query.all()
-        for i in course1:
+        course = Course.query.all()
+        for i in course:
             allcourses.append({'name':i.Cname})
         return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
 
-#获取数据库中学校和专业的信息
+#选择“专业大类查询”显示课程列表：全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
-        courses = []
-        categories=[]
-        categorys= Category.query.all()
+        categories = [] #下拉框选项
+        categorys = Category.query.all()
         for i in categorys:
             if {'name':i.Tname} in categories:
                 pass
             else:
                 categories.append({'name':i.Tname})
-        course2 = Majors.query.all()
-        for i in course2:
-            courses.append({'name': i.Mname,'school':i.Sname})
+
+        courses = [] #课程（课程名+开课大学）
+        majors = Majors.query.all()
+        for i in majors:
+            course = Course.query.filter(Course.MID == i.MID).all()
+            for j in course:
+                courses.append({'name':j.Cname,'school':i.Sname})
         return render_template('catQuery.html',courses=courses,categories=categories)
     else:
         pass
+
+#课程名字查找显示查询结果
+@app.route('/courseQueryResult')
+def courseQueryResult():
+    q = request.args.get('q')
+    course = Course.query.filter(Course.Cname.like('%'+q+'%')).all()
+
+    courses = []#课程（课程名+开课大学）
+    #print(len(course))
+    if len(course) != 0:
+        for i in course:
+            major = Majors.query.filter(Majors.MID == i.MID).first()
+            courses.append({'name':i.Cname,'school':major.Sname})
+    else:
+        pass
+    return render_template('courseQuery.html',courses=courses)
+
 
 
 @app.context_processor
