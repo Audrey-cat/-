@@ -1,4 +1,4 @@
-from flask import redirect, Flask, render_template, request, flash, session
+from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
 import config
@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config.from_object(config)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 db.init_app(app)
-
+var=[]
 
 @app.route('/')
 def hello_world():
@@ -18,19 +18,22 @@ def hello_world():
 def home():
     return render_template('home.html')
 
-@app.route('/login')
+@app.route('/login',methods=['GET','POST'])
 def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
-        pass
+        #pass
+        session.permanent= True
+        return redirect(url_for('hello_world'))
 
-@app.route('/register/',methods=['GET','POST'])
+@app.route('/register',methods=['GET','POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
     else:
         pass
+        return redirect(url_for('login'))
 
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
@@ -45,7 +48,15 @@ def catQuery():
         return render_template('catQuery.html')
     else:
         pass
-
+@app.context_processor
+def my_context_processor():
+    user=0
+    if session.permanent == True:
+        user = 1
+    print(user)
+    if user == 1:
+        return{"user":user }
+    return {}
 
 # @app.route('/doLogin',methods=['GET','POST'])
 # def doLogin():
