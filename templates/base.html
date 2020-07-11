@@ -51,7 +51,7 @@
             <ul class="nav navbar-nav navbar-right" id="show" >
                 {% if user == 1 %}
                     <li><a href="#" >欢迎你</a></li>
-                    <li><a href="{{ url_for('register')}}" >注销</a></li>
+                    <li><a href="{{ url_for('login')}}" >注销</a></li>
                 {% else %}
 
                     <li><a href="{{ url_for('login')}}" >登录</a></li>

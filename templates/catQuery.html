@@ -11,7 +11,7 @@
 
     <div class="btn-group">
   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    专业选择 <span class="caret"></span>
+    专业选择<span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
     <li><a href="#">计算机</a></li>
@@ -30,21 +30,15 @@
     </tr>
     </thead>
     <tbody>
+     {% for course in courses %}
     <tr>
-        <th scope="row">课程一</th>
-        <td>大学一</td>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
+    <th scope="row">{{ course.name }}</th>
+    <td>{{ course.school }}</td>
+    <td><a href="http://www.runoob.com">课程详情</a></td>
     </tr>
-     <tr>
-        <th scope="row">课程二</th>
-        <td>大学二</td>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
-    </tr>
-     <tr>
-        <th scope="row">课程三</th>
-        <td>大学三</td>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
-    </tr>
+
+     {% endfor %}
+
     </tbody>
 </table>
 

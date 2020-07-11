@@ -3,7 +3,7 @@ from datetime import timedelta
 import pymysql
 import config
 from exts import db
-from models import User
+from models import User, Course, Majors
 
 app = Flask(__name__)
 # app.secret_key="123"
@@ -26,8 +26,19 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
+        #pass
         session.permanent= True
-        return redirect(url_for('hello_world'))
+        telephone = request.form.get('telephone')
+        password = request.form.get('password')
+        user = User.query.filter(User.telephone == telephone,
+                                 User.password == password).first()
+        if user:
+            session['user_id'] = user.id
+            # 如果想在31天内都不需要登录
+            session.permanent = True
+            return redirect(url_for('home'))
+        else:
+            return u'手机号码或者密码错误，请确认后再登录！'
 
 @app.route('/register',methods=['GET','POST'])
 def register():
@@ -54,18 +65,29 @@ def register():
                 # 注册成功，跳转到登录界面
                 return redirect(url_for('login'))
 
+
+#获取数据库中课程的信息
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
-        return render_template('schoolQuery.html')
+        allcourses=[]
+        course1 = Course.query.all()
+        for i in course1:
+            allcourses.append({'name':i.Cname})
+        return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
+#获取数据库中学校和专业的信息
 
 
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
-        return render_template('catQuery.html')
+        courses = []
+        course2 = Majors.query.all()
+        for i in course2:
+            courses.append({'name': i.Mname,'school':i.Sname})
+        return render_template('catQuery.html',courses=courses)
     else:
         pass
 
@@ -75,7 +97,7 @@ def my_context_processor():
     user=0
     if session.permanent == True:
         user = 1
-    print(user)
+    #print(user)
     if user == 1:
         return{"user":user }
     return {}
