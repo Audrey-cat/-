@@ -31,18 +31,12 @@
     </tr>
     </thead>
     <tbody>
+    {% for allcourse in allcourses %}
     <tr>
-        <th scope="row">课程一</th>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
+    <th scope="row">{{ allcourse.name }}</th>
+    <td><a href="http://www.runoob.com"> 课程详情 </a></td>
     </tr>
-     <tr>
-        <th scope="row">课程二</th>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
-    </tr>
-     <tr>
-        <th scope="row">课程三</th>
-        <td><a href="http://www.runoob.com">课程详情</a></td>
-    </tr>
+    {% endfor %}
     </tbody>
 </table>
 
