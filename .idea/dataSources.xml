@@ -7,17 +7,23 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="pcmp1@rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com" uuid="11992985-e6bf-4dfd-985a-a9f4c087feeb">
+    <data-source source="LOCAL" name="pcmp0@rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com" uuid="11992985-e6bf-4dfd-985a-a9f4c087feeb">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306/pcmp1</jdbc-url>
+      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306/pcmp0</jdbc-url>
     </data-source>
     <data-source source="LOCAL" name="@localhost" uuid="91d9819d-0a7f-400f-bd1a-6331bff76bd5">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="xwq" uuid="0d678c96-8b93-4b21-a5ac-194f66be2607">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306/pcmp0</jdbc-url>
     </data-source>
   </component>
 </project>
