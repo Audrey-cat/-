@@ -1,15 +1,21 @@
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
+# JSON文件
+import json
+
+# import其他py文件
 import config
 from exts import db
+
 app = Flask(__name__)
 # app.secret_key="123"
-app.config.from_object(config)
+app.config.from_object(config)# 就完成了项目的数据库的配置
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 db.init_app(app)
 var=[]
 
+# 网页每个页面和跳转的路由
 @app.route('/')
 def hello_world():
     return render_template('base.html')
@@ -48,6 +54,8 @@ def catQuery():
         return render_template('catQuery.html')
     else:
         pass
+
+# 干嘛用的 我再看看
 @app.context_processor
 def my_context_processor():
     user=0
@@ -85,6 +93,9 @@ def my_context_processor():
 #     uname = "pea"
 #     list = [111,222,333]
 #     return render_template("jinja.html", name=uname, l1=list)
+
+
+
 
 
 

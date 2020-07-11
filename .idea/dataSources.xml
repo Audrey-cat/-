@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="pea_xwq" uuid="25e5ad16-bb6a-4102-9d12-7c94d9a14fc6">
+    <data-source source="LOCAL" name="xwq" uuid="feea40ba-0097-4dec-9c6e-5038331e1378">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306</jdbc-url>
+      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306/pcmp0</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="pcmp1@rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com" uuid="11992985-e6bf-4dfd-985a-a9f4c087feeb">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com:3306/pcmp1</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="@localhost" uuid="91d9819d-0a7f-400f-bd1a-6331bff76bd5">
+    <data-source source="LOCAL" name="@localhost" uuid="1911cbd1-10c7-4c06-a610-f690769a220b">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
