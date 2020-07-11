@@ -3,7 +3,7 @@ from datetime import timedelta
 import pymysql
 import config
 from exts import db
-from models import User, Course, Majors
+from models import User, Course, Majors, Category
 
 app = Flask(__name__)
 # app.secret_key="123"
@@ -88,10 +88,17 @@ def schoolQuery():
 def catQuery():
     if request.method == 'GET':
         courses = []
+        categories=[]
+        categorys= Category.query.all()
+        for i in categorys:
+            if {'name':i.Tname} in categories:
+                pass
+            else:
+                categories.append({'name':i.Tname})
         course2 = Majors.query.all()
         for i in course2:
             courses.append({'name': i.Mname,'school':i.Sname})
-        return render_template('catQuery.html',courses=courses)
+        return render_template('catQuery.html',courses=courses,categories=categories)
     else:
         pass
 

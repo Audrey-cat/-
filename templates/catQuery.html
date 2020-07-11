@@ -14,9 +14,13 @@
     专业选择<span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
-    <li><a href="#">计算机</a></li>
-    <li><a href="#">经济学</a></li>
-    <li><a href="#">心理学</a></li>
+      {% for category in categories %}
+      <li><a href="#">
+       {{ category.name }}
+      </a>
+      </li>
+     {% endfor %}
+
   </ul><br><br>
 </div>
 
