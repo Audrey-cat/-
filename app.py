@@ -89,6 +89,7 @@ def schoolQuery():
     else:
         pass
 
+
 #选择“专业大类查询”显示课程列表：全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
@@ -107,6 +108,7 @@ def catQuery():
             course = Course.query.filter(Course.MID == i.MID).all()
             for j in course:
                 courses.append({'name':j.Cname,'school':i.Sname})
+
         return render_template('catQuery.html',courses=courses,categories=categories)
     else:
         pass
