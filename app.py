@@ -8,7 +8,8 @@ import json
 import config
 from exts import db
 
-from models import User, Course, Majors
+from models import User, Course, Majors, Category
+
 
 app = Flask(__name__)
 # app.secret_key="123"
@@ -31,8 +32,6 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
-        #pass
-        session.permanent= True
         telephone = request.form.get('telephone')
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone,
@@ -40,10 +39,16 @@ def login():
         if user:
             session['user_id'] = user.id
             # 如果想在31天内都不需要登录
-            session.permanent = True
             return redirect(url_for('home'))
         else:
             return u'手机号码或者密码错误，请确认后再登录！'
+
+
+@app.route('/logout',methods=['GET','POST'])
+def logout():
+    session.pop('user_id')
+    return redirect(url_for('login'))
+
 
 @app.route('/register',methods=['GET','POST'])
 def register():
@@ -91,22 +96,28 @@ def schoolQuery():
 def catQuery():
     if request.method == 'GET':
         courses = []
+        categories=[]
+        categorys= Category.query.all()
+        for i in categorys:
+            if {'name':i.Tname} in categories:
+                pass
+            else:
+                categories.append({'name':i.Tname})
         course2 = Majors.query.all()
         for i in course2:
             courses.append({'name': i.Mname,'school':i.Sname})
-        return render_template('catQuery.html',courses=courses)
+        return render_template('catQuery.html',courses=courses,categories=categories)
     else:
         pass
 
 
 @app.context_processor
 def my_context_processor():
-    user=0
-    if session.permanent == True:
-        user = 1
-    #print(user)
-    if user == 1:
-        return{"user":user }
+    user_id = session.get('user_id')
+    if user_id:
+        user = User.query.filter(User.id == user_id).first()
+        if user:
+            return {'user':user}
     return {}
 
 # @app.route('/doLogin',methods=['GET','POST'])
