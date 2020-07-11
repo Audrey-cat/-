@@ -53,7 +53,7 @@ def register():
                 return redirect(url_for('login'))
 
 
-
+#获取数据库中课程的信息
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
@@ -64,7 +64,7 @@ def schoolQuery():
         return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
-
+#获取数据库中学校和专业的信息
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
