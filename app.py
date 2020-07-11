@@ -10,7 +10,6 @@ from exts import db
 
 from models import User, Course, Majors
 
-
 app = Flask(__name__)
 # app.secret_key="123"
 app.config.from_object(config)# 就完成了项目的数据库的配置
@@ -32,8 +31,19 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     else:
+        #pass
         session.permanent= True
-        return redirect(url_for('hello_world'))
+        telephone = request.form.get('telephone')
+        password = request.form.get('password')
+        user = User.query.filter(User.telephone == telephone,
+                                 User.password == password).first()
+        if user:
+            session['user_id'] = user.id
+            # 如果想在31天内都不需要登录
+            session.permanent = True
+            return redirect(url_for('home'))
+        else:
+            return u'手机号码或者密码错误，请确认后再登录！'
 
 @app.route('/register',methods=['GET','POST'])
 def register():
@@ -46,17 +56,20 @@ def register():
         password2 = request.form.get('password2')
 
         #手机号码验证，如果被注册了，就不能再注册
-
         user = User.query.filter(User.telephone == telephone).first()
         if user:
             return u'手机号码已被注册，请更换！'
         else:
+
+            # 两次密码不相等
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
             else:
                 user = User(telephone=telephone,username=username,password=password1)
                 db.session.add(user)
                 db.session.commit()
+
+                # 注册成功，跳转到登录界面
 
                 return redirect(url_for('login'))
 
