@@ -87,7 +87,6 @@ def schoolQuery():
         pass
 
 #获取数据库中学校和专业的信息
-
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
@@ -98,8 +97,6 @@ def catQuery():
         return render_template('catQuery.html',courses=courses)
     else:
         pass
-
-
 
 
 @app.context_processor
