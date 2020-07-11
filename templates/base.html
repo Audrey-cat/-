@@ -42,16 +42,16 @@
           </ul>
         </li>
             </ul>
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" action="{{ url_for('courseQueryResult') }}" method="get">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="请输入关键字">
+                    <input name="q" type="text" class="form-control" placeholder="请输入关键字">
                 </div>
                 <button type="submit" class="btn btn-default">查找</button>
             </form>
             <ul class="nav navbar-nav navbar-right" id="show" >
-                {% if user == 1 %}
-                    <li><a href="#" >欢迎你</a></li>
-                    <li><a href="{{ url_for('login')}}" >注销</a></li>
+                {% if user %}
+                    <li><a href="#" >{{ user.username }}</a></li>
+                    <li><a href="{{ url_for('logout') }}">注销</a></li>
                 {% else %}
 
                     <li><a href="{{ url_for('login')}}" >登录</a></li>
