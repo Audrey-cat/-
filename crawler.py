@@ -11,10 +11,10 @@ def main():
     #saveData(datalist,dbpath)
 
 findCourse = re.compile(r'<strong>(.*?)<',re.S)
-findTeacher = re.compile(r'任课教师：(.*?)<br/>')
+#findTeacher = re.compile(r'任课教师：(.*?)<br/>')
 #findHours = re.compile(r'学&nbsp;&nbsp;&nbsp; 时：(\d*)<br/>',re.S)
 #findCredits = re.compile(r'学分：(\d*)<br>',re.S)
-findDepartment = re.compile(r'开课院系：(.*?)<br/>')
+#findDepartment = re.compile(r'开课院系：(.*?)<br/>')
 #findDescription = re.compile(r'内容简介：<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(.*)<br/>',re.S)
 
 #爬取网页
@@ -31,10 +31,10 @@ def getData(baseurl):
             courseName = re.findall(findCourse,item)[i]
             courseName = re.sub('\xa0',"",courseName)
             datalist.append(courseName)
-            teacher = re.findall(findTeacher, item)[i]
-            datalist.append(teacher)
-            department = re.findall(findDepartment, item)[0]
-            datalist.append(department)
+            #department = re.findall(findDepartment, item)[0]
+            #datalist.append(department)
+            #teacher = re.findall(findTeacher, item)[i]
+            #datalist.append(teacher)
             # hours = re.findall(findHours, item)[i]
             # data.append(hours)
             # courseCredits = re.findall(findCredits, item)
