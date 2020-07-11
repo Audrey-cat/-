@@ -27,7 +27,17 @@ def login():
         return render_template('login.html')
     else:
         session.permanent= True
-        return redirect(url_for('hello_world'))
+        telephone = request.form.get('telephone')
+        password = request.form.get('password')
+        user = User.query.filter(User.telephone == telephone,
+                                 User.password == password).first()
+        if user:
+            session['user_id'] = user.id
+            # 如果想在31天内都不需要登录
+            session.permanent = True
+            return redirect(url_for('home'))
+        else:
+            return u'手机号码或者密码错误，请确认后再登录！'
 
 @app.route('/register',methods=['GET','POST'])
 def register():
