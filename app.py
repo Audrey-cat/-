@@ -7,7 +7,8 @@ import json
 # import其他py文件
 import config
 from exts import db
-from models import User
+
+from models import User, Course, Majors
 
 
 app = Flask(__name__)
@@ -45,32 +46,43 @@ def register():
         password2 = request.form.get('password2')
 
         #手机号码验证，如果被注册了，就不能再注册
+
         user = User.query.filter(User.telephone == telephone).first()
         if user:
             return u'手机号码已被注册，请更换！'
         else:
-            # 两次密码不相等
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
             else:
                 user = User(telephone=telephone,username=username,password=password1)
                 db.session.add(user)
                 db.session.commit()
-                # 注册成功，跳转到登录界面
+
                 return redirect(url_for('login'))
 
+
+#获取数据库中课程的信息
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
-        return render_template('schoolQuery.html')
+        allcourses=[]
+        course1 = Course.query.all()
+        for i in course1:
+            allcourses.append({'name':i.Cname})
+        return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
 
+#获取数据库中学校和专业的信息
 
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
-        return render_template('catQuery.html')
+        courses = []
+        course2 = Majors.query.all()
+        for i in course2:
+            courses.append({'name': i.Mname,'school':i.Sname})
+        return render_template('catQuery.html',courses=courses)
     else:
         pass
 
@@ -82,7 +94,7 @@ def my_context_processor():
     user=0
     if session.permanent == True:
         user = 1
-    print(user)
+    #print(user)
     if user == 1:
         return{"user":user }
     return {}
