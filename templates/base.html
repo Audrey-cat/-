@@ -29,14 +29,14 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页 <span class="sr-only">(current)</span></a></li>
+                <li class="active"><a href="{{ url_for('home') }}">首页 <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">课程</a></li>
                 <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">检索方式 <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">按学校专业查询</a></li>
+            <li><a href="{{ url_for('schoolQuery') }}">按学校专业查询</a></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">按专业大类查询</a></li>
+            <li><a href="{{ url_for('catQuery') }}">按专业大类查询</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">按课程名称查询</a></li>
           </ul>
@@ -48,10 +48,20 @@
                 </div>
                 <button type="submit" class="btn btn-default">查找</button>
             </form>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('login') }}">登录</a></li>
-                <li><a href="{{ url_for('register') }}">注册</a></li>
+            <ul class="nav navbar-nav navbar-right" id="show" >
+                {% if user == 1 %}
+                    <li><a href="#" >欢迎你</a></li>
+                    <li><a href="{{ url_for('register')}}" >注销</a></li>
+                {% else %}
+
+                    <li><a href="{{ url_for('login')}}" >登录</a></li>
+                    <li><a href="{{url_for('register')}}" >注册</a></li>
+
+                {% endif %} 
+
+                <li> </li>
             </ul>
+           <!-- <button id="hide"  style="margin-right:10px;margin-top:10px">退出登录</button>-->
         </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
