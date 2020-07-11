@@ -38,14 +38,38 @@ def register():
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
-        return render_template('schoolQuery.html')
+        allcourses = [
+            {'name': '面向对象编程'},
+            {'name': '数据库原理'},
+            {'name': '软件构造基础'},
+            {'name': '计算机科学与技术'},
+            {'name': '微观经济学'},
+            {'name': '宏观经济学'},
+            {'name': '计量经济学'},
+            {'name': '人格心理学'},
+            {'name': '认知心理学'},
+            {'name': '普通心理学'},
+        ]
+        return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
 
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
-        return render_template('catQuery.html')
+        courses = [
+            {'name': '面向对象编程', 'school': '太原理工大学'},
+            {'name': '数据库原理', 'school': '东南大学'},
+            {'name': '软件构造基础', 'school': '武汉大学'},
+            {'name': '计算机科学与技术', 'school': '东北大学'},
+            {'name': '微观经济学', 'school': '兰州大学'},
+            {'name': '宏观经济学', 'school': '武汉大学'},
+            {'name': '计量经济学', 'school': '北京邮电大学'},
+            {'name': '人格心理学', 'school': '浙江大学'},
+            {'name': '认知心理学', 'school': '华北电力大学'},
+            {'name': '普通心理学', 'school': '浙江大学'},
+        ]
+        return render_template('catQuery.html',courses=courses)
     else:
         pass
 @app.context_processor
