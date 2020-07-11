@@ -69,7 +69,6 @@ def register():
                 # 注册成功，跳转到登录界面
                 return redirect(url_for('login'))
 
-
 #获取数据库中课程的信息
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
@@ -82,8 +81,6 @@ def schoolQuery():
     else:
         pass
 #获取数据库中学校和专业的信息
-
-
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
@@ -95,9 +92,14 @@ def catQuery():
                 pass
             else:
                 categories.append({'name':i.Tname})
+
         course2 = Majors.query.all()
+
         for i in course2:
-            courses.append({'name': i.Mname,'school':i.Sname})
+            course3 = Course.query.filter(Course.MID == i.MID).all()
+            for j in course3:
+                courses.append({'name': j.Cname, 'school': i.Sname})
+
         return render_template('catQuery.html',courses=courses,categories=categories)
     else:
         pass
