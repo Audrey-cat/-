@@ -27,12 +27,12 @@ def login():
         session.permanent= True
         return redirect(url_for('hello_world'))
 
-@app.route('/register/',methods=['GET','POST'])
+@app.route('/register',methods=['GET','POST'])
 def register():
     if request.method == 'GET':
         return render_template('register.html')
     else:
-        #pass
+        pass
         return redirect(url_for('login'))
 
 @app.route('/schoolQuery', methods=['GET', 'POST'])
