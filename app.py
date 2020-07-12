@@ -1,13 +1,16 @@
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
-
+from crawler import main
 # import其他py文件
 import config
 from exts import db
 
 from models import User, Course, Majors, Category
-
+#
+# mid=1001
+# cid=1001
+# sid=1001
 
 app = Flask(__name__)
 # app.secret_key="123"
@@ -19,6 +22,7 @@ var=[]
 
 @app.route('/')
 def hello_world():
+    main()
     return render_template('base.html')
 
 @app.route('/home')
@@ -214,4 +218,8 @@ def my_context_processor():
 
 
 if __name__ == '__main__':
+    # main()
     app.run()
+    # main()
+
+
