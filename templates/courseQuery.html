@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}查询{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/courseQuery.css') }}">
+{% endblock %}
+
+{% block main %}
+    <h3 class="page-title">课程名字查询</h3>
+
+
+    <table class="table table-striped table-bordered">
+    <thead>
+    <tr>
+        <th>全部课程</th>
+        <th>开课大学</th>
+        <th>课程详情</th>
+    </tr>
+    </thead>
+    <tbody>
+     {% for course in allcourses %}
+    <tr>
+    <th scope="row">{{ course.name }}</th>
+    <td>{{ course.school }}</td>
+     <td><a href="{{ course.info }}">课程详情</a></td>
+    </tr>
+
+     {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}

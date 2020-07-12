@@ -9,6 +9,10 @@ DATABASE = 'pcmp0'
 USERNAME = 'pea_xwq'
 PASSWORD = 'xwq993961218'
 DB_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD, HOSTNAME, PORT, DATABASE)
+
 SQLALCHEMY_DATABASE_URI = DB_URI
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+

@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 
 # 用户表
 class User(db.Model):
-    __tablename__='user1'
+    __tablename__='user1' #__xx__表示被保护字段
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(10), nullable=False)
     password = db.Column(db.String(50), nullable=False)
