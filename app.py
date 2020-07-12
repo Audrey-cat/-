@@ -82,9 +82,27 @@ def register():
 def schoolQuery():
     if request.method == 'GET':
         allcourses=[]
-        course = Course.query.all()
-        for i in course:
-            allcourses.append({'name':i.Cname})
+        majors = Majors.query.all()
+        for i in majors:
+            course = Course.query.filter(i.MID == Course.MID).all()
+            for j in course:
+                allcourses.append({'name':j.Cname,'school':i.Sname,'major':i.Mname})
+
+        # 尝试使用下拉选择框
+        # schools = []
+        # school_major = []
+        # major = Majors.query.all()
+        # for i in major:
+        #     school_major.append({'school':i.Sname,'major':i.Mname})
+        #
+        # for i in major:
+        #     if {'school':i.Sname} in schools:
+        #         pass
+        #     else:
+        #         schools.append({'school':i.Sname})
+        #
+        # schoolid = request.form.get('schoolid')
+        # print(schoolid)
         return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
@@ -128,6 +146,28 @@ def courseQueryResult():
     else:
         pass
     return render_template('courseQuery.html',courses=courses)
+
+#学校专业查找显示查询结果
+@app.route('/schoolQueryResult')
+def schoolQueryResult():
+    s = request.args.get('s')
+    m = request.args.get('m')
+    majors = Majors.query.filter(Majors.Sname == s,Majors.Mname == m).all()
+    mid = []
+    for i in majors:
+        mid.append({'mid':i.MID})
+
+    allcourses = []
+    if len(mid) != 0:
+        course = Course.query.all()
+        for i in course:
+            if {'mid':i.MID} in mid:
+                allcourses.append({'name':i.Cname,'school':s,'major':m})
+    else:
+        pass
+    return render_template('schoolQuery.html', allcourses=allcourses)
+
+
 
 
 
