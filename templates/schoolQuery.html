@@ -9,24 +9,25 @@
 {% block main %}
     <h3 class="page-title">学校专业查询</h3><br>
 
-     <form class="form-inline">
-  <div class="form-group">
-    <label for="exampleInputName2">学校</label>
-    <input type="text" class="form-control" id="exampleInputName2" placeholder="请输入学校名称">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputEmail2">专业</label>
-    <input type="email" class="form-control" id="exampleInputEmail2" placeholder="请输入专业名称">
-  </div>
-  <button type="submit" class="btn btn-default">查找</button>
-</form>
-
+    <form class="form-inline" action="{{ url_for('schoolQueryResult') }}" method="get">
+        <div class="form-group">
+            <label for="exampleInputName2">学校</label>
+            <input name="s" type="text" class="form-control" id="exampleInputName2" placeholder="请输入学校名称">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail2">专业</label>
+            <input name="m" type="text" class="form-control" id="exampleInputEmail2" placeholder="请输入专业名称">
+        </div>
+        <button type="submit" class="btn btn-default">查找</button>
+    </form>
     <br>
 
     <table class="table table-striped table-bordered">
     <thead>
     <tr>
         <th>全部课程</th>
+        <th>学校名称</th>
+        <th>专业名称</th>
         <th>课程详情</th>
     </tr>
     </thead>
@@ -34,10 +35,39 @@
     {% for allcourse in allcourses %}
     <tr>
     <th scope="row">{{ allcourse.name }}</th>
-    <td><a href="http://www.runoob.com"> 课程详情 </a></td>
+        <td>{{ allcourse.school }}</td>
+        <td>{{ allcourse.major }}</td>
+        <td><a href="http://www.runoob.com"> 课程详情 </a></td>
     </tr>
     {% endfor %}
     </tbody>
 </table>
 
 {% endblock %}
+
+{#<form class="form-inline">#}
+{#  <div class="form-group">#}
+{#    <label for="exampleInputName2">学校</label>#}
+{##}
+{##}
+{#    <select class="form-control">#}
+{#          {% for school1 in schools %}#}
+{#        <option selected="selected">上海交通大学</option>#}
+{#        <option>{{ school1.school }}</option>#}
+{#          <option>浙江大学</option>#}
+        {#  <option>3</option>#}
+        {#  <option>4</option>#}
+        {#  <option>5</option>#}
+{#        {% endfor %}#}
+{#    </select>#}
+{##}
+{#    <label for="exampleInputEmail2">专业</label>#}
+{##}
+{##}
+{#    <select class="form-control" name="schoolid">#}
+{#        {% for school_major1 in school_major %}#}
+{#        <option selected="selected">计算机科学与技术</option>#}
+{#        <option value="schoolid">{{ school_major1.major }}</option>#}
+{#        <option>电气及其自动化</option>#}
+{#        {% endfor %}#}
+{#    </select>#}
