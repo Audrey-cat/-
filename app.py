@@ -1,13 +1,16 @@
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
-
+from crawler import main
 # import其他py文件
 import config
 from exts import db
 
 from models import User, Course, Majors, Category
-
+#
+# mid=1001
+# cid=1001
+# sid=1001
 
 app = Flask(__name__)
 # app.secret_key="123"
@@ -19,6 +22,7 @@ var=[]
 
 @app.route('/')
 def hello_world():
+    # main()
     return render_template('base.html')
 
 @app.route('/home')
@@ -108,26 +112,35 @@ def schoolQuery():
         pass
 
 
-#选择“专业大类查询”显示课程列表：全部课程+开课大学+课程详情
+#选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
-        categories = [] #下拉框选项
-        categorys = Category.query.all()
-        for i in categorys:
-            if {'name':i.Tname} in categories:
-                pass
-            else:
-                categories.append({'name':i.Tname})
+        # categories = [] #下拉框选项
+        # categorys = Category.query.all()
+        # for i in categorys:
+        #     if {'name':i.Tname} in categories:
+        #         pass
+        #     else:
+        #         categories.append({'name':i.Tname})
 
-        courses = [] #课程（课程名+开课大学）
-        majors = Majors.query.all()
-        for i in majors:
-            course = Course.query.filter(Course.MID == i.MID).all()
+        # allcourses = [] #课程（课程名+开课大学）
+        # majors = Majors.query.all()
+        # for i in majors:
+        #     course = Course.query.filter(Course.MID == i.MID).all()
+        #     for j in course:
+        #         allcourses.append({'name':j.Cname,'school':i.Sname})
+
+        allcourses = []  # 课程（专业大类+课程名+开课大学）
+        category = Category.query.all()
+        for i in category:
+            course = Course.query.filter(i.CID == Course.CID).all()
             for j in course:
-                courses.append({'name':j.Cname,'school':i.Sname})
+                majors = Majors.query.filter(j.MID == Majors.MID).all()
+                for m in majors:
+                    allcourses.append({'category':i.Tname,'name':j.Cname,'school':m.Sname})
 
-        return render_template('catQuery.html',courses=courses,categories=categories)
+        return render_template('catQuery.html',allcourses=allcourses)
     else:
         pass
 
@@ -137,39 +150,77 @@ def courseQueryResult():
     q = request.args.get('q')
     course = Course.query.filter(Course.Cname.like('%'+q+'%')).all()
 
-    courses = []#课程（课程名+开课大学）
+    allcourses = []#课程（课程名+开课大学）
     #print(len(course))
     if len(course) != 0:
         for i in course:
             major = Majors.query.filter(Majors.MID == i.MID).first()
-            courses.append({'name':i.Cname,'school':major.Sname})
+            allcourses.append({'name':i.Cname,'school':major.Sname})
     else:
         pass
-    return render_template('courseQuery.html',courses=courses)
+    return render_template('courseQuery.html',allcourses=allcourses)
 
 #学校专业查找显示查询结果
 @app.route('/schoolQueryResult')
 def schoolQueryResult():
+    # s = request.args.get('s')
+    # m = request.args.get('m')
+    # majors = Majors.query.filter(Majors.Sname == s, Majors.Mname == m).all()
+    # mid = []
+    # for i in majors:
+    #     mid.append({'mid': i.MID})
+    #
+    # allcourses = []
+    # if len(mid) != 0:
+    #     course = Course.query.all()
+    #     for i in course:
+    #         if {'mid': i.MID} in mid:
+    #             allcourses.append({'name': i.Cname, 'school': s, 'major': m})
+    #
+    # else:
+    #     pass
+    # return render_template('schoolQuery.html', allcourses=allcourses)
     s = request.args.get('s')
     m = request.args.get('m')
-    majors = Majors.query.filter(Majors.Sname == s,Majors.Mname == m).all()
-    mid = []
-    for i in majors:
-        mid.append({'mid':i.MID})
+    majors = Majors.query.filter(Majors.Sname.like('%'+s+'%'),Majors.Mname.like('%'+m+'%')).all()
+
+    # s_m = []
+    # for i in majors:
+    #     s_m.append({'mid':i.MID,'school':i.Sname,'major':i.Mname})
 
     allcourses = []
-    if len(mid) != 0:
+    # if len(s_m) != 0:
+    if len(majors) != 0:
         course = Course.query.all()
         for i in course:
-            if {'mid':i.MID} in mid:
-                allcourses.append({'name':i.Cname,'school':s,'major':m})
+            # for j in s_m:
+            #     if i.MID == j['mid']:
+            #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
+            for j in majors:
+                if i.MID == j.MID:
+                    allcourses.append({'name':i.Cname,'school':j.Sname,'major':j.Mname})
     else:
         pass
     return render_template('schoolQuery.html', allcourses=allcourses)
 
+#专业大类查找显示查询结果
+@app.route('/catQueryResult')
+def catQueryResult():
+    q = request.args.get('q')
+    category = Category.query.filter(Category.Tname.like('%'+q+'%')).all()
 
+    allcourses = []  # 课程（专业大类+课程名+开课大学）
+    for i in category:
+        course = Course.query.filter(i.CID == Course.CID).all()
+        for j in course:
+            majors = Majors.query.filter(j.MID == Majors.MID).all()
+            for m in majors:
+                allcourses.append({'category': i.Tname, 'name': j.Cname, 'school': m.Sname})
 
-
+    return render_template('catQuery.html', allcourses=allcourses)
+    # allcourses = []
+    # for i in category:
+    #     course = Course.query.filter(i.CID == Course.CID).all()
 
 @app.context_processor
 def my_context_processor():
@@ -214,4 +265,8 @@ def my_context_processor():
 
 
 if __name__ == '__main__':
+    # main()
     app.run()
+    # main()
+
+

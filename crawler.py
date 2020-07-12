@@ -1,14 +1,16 @@
 from bs4 import BeautifulSoup
 import re
 import urllib.request,urllib.error
-
+from models import Majors,Course,Category
+from exts import db
 def main():
     baseurl = "https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm"
     #1爬取网页
     datalist = getData(baseurl)
     #dbpath = "course.db"
     #3保存数据
-    #saveData(datalist,dbpath)
+    saveData(datalist)
+    print("save...")
 
 findCourse = re.compile(r'<strong>(.*?)<',re.S)
 #findTeacher = re.compile(r'任课教师：(.*?)<br/>')
@@ -66,5 +68,31 @@ def askURL(url):
     return html
 
 #保存数据
-def saveData(datalist,dbpath):
-    print("save...")
+def saveData(datalist):
+    cid = 1001
+    majors1 = Majors.query.filter(Majors.MID == 1001).first()
+    if majors1:
+        pass
+    else:
+        majors = Majors(SID=1001, Sname='清华大学', MID=1001, Mname='环境学院')
+        db.session.add(majors)
+        db.session.commit()
+    for data in datalist:
+        course1 = Course.query.filter(Course.Cname == data[0:12]).first()
+        if course1:
+            pass
+        else:
+            course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
+            db.session.add(course)
+            db.session.commit()
+            category = Category(TID=1001,Tname='环境类',CID=cid)
+            db.session.add(category)
+            cid = cid + 1
+            db.session.commit()
+
+
+
+
+
+if __name__ == '__main__':
+    main()
