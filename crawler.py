@@ -85,7 +85,7 @@ def saveData(datalist):
             course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
             db.session.add(course)
             db.session.commit()
-            category = Category(TID=1001,Tname='环境类', CID=cid)
+            category = Category(TID=1001, Tname='环境类', CID=cid)
             db.session.add(category)
             cid = cid + 1
             db.session.commit()
