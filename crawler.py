@@ -78,14 +78,14 @@ def saveData(datalist):
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
-        course1 = Course.query.filter(Course.Cname == data[0:12]).first()
+        course1 = Course.query.filter(Course.Cname == data).first()
         if course1:
             pass
         else:
             course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
             db.session.add(course)
             db.session.commit()
-            category = Category(TID=1001,Tname='环境类',CID=cid)
+            category = Category(TID=1001,Tname='环境类', CID=cid)
             db.session.add(category)
             cid = cid + 1
             db.session.commit()
