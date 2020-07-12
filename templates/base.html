@@ -68,7 +68,9 @@
         </div><!-- /.container-fluid -->
     </nav>
     <div class="main">
-         {% block main %}{% endblock %}
+         {% block main %}
+         <img src="{{url_for('static',filename='images/Home.JPG')}}" alt="...">
+        {% endblock %}
     </div>
 {#<script src="./try.js"></script>#}
 </body>
