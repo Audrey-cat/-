@@ -83,8 +83,9 @@ def saveData(datalist):
             pass
         else:
             course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
-            category = Category(TID=1001,Tname='环境类',CID=cid)
             db.session.add(course)
+            db.session.commit()
+            category = Category(TID=1001,Tname='环境类',CID=cid)
             db.session.add(category)
             cid = cid + 1
             db.session.commit()

@@ -22,7 +22,7 @@ var=[]
 
 @app.route('/')
 def hello_world():
-    main()
+    # main()
     return render_template('base.html')
 
 @app.route('/home')
