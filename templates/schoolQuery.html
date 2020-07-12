@@ -37,7 +37,7 @@
     <th scope="row">{{ allcourse.name }}</th>
         <td>{{ allcourse.school }}</td>
         <td>{{ allcourse.major }}</td>
-        <td><a href="http://www.runoob.com"> 课程详情 </a></td>
+        <td><a href="{{ allcourse.info }}"> 课程详情 </a></td>
     </tr>
     {% endfor %}
     </tbody>

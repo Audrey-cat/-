@@ -90,7 +90,7 @@ def schoolQuery():
         for i in majors:
             course = Course.query.filter(i.MID == Course.MID).all()
             for j in course:
-                allcourses.append({'name':j.Cname,'school':i.Sname,'major':i.Mname})
+                allcourses.append({'name':j.Cname,'school':i.Sname,'major':i.Mname,'info':j.Cinfo})
 
         # 尝试使用下拉选择框
         # schools = []
@@ -138,7 +138,7 @@ def catQuery():
             for j in course:
                 majors = Majors.query.filter(j.MID == Majors.MID).all()
                 for m in majors:
-                    allcourses.append({'category':i.Tname,'name':j.Cname,'school':m.Sname})
+                    allcourses.append({'category':i.Tname,'name':j.Cname,'school':m.Sname,'info':j.Cinfo})
 
         return render_template('catQuery.html',allcourses=allcourses)
     else:
@@ -155,7 +155,7 @@ def courseQueryResult():
     if len(course) != 0:
         for i in course:
             major = Majors.query.filter(Majors.MID == i.MID).first()
-            allcourses.append({'name':i.Cname,'school':major.Sname})
+            allcourses.append({'name':i.Cname,'school':major.Sname,'info':i.Cinfo})
     else:
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
@@ -198,7 +198,7 @@ def schoolQueryResult():
             #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
             for j in majors:
                 if i.MID == j.MID:
-                    allcourses.append({'name':i.Cname,'school':j.Sname,'major':j.Mname})
+                    allcourses.append({'name':i.Cname,'school':j.Sname,'major':j.Mname,'info':i.Cinfo})
     else:
         pass
     return render_template('schoolQuery.html', allcourses=allcourses)
@@ -215,7 +215,7 @@ def catQueryResult():
         for j in course:
             majors = Majors.query.filter(j.MID == Majors.MID).all()
             for m in majors:
-                allcourses.append({'category': i.Tname, 'name': j.Cname, 'school': m.Sname})
+                allcourses.append({'category': i.Tname, 'name': j.Cname, 'school': m.Sname,'info':j.Cinfo})
 
     return render_template('catQuery.html', allcourses=allcourses)
     # allcourses = []
