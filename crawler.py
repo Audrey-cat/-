@@ -6,7 +6,10 @@ update: 2020-07-12
 
 from bs4 import BeautifulSoup
 import re
-import urllib.request,urllib.error
+import urllib.request, urllib.error
+
+from flask import session
+
 from models import Majors,Course,Category
 from exts import db
 def main():
@@ -75,12 +78,14 @@ def askURL(url):
 
 #保存数据
 def saveData(datalist):
-    cid = 1001
-    majors1 = Majors.query.filter(Majors.MID == 1001).first()
+    majors1 = Majors.query.filter(Majors.Mname == '环境学院'
+                                  and Majors.Sname == '清华大学').first()
     if majors1:
-        pass
+        mid = majors1.MID
     else:
-        majors = Majors(SID=1001, Sname='清华大学', MID=1001, Mname='环境学院')
+        mmajors = Majors.query.order_by(Majors.MID.desc()).first()
+        mid = mmajors.MID + 1
+        majors = Majors(SID=1001, Sname='清华大学', MID=mid, Mname='环境学院')
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
@@ -88,12 +93,13 @@ def saveData(datalist):
         if course1:
             pass
         else:
-            course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
+            mcourse = Course.query.order_by(Course.CID.desc()).first()
+            cid = mcourse.CID + 1
+            course = Course(MID=mid, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
             db.session.add(course)
             db.session.commit()
             category = Category(TID=1001, Tname='环境类', CID=cid)
             db.session.add(category)
-            cid = cid + 1
             db.session.commit()
 
 

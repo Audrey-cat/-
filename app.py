@@ -28,7 +28,7 @@ var=[]
 
 @app.route('/') # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
-    # main()
+    main()
     return render_template('base.html')
 
 @app.route('/home') # http://127.0.0.1:5000/home 首页
