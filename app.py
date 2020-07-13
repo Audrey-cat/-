@@ -6,20 +6,14 @@ update: 2020-07-12
 
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
-import pymysql
-from crawler import main
 # import其他py文件
 import config
 from exts import db
-
+from crawler import crawler
 from models import User, Course, Majors, Category
-#
-# mid=1001
-# cid=1001
-# sid=1001
+
 
 app = Flask(__name__)
-# app.secret_key="123"
 app.config.from_object(config)# 完成了项目的数据库的配置
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1) # 默认缓存控制的最大期限
 db.init_app(app)
@@ -28,7 +22,7 @@ var=[]
 
 @app.route('/') # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
-    # main()
+    #crawler.main()
     return render_template('base.html')
 
 @app.route('/home') # http://127.0.0.1:5000/home 首页
