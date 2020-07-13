@@ -43,11 +43,17 @@ def login():
         telephone = request.form.get('telephone') # 获取登录输入信息
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone,
-                                 User.password == password).first() # 从数据库中查找登陆数据
+                                 User.password == password).first()
+        user2 = User.query.filter(User.email == telephone,
+                                  User.password == password).first()
         if user:
             session['user_id'] = user.id
             # 如果想在31天内都不需要登录
-            return redirect(url_for('home')) # 登录信息正确则返回到首页
+            return redirect(url_for('home'))
+        elif user2:
+            session['user_id'] = user2.id
+            # 如果想在31天内都不需要登录
+            return redirect(url_for('home'))
         else:
             return u'手机号码或者密码错误，请确认后再登录！' # 登录信息错误则提示错误信息
 
@@ -67,18 +73,19 @@ def register():
         username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-
+        email = request.form.get('email')
         #手机号码验证，如果被注册了，就不能再注册
         user = User.query.filter(User.telephone == telephone).first()
-        if user:
-            return u'手机号码已被注册，请更换！'
+        user2 = User.query.filter(User.email == email).first()
+        if user and user2:
+            return u'手机号码或邮箱已被注册，请更换！'
         else:
 
             # 两次密码不相等
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
             else:
-                user = User(telephone=telephone,username=username,password=password1)
+                user = User(telephone=telephone,username=username,password=password1,email=email)
                 db.session.add(user)
                 db.session.commit()
 
