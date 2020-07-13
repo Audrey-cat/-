@@ -1,3 +1,9 @@
+'''
+author: 徐婉青，高煜嘉，黄祉琪，文天尧
+create: 2020-07-09
+update: 2020-07-12
+'''
+
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 import pymysql
@@ -15,49 +21,49 @@ from models import User, Course, Majors, Category
 app = Flask(__name__)
 # app.secret_key="123"
 app.config.from_object(config)# 完成了项目的数据库的配置
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1) # 默认缓存控制的最大期限
 db.init_app(app)
 var=[]
 
 
-@app.route('/')
+@app.route('/') # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
     # main()
     return render_template('base.html')
 
-@app.route('/home')
+@app.route('/home') # http://127.0.0.1:5000/home 首页
 def home():
     return render_template('home.html')
 
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login',methods=['GET','POST']) # http://127.0.0.1:5000/login 登陆
 def login():
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('login.html') # 引入login.html
     else:
-        telephone = request.form.get('telephone')
+        telephone = request.form.get('telephone') # 获取登录输入信息
         password = request.form.get('password')
         user = User.query.filter(User.telephone == telephone,
-                                 User.password == password).first()
+                                 User.password == password).first() # 从数据库中查找登陆数据
         if user:
             session['user_id'] = user.id
             # 如果想在31天内都不需要登录
-            return redirect(url_for('home'))
+            return redirect(url_for('home')) # 登录信息正确则返回到首页
         else:
-            return u'手机号码或者密码错误，请确认后再登录！'
+            return u'手机号码或者密码错误，请确认后再登录！' # 登录信息错误则提示错误信息
 
 
-@app.route('/logout',methods=['GET','POST'])
+@app.route('/logout',methods=['GET','POST']) # http://127.0.0.1:5000/login 退出登录
 def logout():
     session.pop('user_id')
-    return redirect(url_for('login'))
+    return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
 
 
-@app.route('/register',methods=['GET','POST'])
+@app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
     if request.method == 'GET':
         return render_template('register.html')
     else:
-        telephone = request.form.get('telephone')
+        telephone = request.form.get('telephone') # 从输入框内获取注册数据
         username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
@@ -81,11 +87,11 @@ def register():
                 return redirect(url_for('login'))
 
 
-#选择“学校专业查询”显示课程列表：全部课程+课程详情
+#选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
-        allcourses=[]
+        allcourses=[] # 存放课程名、学校名、专业名和课程详情
         majors = Majors.query.all()
         for i in majors:
             course = Course.query.filter(i.MID == Course.MID).all()
@@ -107,6 +113,8 @@ def schoolQuery():
         #
         # schoolid = request.form.get('schoolid')
         # print(schoolid)
+
+        # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
         return render_template('schoolQuery.html',allcourses=allcourses)
     else:
         pass
@@ -131,7 +139,7 @@ def catQuery():
         #     for j in course:
         #         allcourses.append({'name':j.Cname,'school':i.Sname})
 
-        allcourses = []  # 课程（专业大类+课程名+开课大学）
+        allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
         category = Category.query.all()
         for i in category:
             course = Course.query.filter(i.CID == Course.CID).all()
@@ -150,7 +158,7 @@ def courseQueryResult():
     q = request.args.get('q')
     course = Course.query.filter(Course.Cname.like('%'+q+'%')).all()
 
-    allcourses = []#课程（课程名+开课大学）
+    allcourses = []#课程（课程名+开课大学+课程详情）
     #print(len(course))
     if len(course) != 0:
         for i in course:
@@ -188,7 +196,7 @@ def schoolQueryResult():
     # for i in majors:
     #     s_m.append({'mid':i.MID,'school':i.Sname,'major':i.Mname})
 
-    allcourses = []
+    allcourses = [] # 存放课程名、学校名、专业名和课程详情
     # if len(s_m) != 0:
     if len(majors) != 0:
         course = Course.query.all()

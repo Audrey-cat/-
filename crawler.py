@@ -1,3 +1,9 @@
+'''
+author: 高煜嘉，徐婉青
+create: 2020-07-11
+update: 2020-07-12
+'''
+
 from bs4 import BeautifulSoup
 import re
 import urllib.request,urllib.error
