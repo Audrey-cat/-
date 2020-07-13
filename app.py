@@ -55,7 +55,8 @@ def login():
             # 如果想在31天内都不需要登录
             return redirect(url_for('home'))
         else:
-            return u'用户名或者密码错误，请确认后再登录！' # 登录信息错误则提示错误信息
+            flash('电话号码/邮箱或者密码错误，请确认后再登录！')   # 登录信息错误则提示错误信息
+            return render_template('login.html')
 
 
 @app.route('/logout',methods=['GET','POST']) # http://127.0.0.1:5000/login 退出登录

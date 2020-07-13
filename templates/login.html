@@ -22,6 +22,11 @@ update: 2020-07-11
              <div class="form-group">
                 <input type="password" class="form-control" placeholder="密码" name="password">
             </div>
+            <span>
+                {% for msg in get_flashed_messages() %}
+                {{ msg }}
+                {% endfor %}
+            </span>
              <div class="form-group">
                  <button class="btn btn-primary btn-block"> 登录 </button>
             </div>
