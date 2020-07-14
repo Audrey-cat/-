@@ -301,6 +301,12 @@ def courseQueryResult():
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
 
+@app.route('/attendSearch')
+def attendsearch():
+    return redirect(url_for('userCenter'))
+
+
+
 #学校专业查找显示查询结果
 @app.route('/schoolQueryResult')
 def schoolQueryResult():
