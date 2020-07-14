@@ -9,7 +9,7 @@ update: 2020-07-12
 {% block title %}查询{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/courseQuery.css') }}">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
 {% endblock %}
 
 {% block main %}
@@ -26,7 +26,7 @@ update: 2020-07-12
         </tr>
         </thead>
         <tbody>
-        {% for course in allcourses %}
+        {% for course in courses %}
             <tr>
 
                 <th scope="row">{{ course.name }}</th>
@@ -44,5 +44,5 @@ update: 2020-07-12
 
         </tbody>
     </table>
-
+    {{ pagination.links }}
 {% endblock %}

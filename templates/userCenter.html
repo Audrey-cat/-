@@ -8,7 +8,7 @@ update:
 {% block title %}个人中心{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/userCenter.css') }}">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
 {% endblock %}
 
 {% block main %}
@@ -54,7 +54,7 @@ update:
     </tr>
     </thead>
     <tbody>
-    {% for course in allcourses %}
+    {% for course in courses %}
     <tr>
 
     <th scope="row">{{ course.name }}</th>
@@ -81,4 +81,5 @@ update:
     </tbody>
 </table>
 
+    {{ pagination.links }}
 {% endblock %}
