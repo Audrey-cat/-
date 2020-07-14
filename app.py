@@ -12,6 +12,7 @@ import re
 from exts import db
 from crawler import crawler
 from models import User, Course, Majors, Category, Attend
+from sqlalchemy import exists
 
 
 app = Flask(__name__)
@@ -94,12 +95,22 @@ def register():
 
 @app.route('/userCenter',methods=['GET','POST']) # http://127.0.0.1:5000/userCenter 个人中心
 def userCenter():
-    user_id = session['user_id']
-    user = User.query.filter(User.id == user_id).first()
-    name = user.username
-    telephone = user.telephone
-    email = user.email
-    return render_template('userCenter.html',name=name,telephone=telephone,email=email)
+    if request.method == 'GET':
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        name = user.username
+        telephone = user.telephone
+        email = user.email
+        attendcourses=[]  #存放参与的课程
+        acourses = Attend.query.filter(Attend.id == user_id).all()
+        for acourse in acourses:
+            course = Course.query.filter(Course.CID == acourse.CID).first()
+            majors = Majors.query.filter(Majors.MID == course.MID).first()
+            attendcourses.append({'cid':course.CID,'name':course.Cname,'school':majors.Sname,'majors':majors.Mname,'info':course.Cinfo})
+        return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=attendcourses)
+    else:
+        pass
+
 
 
 #选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
@@ -134,41 +145,42 @@ def schoolQuery():
         return render_template('schoolQuery.html', allcourses=allcourses)
     else:
         pass
-        # acname = request.form.get('cname')
-        # print(acname)
-        # acourse = Course.query.filter(Course.Cname == acname)
-        # cid = acourse.CID
-        # user_id = session.get('user_id')
-        # if user_id:
-        #     attend = Attend(id=user_id, CID=cid)
-        #     db.session.add(attend)
-        #     db.session.commit()
-        # else:
-        #     pass
-        # return redirect(url_for('schoolQuery'))
 
 
 @app.route('/attend/<acid>', methods=['GET', 'POST'])
 def attend(acid):
-
     if request.method == 'GET':
         return redirect(url_for('schoolQuery'))
     else:
-        # cid = filter(str.isdigit(),acid)
-        print(acid)
-        length=len(acid)-1
-        cid = int(acid[0:length])
-        print(cid)
+        cid = acid
         user_id = session.get('user_id')
         if user_id:
             attend = Attend(id=user_id, CID=int(cid))
-            db.session.add(attend)
-            db.session.commit()
+            try:
+                db.session.add(attend)
+                db.session.commit()
+            except Exception:
+                print("已添加此课程")
         else:
             pass
         return redirect(request.referrer or url_for(home))
 
-
+@app.route('/cancel_attend/<cacid>', methods=['GET', 'POST'])
+def cancel_attend(cacid):
+    if request.method == 'GET':
+        return redirect(url_for('userCenter'))
+    else:
+        # print(cacid)
+        # length=len(cacid)-1
+        cid = cacid
+        user_id = session.get('user_id')
+        if user_id:
+            course = Attend.query.filter(Attend.id == user_id and Attend.CID == cid ).first()
+            db.session.delete(course)
+            db.session.commit()
+        else:
+            pass
+        return redirect(url_for('userCenter'))
 
 #选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
