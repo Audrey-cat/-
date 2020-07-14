@@ -56,12 +56,12 @@ update: 2020-07-12
             </form>
             <ul class="nav navbar-nav navbar-right" id="show" >
                 {% if user %}
-                    <li><a href="#" >{{ user.username }}</a></li>
+                    <li><a href="{{ url_for('userCenter')}}" >{{ user.username }}</a></li>
                     <li><a href="{{ url_for('logout') }}">退出登录</a></li>
                 {% else %}
 
-                    <li><a href="{{ url_for('login')}}" >登录</a></li>
-                    <li><a href="{{url_for('register')}}" >注册</a></li>
+                    <li><a href="{{ url_for('login') }}" >登录</a></li>
+                    <li><a href="{{ url_for('register') }}" >注册</a></li>
 
                 {% endif %} 
 

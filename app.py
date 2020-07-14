@@ -1,16 +1,24 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-12
+update: 2020-07-14
 '''
 
 from flask import redirect, Flask, render_template, request, flash, session,url_for
 from datetime import timedelta
 # import其他py文件
 import config
+import re
 from exts import db
+
 from crawler import crawler
-from models import User, Course, Majors, Category
+from models import User, Course, Majors, Category, Attend
+from sqlalchemy import exists
+
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formataddr
+import random
 
 
 app = Flask(__name__)
@@ -57,6 +65,74 @@ def login():
 def logout():
     session.pop('user_id')
     return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
+#发送邮件
+def mail(my_sender,my_user,my_pass,verifyCode):
+    ret = True
+    try:
+        text = "验证码为:" + str(verifyCode)
+        msg = MIMEText(text, 'plain', 'utf-8')
+        msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['Subject'] = "验证码"  # 邮件的主题，也可以说是标题
+
+        server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器，端口是25
+        server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
+        server.sendmail(my_sender, [my_user, ], msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+        server.quit()  # 关闭连接
+    except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+        ret = False
+    return ret
+
+verifyCode = str(random.randint(100000,999999))#生成随机验证码
+@app.route('/vertifyEmail', methods=['GET', 'POST'])  # http://127.0.0.1:5000/vertifyEmail 验证邮箱
+def vertifyEmail():
+    if request.method == 'GET':
+        return render_template('vertifyEmail.html')  # 点”找回密码“则返回到发送邮箱验证码页面
+    else:
+        email = request.form.get('email') #获取输入的邮箱
+        my_sender = '919849055@qq.com'  # 发件人邮箱账号
+        my_pass = 'ibufdqkojmgsbcig'  # 发件人邮箱密码
+        my_user = str(email)  # 收件人邮箱账号
+        #查看邮箱是否存在
+        user = User.query.filter(User.email == email).first()
+        if user:
+            #发送邮箱
+            ret = mail(my_sender,my_user,my_pass,verifyCode)
+            if ret:
+                print("邮件发送成功")#邮件发送成功，跳转到修改密码界面
+                return redirect(url_for('retrievePwd',userEmail=email))
+            else:
+                print("邮件发送失败") #邮件发送失败可以选择重新发送
+                return render_template('vertifyEmail.html')
+        else:
+            flash('邮箱不存在') #若用户没有使用注册时的邮箱，或者邮箱填写错误 那么邮箱有可能不存在，需要重新填写
+            return render_template('vertifyEmail.html')
+#用户修改密码
+@app.route('/retrievePwd?userEmail=<userEmail>',methods=['GET','POST']) # http://127.0.0.1:5000/retrievePwd 找回密码
+def retrievePwd(userEmail):
+    if request.method == 'GET':
+        return render_template('retrievePwd.html') # 点”发送验证码验证“则返回到找回密码页面
+    else:
+        vertifynum = request.form.get('vertifynum')  # 检测验证码
+        password = request.form.get('password')  #新的密码
+        password2 = request.form.get('password2')  #重新输入密码
+        #若验证码与之前发送的一致
+        if vertifynum == verifyCode:
+            print('验证成功')
+            #查看该用户的密码
+            user = User.query.filter(User.email == userEmail).first()
+            if password != password2:
+                return u'两次密码不相等，请核对后再填写！'
+            else:
+                #修改密码
+                user.password = password
+                db.session.commit()
+                return redirect(url_for('login'))
+        else:
+            print('验证失败')
+            return render_template('retrievePwd.html')
+
+
 
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
@@ -88,6 +164,25 @@ def register():
 
                 return redirect(url_for('login'))
 
+@app.route('/userCenter',methods=['GET','POST']) # http://127.0.0.1:5000/userCenter 个人中心
+def userCenter():
+    if request.method == 'GET':
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        name = user.username
+        telephone = user.telephone
+        email = user.email
+        attendcourses=[]  #存放参与的课程
+        acourses = Attend.query.filter(Attend.id == user_id).all()
+        for acourse in acourses:
+            course = Course.query.filter(Course.CID == acourse.CID).first()
+            majors = Majors.query.filter(Majors.MID == course.MID).first()
+            attendcourses.append({'cid':course.CID,'name':course.Cname,'school':majors.Sname,'majors':majors.Mname,'info':course.Cinfo})
+        return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=attendcourses)
+    else:
+        pass
+
+
 
 #选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET', 'POST'])
@@ -98,7 +193,7 @@ def schoolQuery():
         for i in majors:
             course = Course.query.filter(i.MID == Course.MID).all()
             for j in course:
-                allcourses.append({'name':j.Cname,'school':i.Sname,'major':i.Mname,'info':j.Cinfo})
+                allcourses.append({'cid':j.CID, 'name':j.Cname,'school':i.Sname,'major':i.Mname,'info':j.Cinfo})
 
         # 尝试使用下拉选择框
         # schools = []
@@ -117,10 +212,46 @@ def schoolQuery():
         # print(schoolid)
 
         # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
-        return render_template('schoolQuery.html',allcourses=allcourses)
+
+        return render_template('schoolQuery.html', allcourses=allcourses)
     else:
         pass
 
+
+@app.route('/attend/<acid>', methods=['GET', 'POST'])
+def attend(acid):
+    if request.method == 'GET':
+        return redirect(url_for('schoolQuery'))
+    else:
+        cid = acid
+        user_id = session.get('user_id')
+        if user_id:
+            attend = Attend(id=user_id, CID=int(cid))
+            try:
+                db.session.add(attend)
+                db.session.commit()
+            except Exception:
+                print("已添加此课程")
+        else:
+            pass
+        return redirect(request.referrer or url_for(home))
+
+@app.route('/cancel_attend/<cacid>', methods=['GET', 'POST'])
+def cancel_attend(cacid):
+    if request.method == 'GET':
+        return redirect(url_for('userCenter'))
+    else:
+        # print(cacid)
+        # length=len(cacid)-1
+        cid = cacid
+        user_id = session.get('user_id')
+        if user_id:
+            course = Attend.query.filter(Attend.id == user_id and Attend.CID == cid ).first()
+            db.session.delete(course)
+            db.session.commit()
+        else:
+            pass
+        return redirect(url_for('userCenter'))
 
 #选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
@@ -148,9 +279,9 @@ def catQuery():
             for j in course:
                 majors = Majors.query.filter(j.MID == Majors.MID).all()
                 for m in majors:
-                    allcourses.append({'category':i.Tname,'name':j.Cname,'school':m.Sname,'info':j.Cinfo})
+                    allcourses.append({'cid':j.CID, 'category':i.Tname,'name':j.Cname,'school':m.Sname,'info':j.Cinfo})
 
-        return render_template('catQuery.html',allcourses=allcourses)
+        return render_template('catQuery.html', allcourses=allcourses)
     else:
         pass
 
@@ -165,7 +296,7 @@ def courseQueryResult():
     if len(course) != 0:
         for i in course:
             major = Majors.query.filter(Majors.MID == i.MID).first()
-            allcourses.append({'name':i.Cname,'school':major.Sname,'info':i.Cinfo})
+            allcourses.append({'cid':i.CID, 'name':i.Cname,'school':major.Sname,'info':i.Cinfo})
     else:
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
@@ -208,7 +339,7 @@ def schoolQueryResult():
             #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
             for j in majors:
                 if i.MID == j.MID:
-                    allcourses.append({'name':i.Cname,'school':j.Sname,'major':j.Mname,'info':i.Cinfo})
+                    allcourses.append({'cid':i.CID, 'name':i.Cname,'school':j.Sname,'major':j.Mname,'info':i.Cinfo})
     else:
         pass
     return render_template('schoolQuery.html', allcourses=allcourses)
@@ -225,7 +356,7 @@ def catQueryResult():
         for j in course:
             majors = Majors.query.filter(j.MID == Majors.MID).all()
             for m in majors:
-                allcourses.append({'category': i.Tname, 'name': j.Cname, 'school': m.Sname,'info':j.Cinfo})
+                allcourses.append({'cid':j.CID, 'category': i.Tname, 'name': j.Cname, 'school': m.Sname,'info':j.Cinfo})
 
     return render_template('catQuery.html', allcourses=allcourses)
     # allcourses = []
