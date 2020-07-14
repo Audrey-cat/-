@@ -22,14 +22,18 @@ update: 2020-07-12
         <th>全部课程</th>
         <th>开课大学</th>
         <th>课程详情</th>
+        <th>参与课程</th>
     </tr>
     </thead>
     <tbody>
      {% for course in allcourses %}
     <tr>
+     <form action="" method="post">
     <th scope="row">{{ course.name }}</th>
     <td>{{ course.school }}</td>
      <td><a href="{{ course.info }}">课程详情</a></td>
+    <td><button class="btn btn-primary btn-block"> 参与课程 </button></td>
+     </form>
     </tr>
 
      {% endfor %}
