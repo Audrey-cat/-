@@ -132,8 +132,29 @@ def retrievePwd(userEmail):
             print('验证失败')
             return render_template('retrievePwd.html')
 
+@app.route('/changePwd',methods=['GET','POST']) # http://127.0.0.1:5000/changePwd 找回密码
+def changePwd():
+    if request.method == 'GET':
+        return render_template('changePwd.html') # 点”修改密码“则进入修改密码页面
+    # else:
+    #     password = request.form.get('password')  #新的密码
+    #     password2 = request.form.get('password2')  #重新输入密码
+    #     if password != password2:
+    #         return u'两次密码不相等，请核对后再填写！'
+    #     else:
+    #         #修改密码
+    #         user = User.query.first() #这里不太清楚怎么获取user
+    #         user.password = password
+    #         db.session.commit()
+    #         return redirect(url_for('userCenter'))
 
+@app.route('/changeName',methods=['GET','POST']) # http://127.0.0.1:5000/changeName 修改用户名
+def changeName():
+    return render_template('changeName.html')
 
+@app.route('/changePhone',methods=['GET','POST']) # http://127.0.0.1:5000/changePhone 更新手机号
+def changePhone():
+    return render_template('changePhone.html')
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
