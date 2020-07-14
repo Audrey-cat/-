@@ -225,7 +225,7 @@ def userCenter():
         'courses': courses
     }
 
-    return render_template('userCenter.html', **context)
+    return render_template('userCenter.html', name=name, telephone=telephone, email=email, **context)
 
 
 # 修改密码
