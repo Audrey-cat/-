@@ -27,16 +27,18 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1) # 默认缓存控
 db.init_app(app)
 var=[]
 
-
+# 打开网站时页面
 @app.route('/') # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
     #crawler.main()
     return render_template('base.html')
 
+# 点击首页，进入首页页面
 @app.route('/home') # http://127.0.0.1:5000/home 首页
 def home():
     return render_template('home.html')
 
+# 登录
 @app.route('/login',methods=['GET','POST']) # http://127.0.0.1:5000/login 登陆
 def login():
     if request.method == 'GET':
@@ -60,13 +62,13 @@ def login():
             flash('电话号码/邮箱或者密码错误，请确认后再登录！')   # 登录信息错误则提示错误信息
             return render_template('login.html')
 
-
-@app.route('/logout',methods=['GET','POST']) # http://127.0.0.1:5000/login 退出登录
+# 退出登录
+@app.route('/logout',methods=['GET','POST']) # http://127.0.0.1:5000/logout 退出登录
 def logout():
     session.pop('user_id')
     return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
 
-#发送邮件
+# 找回密码——发送邮件
 def mail(my_sender,my_user,my_pass,verifyCode):
     ret = True
     try:
@@ -85,6 +87,7 @@ def mail(my_sender,my_user,my_pass,verifyCode):
         ret = False
     return ret
 
+# 找回密码——验证邮箱
 verifyCode = str(random.randint(100000,999999))#生成随机验证码
 @app.route('/vertifyEmail', methods=['GET', 'POST'])  # http://127.0.0.1:5000/vertifyEmail 验证邮箱
 def vertifyEmail():
@@ -109,7 +112,8 @@ def vertifyEmail():
         else:
             flash('邮箱不存在') #若用户没有使用注册时的邮箱，或者邮箱填写错误 那么邮箱有可能不存在，需要重新填写
             return render_template('vertifyEmail.html')
-#用户修改密码
+
+#找回密码
 @app.route('/retrievePwd?userEmail=<userEmail>',methods=['GET','POST']) # http://127.0.0.1:5000/retrievePwd 找回密码
 def retrievePwd(userEmail):
     if request.method == 'GET':
@@ -134,7 +138,8 @@ def retrievePwd(userEmail):
             print('验证失败')
             return render_template('retrievePwd.html')
 
-@app.route('/changePwd',methods=['GET','POST']) # http://127.0.0.1:5000/changePwd 找回密码
+# 修改密码
+@app.route('/changePwd',methods=['GET','POST']) # http://127.0.0.1:5000/changePwd 修改密码
 def changePwd():
     if request.method == 'GET':
         return render_template('changePwd.html') # 点”修改密码“则进入修改密码页面
@@ -151,30 +156,33 @@ def changePwd():
              db.session.commit()
              return redirect(url_for('userCenter'))
 
+# 修改用户名
 @app.route('/changeName',methods=['GET','POST']) # http://127.0.0.1:5000/changeName 修改用户名
 def changeName():
     if request.method == 'GET':
         return render_template('changeName.html')
     else:
-        name = request.form.get('username')  # 新的密码
+        name = request.form.get('username')  # 新的用户名
         user_id = session['user_id']
         user = User.query.filter(User.id == user_id).first()
         user.username = name
         db.session.commit()
         return redirect(url_for('userCenter'))
 
-@app.route('/changePhone',methods=['GET','POST']) # http://127.0.0.1:5000/changePhone 更新手机号
+# 修改手机号
+@app.route('/changePhone',methods=['GET','POST']) # http://127.0.0.1:5000/changePhone 修改手机号
 def changePhone():
     if request.method == 'GET':
         return render_template('changePhone.html')
     else:
-        telephone = request.form.get('telephone')  # 新的密码
+        telephone = request.form.get('telephone')  # 新的手机号
         user_id = session['user_id']
         user = User.query.filter(User.id == user_id).first()
         user.telephone = telephone
         db.session.commit()
         return redirect(url_for('userCenter'))
 
+# 注册
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
     if request.method == 'GET':
@@ -204,6 +212,7 @@ def register():
 
                 return redirect(url_for('login'))
 
+# 进入个人中心
 @app.route('/userCenter',methods=['GET','POST']) # http://127.0.0.1:5000/userCenter 个人中心
 def userCenter():
     if request.method == 'GET':
@@ -222,9 +231,7 @@ def userCenter():
     else:
         pass
 
-
-
-#选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
+# 选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET', 'POST'])
 def schoolQuery():
     if request.method == 'GET':
@@ -257,7 +264,7 @@ def schoolQuery():
     else:
         pass
 
-
+# 参与课程
 @app.route('/attend/<acid>', methods=['GET', 'POST'])
 def attend(acid):
     if request.method == 'GET':
@@ -276,6 +283,7 @@ def attend(acid):
             pass
         return redirect(request.referrer or url_for(home))
 
+# 取消参与课程
 @app.route('/cancel_attend/<cacid>', methods=['GET', 'POST'])
 def cancel_attend(cacid):
     if request.method == 'GET':
@@ -293,7 +301,7 @@ def cancel_attend(cacid):
             pass
         return redirect(url_for('userCenter'))
 
-#选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
+# 选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
     if request.method == 'GET':
@@ -325,7 +333,7 @@ def catQuery():
     else:
         pass
 
-#课程名字查找显示查询结果
+# 课程名字查找显示查询结果
 @app.route('/courseQueryResult')
 def courseQueryResult():
     q = request.args.get('q')
@@ -341,13 +349,7 @@ def courseQueryResult():
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
 
-@app.route('/attendSearch')
-def attendsearch():
-    return redirect(url_for('userCenter'))
-
-
-
-#学校专业查找显示查询结果
+# 学校专业查找显示查询结果
 @app.route('/schoolQueryResult')
 def schoolQueryResult():
     # s = request.args.get('s')
@@ -390,7 +392,7 @@ def schoolQueryResult():
         pass
     return render_template('schoolQuery.html', allcourses=allcourses)
 
-#专业大类查找显示查询结果
+# 专业大类查找显示查询结果
 @app.route('/catQueryResult')
 def catQueryResult():
     q = request.args.get('q')
@@ -408,6 +410,12 @@ def catQueryResult():
     # allcourses = []
     # for i in category:
     #     course = Course.query.filter(i.CID == Course.CID).all()
+
+# 查找参与课程
+@app.route('/attendSearch')
+def attendsearch():
+    return redirect(url_for('userCenter'))
+
 
 @app.context_processor
 def my_context_processor():
