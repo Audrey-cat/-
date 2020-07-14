@@ -374,43 +374,6 @@ def attendsearch():
 
 
 
-    # course = Course.query.filter(Course.Cname.like('%' + q + '%')).all()
-    # allcourses = []
-    # if len(course) != 0:
-    #     for i in course:
-    #         acourse = Attend.query.filter(Attend.id == user_id and Attend.CID == i.CID).first()
-    #         if acourse:
-    #             major = Majors.query.filter(Majors.MID == i.MID).first()
-    #             allcourses.append(
-    #                 {'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'majors': major.Mname,
-    #                  'info': i.Cinfo})
-    #         else:
-    #             pass
-    # else:
-    #     pass
-    # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
-
-
-
-
-
-    # allattendcourses=[]
-    #
-    # allattends = Attend.query.filter(Attend.id == user_id).all()
-    # for allattend in allattends:
-    #     cid = allattend.CID
-    #     course = Course.query.filter(Course.CID == cid).first()
-    #     allattendcourses.append(course)
-    # acourse = allattendcourses.filter(like('%'+q+'%')).first()
-    #     if course:
-    #         major = Majors.query.filter(Majors.MID == course.MID).first()
-    #         allcourses.append({'cid': course.CID, 'name': course.Cname, 'school': major.Sname, 'majors':major.Mname, 'info': course.Cinfo})
-    #     else:
-    #         pass
-    # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
-
-
-
 
 
 
