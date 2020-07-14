@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-12
+update: 2020-07-14
 '''
 
 from flask import redirect, Flask, render_template, request, flash, session,url_for
@@ -59,6 +59,9 @@ def logout():
     session.pop('user_id')
     return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
 
+@app.route('/retrievePwd',methods=['GET','POST']) # http://127.0.0.1:5000/retrievePwd 找回密码
+def retrievePwd():
+    return render_template('retrievePwd.html') # 点”找回密码“则返回到找回密码页面
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
@@ -88,6 +91,15 @@ def register():
                 # 注册成功，跳转到登录界面
 
                 return redirect(url_for('login'))
+
+@app.route('/userCenter',methods=['GET','POST']) # http://127.0.0.1:5000/userCenter 个人中心
+def userCenter():
+    user_id = session['user_id']
+    user = User.query.filter(User.id == user_id).first()
+    name = user.username
+    telephone = user.telephone
+    email = user.email
+    return render_template('userCenter.html',name=name,telephone=telephone,email=email)
 
 
 #选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
