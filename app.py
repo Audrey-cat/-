@@ -11,7 +11,7 @@ import config
 import re
 from exts import db
 
-from crawler import crawler
+#from crawler import crawler
 from models import User, Course, Majors, Category, Attend
 from sqlalchemy import exists
 
@@ -134,8 +134,46 @@ def retrievePwd(userEmail):
             print('验证失败')
             return render_template('retrievePwd.html')
 
+@app.route('/changePwd',methods=['GET','POST']) # http://127.0.0.1:5000/changePwd 找回密码
+def changePwd():
+    if request.method == 'GET':
+        return render_template('changePwd.html') # 点”修改密码“则进入修改密码页面
+    else:
+        password = request.form.get('password')  #新的密码
+        password2 = request.form.get('password2')  #重新输入密码
+        if password != password2:
+             return u'两次密码不相等，请核对后再填写'
+        else:
+             #修改密码
+             user_id = session['user_id']
+             user = User.query.filter(User.id == user_id).first()
+             user.password = password
+             db.session.commit()
+             return redirect(url_for('userCenter'))
 
+@app.route('/changeName',methods=['GET','POST']) # http://127.0.0.1:5000/changeName 修改用户名
+def changeName():
+    if request.method == 'GET':
+        return render_template('changeName.html')
+    else:
+        name = request.form.get('username')  # 新的密码
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        user.username = name
+        db.session.commit()
+        return redirect(url_for('userCenter'))
 
+@app.route('/changePhone',methods=['GET','POST']) # http://127.0.0.1:5000/changePhone 更新手机号
+def changePhone():
+    if request.method == 'GET':
+        return render_template('changePhone.html')
+    else:
+        telephone = request.form.get('telephone')  # 新的密码
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        user.telephone = telephone
+        db.session.commit()
+        return redirect(url_for('userCenter'))
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
@@ -302,6 +340,12 @@ def courseQueryResult():
     else:
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
+
+@app.route('/attendSearch')
+def attendsearch():
+    return redirect(url_for('userCenter'))
+
+
 
 #学校专业查找显示查询结果
 @app.route('/schoolQueryResult')
