@@ -46,7 +46,7 @@ update: 2020-07-12
         <td name="school">{{ allcourse.school }}</td>
         <td name="majors">{{ allcourse.major }}</td>
         <td name="cinfo"><a href="{{ allcourse.info }}"> 课程详情 </a></td>
-         <form action="{{ url_for('attend', acid = allcourse.cid) }}>" method="post">
+         <form action="{{ url_for('attend', acid = allcourse.cid) }}" method="post">
         <td>
             <button class="btn btn-primary btn-block" >
                参与课程 </button>

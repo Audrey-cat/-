@@ -44,15 +44,18 @@ update:
     </tr>
     </thead>
     <tbody>
+    {% for course in allcourses %}
     <tr>
-     <form action="" method="post">
-    <th scope="row">嗯嗯</th>
-        <td>嗯嗯</td>
-        <td>嗯嗯</td>
-        <td><a href="http://baidu.com"> 课程详情 </a></td>
-        <td><button class="btn btn-primary btn-block"> 取消参与 </button></td>
-     </form>
+
+    <th scope="row">{{ course.name }}</th>
+        <td>{{course.school}}</td>
+        <td>{{ course.majors }}</td>
+        <td><a href="{{ course.info }}">课程详情 </a></td>
+         <form action="{{ url_for('cancel_attend', cacid = course.cid) }}" method = "POST">
+         <td><button class="btn btn-primary btn-block"> 取消参与 </button></td>
+        </form>
     </tr>
+     {% endfor %}
 {#    {% for allcourse in allcourses %}#}
 {#    <tr>#}
 {#     <form action="" method="post">#}
@@ -64,6 +67,7 @@ update:
 {#     </form>#}
 {#    </tr>#}
 {#    {% endfor %}#}
+
     </tbody>
 </table>
 
