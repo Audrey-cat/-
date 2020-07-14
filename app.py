@@ -10,8 +10,8 @@ from datetime import timedelta
 import config
 import re
 from exts import db
-
-#from crawler import crawler
+import difflib
+from crawler import crawler
 from models import User, Course, Majors, Category, Attend
 from sqlalchemy import exists
 
@@ -294,7 +294,7 @@ def cancel_attend(cacid):
         cid = cacid
         user_id = session.get('user_id')
         if user_id:
-            course = Attend.query.filter(Attend.id == user_id and Attend.CID == cid ).first()
+            course = Attend.query.filter(Attend.CID == cid, Attend.id == user_id ).first()
             db.session.delete(course)
             db.session.commit()
         else:
@@ -348,6 +348,37 @@ def courseQueryResult():
     else:
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
+
+@app.route('/attendSearch')
+def attendsearch():
+    q = request.args.get('q')
+    print(q)
+    user_id = session['user_id']
+    user = User.query.filter(User.id == user_id).first()
+    name = user.username
+    telephone = user.telephone
+    email = user.email
+    attends = Attend.query.filter(Attend.id == user_id).all()
+    allnames = []
+    allcourses = []
+    allname = []
+    for attend in attends:
+        course = Course.query.filter(Course.CID == attend.CID).first()
+        cname = course.Cname
+        print(cname)
+        allnames.append(cname)
+    print(allnames)
+    for aname in allnames:
+        if q in aname:
+            allname.append(aname)
+            print(aname)
+    for name in allname:
+        course = Course.query.filter(Course.Cname==name).first()
+        major = Majors.query.filter(Majors.MID == course.MID).first()
+        allcourses.append(
+                        {'cid': course.CID, 'name': course.Cname, 'school': major.Sname, 'majors': major.Mname,
+                          'info': course.Cinfo})
+    return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
 
 # 学校专业查找显示查询结果
 @app.route('/schoolQueryResult')

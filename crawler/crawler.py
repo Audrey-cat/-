@@ -79,8 +79,8 @@ def askURL(url):
 #保存数据
 def saveData(datalist):
     # 检查专业是否已经在专业表中
-    majors1 = Majors.query.filter(Majors.Mname == '环境学院'
-                                  and Majors.Sname == '清华大学').first()
+    majors1 = Majors.query.filter(Majors.Mname == '环境学院',
+                                   Majors.Sname == '清华大学').first()
     if majors1:
         # 如果存在，获取专业编号
         mid = majors1.MID
