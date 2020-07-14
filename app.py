@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-12
+update: 2020-07-14
 '''
 
 from flask import redirect, Flask, render_template, request, flash, session,url_for
@@ -58,6 +58,9 @@ def logout():
     session.pop('user_id')
     return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
 
+@app.route('/retrievePwd',methods=['GET','POST']) # http://127.0.0.1:5000/retrievePwd 找回密码
+def retrievePwd():
+    return render_template('retrievePwd.html') # 点”找回密码“则返回到找回密码页面
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
