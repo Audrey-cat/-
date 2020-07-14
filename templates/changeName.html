@@ -1,0 +1,32 @@
+{#
+author: 高煜嘉
+create: 2020-07-14
+update: 2020-07-14
+#}
+
+{% extends 'base.html' %}
+
+{% block title %}修改用户名{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/login_register.css') }}">
+{% endblock %}
+
+{% block main %}
+    <h3 class="page-title">修改用户名</h3>
+    <form action="" method="post">
+        <div class="form-container">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="请输入新的用户名" name="username">
+            </div>
+            <span>
+                {% for msg in get_flashed_messages() %}
+                {{ msg }}
+                {% endfor %}
+            </span>
+             <div>
+                 <button class="btn btn-primary btn-block"> 确认修改用户名 </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

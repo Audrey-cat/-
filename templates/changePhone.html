@@ -1,0 +1,32 @@
+{#
+author: 高煜嘉
+create: 2020-07-14
+update: 2020-07-14
+#}
+
+{% extends 'base.html' %}
+
+{% block title %}更新手机号{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/login_register.css') }}">
+{% endblock %}
+
+{% block main %}
+    <h3 class="page-title">更新手机号</h3>
+    <form action="" method="post">
+        <div class="form-container">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="请输入新的手机号" name="telephone">
+            </div>
+            <span>
+                {% for msg in get_flashed_messages() %}
+                {{ msg }}
+                {% endfor %}
+            </span>
+             <div>
+                 <button class="btn btn-primary btn-block"> 确认更新手机号 </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
