@@ -88,6 +88,15 @@ def register():
 
                 return redirect(url_for('login'))
 
+@app.route('/userCenter',methods=['GET','POST']) # http://127.0.0.1:5000/userCenter 个人中心
+def userCenter():
+    user_id = session['user_id']
+    user = User.query.filter(User.id == user_id).first()
+    name = user.username
+    telephone = user.telephone
+    email = user.email
+    return render_template('userCenter.html',name=name,telephone=telephone,email=email)
+
 
 #选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET', 'POST'])
