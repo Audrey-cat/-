@@ -1,4 +1,8 @@
-
+'''
+author: 徐婉青
+create: 2020-07-09
+update: 2020-07-11
+'''
 
 from exts import db
 from sqlalchemy import ForeignKey
@@ -11,6 +15,7 @@ class User(db.Model):
     username = db.Column(db.String(10), nullable=False)
     password = db.Column(db.String(50), nullable=False)
     telephone = db.Column(db.String(11), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
 
 
 # 学校专业表
