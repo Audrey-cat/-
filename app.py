@@ -64,6 +64,7 @@ def login():
 def logout():
     session.pop('user_id')
     return redirect(url_for('login')) # 点”退出登录“则返回到登陆页面
+
 #发送邮件
 def mail(my_sender,my_user,my_pass,verifyCode):
     ret = True
@@ -73,6 +74,7 @@ def mail(my_sender,my_user,my_pass,verifyCode):
         msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
         msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
         msg['Subject'] = "验证码"  # 邮件的主题，也可以说是标题
+
 
         server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器，端口是25
         server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
