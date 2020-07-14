@@ -36,8 +36,6 @@ update: 2020-07-12
         </div>
         <button type="submit" class="btn btn-default">查找</button>
     </form><br>
-
-
     <table class="table table-striped table-bordered">
     <thead>
     <tr>
@@ -51,11 +49,12 @@ update: 2020-07-12
     <tbody>
      {% for course in allcourses %}
     <tr>
-     <form action="" method="post">
+
     <th scope="row">{{ course.category }}</th>
         <td>{{ course.name }}</td>
         <td>{{ course.school }}</td>
          <td><a href="{{ course.info }}">课程详情</a></td>
+         <form action="{{ url_for('attend', acid = course.cid) }}>" method="post">
     <td><button class="btn btn-primary btn-block"> 参与课程 </button></td>
      </form>
     </tr>

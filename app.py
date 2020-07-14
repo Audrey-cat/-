@@ -8,9 +8,10 @@ from flask import redirect, Flask, render_template, request, flash, session,url_
 from datetime import timedelta
 # import其他py文件
 import config
+import re
 from exts import db
 from crawler import crawler
-from models import User, Course, Majors, Category
+from models import User, Course, Majors, Category, Attend
 
 
 app = Flask(__name__)
@@ -98,7 +99,7 @@ def schoolQuery():
         for i in majors:
             course = Course.query.filter(i.MID == Course.MID).all()
             for j in course:
-                allcourses.append({'name':j.Cname,'school':i.Sname,'major':i.Mname,'info':j.Cinfo})
+                allcourses.append({'cid':j.CID, 'name':j.Cname,'school':i.Sname,'major':i.Mname,'info':j.Cinfo})
 
         # 尝试使用下拉选择框
         # schools = []
@@ -117,9 +118,44 @@ def schoolQuery():
         # print(schoolid)
 
         # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
-        return render_template('schoolQuery.html',allcourses=allcourses)
+
+        return render_template('schoolQuery.html', allcourses=allcourses)
     else:
         pass
+        # acname = request.form.get('cname')
+        # print(acname)
+        # acourse = Course.query.filter(Course.Cname == acname)
+        # cid = acourse.CID
+        # user_id = session.get('user_id')
+        # if user_id:
+        #     attend = Attend(id=user_id, CID=cid)
+        #     db.session.add(attend)
+        #     db.session.commit()
+        # else:
+        #     pass
+        # return redirect(url_for('schoolQuery'))
+
+
+@app.route('/attend/<acid>', methods=['GET', 'POST'])
+def attend(acid):
+
+    if request.method == 'GET':
+        return redirect(url_for('schoolQuery'))
+    else:
+        # cid = filter(str.isdigit(),acid)
+        print(acid)
+        length=len(acid)-1
+        cid = int(acid[0:length])
+        print(cid)
+        user_id = session.get('user_id')
+        if user_id:
+            attend = Attend(id=user_id, CID=int(cid))
+            db.session.add(attend)
+            db.session.commit()
+        else:
+            pass
+        return redirect(request.referrer or url_for(home))
+
 
 
 #选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
@@ -148,9 +184,9 @@ def catQuery():
             for j in course:
                 majors = Majors.query.filter(j.MID == Majors.MID).all()
                 for m in majors:
-                    allcourses.append({'category':i.Tname,'name':j.Cname,'school':m.Sname,'info':j.Cinfo})
+                    allcourses.append({'cid':j.CID, 'category':i.Tname,'name':j.Cname,'school':m.Sname,'info':j.Cinfo})
 
-        return render_template('catQuery.html',allcourses=allcourses)
+        return render_template('catQuery.html', allcourses=allcourses)
     else:
         pass
 
@@ -165,7 +201,7 @@ def courseQueryResult():
     if len(course) != 0:
         for i in course:
             major = Majors.query.filter(Majors.MID == i.MID).first()
-            allcourses.append({'name':i.Cname,'school':major.Sname,'info':i.Cinfo})
+            allcourses.append({'cid':i.CID, 'name':i.Cname,'school':major.Sname,'info':i.Cinfo})
     else:
         pass
     return render_template('courseQuery.html',allcourses=allcourses)
@@ -208,7 +244,7 @@ def schoolQueryResult():
             #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
             for j in majors:
                 if i.MID == j.MID:
-                    allcourses.append({'name':i.Cname,'school':j.Sname,'major':j.Mname,'info':i.Cinfo})
+                    allcourses.append({'cid':i.CID, 'name':i.Cname,'school':j.Sname,'major':j.Mname,'info':i.Cinfo})
     else:
         pass
     return render_template('schoolQuery.html', allcourses=allcourses)
@@ -225,7 +261,7 @@ def catQueryResult():
         for j in course:
             majors = Majors.query.filter(j.MID == Majors.MID).all()
             for m in majors:
-                allcourses.append({'category': i.Tname, 'name': j.Cname, 'school': m.Sname,'info':j.Cinfo})
+                allcourses.append({'cid':j.CID, 'category': i.Tname, 'name': j.Cname, 'school': m.Sname,'info':j.Cinfo})
 
     return render_template('catQuery.html', allcourses=allcourses)
     # allcourses = []

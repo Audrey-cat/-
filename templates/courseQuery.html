@@ -28,11 +28,12 @@ update: 2020-07-12
     <tbody>
      {% for course in allcourses %}
     <tr>
-     <form action="" method="post">
+
     <th scope="row">{{ course.name }}</th>
     <td>{{ course.school }}</td>
      <td><a href="{{ course.info }}">课程详情</a></td>
-    <td><button class="btn btn-primary btn-block"> 参与课程 </button></td>
+     <form action="{{ url_for('attend', acid = course.cid) }}>" method="post">
+         <td><button class="btn btn-primary btn-block"> 参与课程 </button></td>
      </form>
     </tr>
 

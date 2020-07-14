@@ -32,7 +32,7 @@ class Course(db.Model):
     __tablename__='Course'
     MID = db.Column(db.Integer, ForeignKey("Majors.MID"), nullable=False)       # 专业ID
     CID = db.Column(db.Integer, primary_key=True)     # 课程ID
-    Cname = db.Column(db.String(12), nullable=False)     # 课程名称
+    Cname = db.Column(db.String(20), nullable=False)     # 课程名称
     Cinfo = db.Column(db.String(100), nullable=False)    # 课程信息
 
 
@@ -43,4 +43,9 @@ class Category(db.Model):
     Tname = db.Column(db.String(12), nullable=False)      # 大类名称
     CID = db.Column(db.Integer, ForeignKey("Course.CID"), primary_key=True)      # 课程ID
 
+
+class Attend(db.Model):
+    __tablename__="Attend"
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    CID = db.Column(db.Integer, ForeignKey("Course.CID"), primary_key=True, nullable=False)
 
