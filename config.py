@@ -1,8 +1,15 @@
+'''
+author: 徐婉青
+create: 2020-07-09
+update: 2020-07-12
+'''
+
 import os
 
 DEBUG = True
 SECRET_KEY = os.urandom(24)
 
+# 配置数据库信息并连接数据库
 HOSTNAME = 'rm-bp1ajr0maxj8bsn114o.mysql.rds.aliyuncs.com'
 PORT = '3306'
 DATABASE = 'pcmp0'

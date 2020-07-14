@@ -1,6 +1,15 @@
+'''
+author: 高煜嘉，徐婉青
+create: 2020-07-11
+update: 2020-07-12
+'''
+
 from bs4 import BeautifulSoup
 import re
-import urllib.request,urllib.error
+import urllib.request, urllib.error
+
+from flask import session
+
 from models import Majors,Course,Category
 from exts import db
 def main():
@@ -69,25 +78,34 @@ def askURL(url):
 
 #保存数据
 def saveData(datalist):
-    cid = 1001
-    majors1 = Majors.query.filter(Majors.MID == 1001).first()
+    # 检查专业是否已经在专业表中
+    majors1 = Majors.query.filter(Majors.Mname == '环境学院'
+                                  and Majors.Sname == '清华大学').first()
     if majors1:
-        pass
+        # 如果存在，获取专业编号
+        mid = majors1.MID
     else:
-        majors = Majors(SID=1001, Sname='清华大学', MID=1001, Mname='环境学院')
+        # 不存在，获取当前最大专业编号值，继续编码，专业存入表中
+        mmajors = Majors.query.order_by(Majors.MID.desc()).first()
+        mid = mmajors.MID + 1
+        majors = Majors(SID=1001, Sname='清华大学', MID=mid, Mname='环境学院')
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
-        course1 = Course.query.filter(Course.Cname == data).first()
+        # 检查该课程是否已经存在
+        course1 = Course.query.filter(Course.MID == mid and Course.Cname == data).first()
         if course1:
             pass
         else:
-            course = Course(MID=1001, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
+            # 获取课程编号最大值
+            mcourse = Course.query.order_by(Course.CID.desc()).first()
+            cid = mcourse.CID + 1
+            # 将课程存入表中
+            course = Course(MID=mid, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
             db.session.add(course)
             db.session.commit()
             category = Category(TID=1001, Tname='环境类', CID=cid)
             db.session.add(category)
-            cid = cid + 1
             db.session.commit()
 
 
