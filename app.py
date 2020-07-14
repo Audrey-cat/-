@@ -11,7 +11,7 @@ import config
 import re
 from exts import db
 
-from crawler import crawler
+#from crawler import crawler
 from models import User, Course, Majors, Category, Attend
 from sqlalchemy import exists
 
@@ -136,25 +136,42 @@ def retrievePwd(userEmail):
 def changePwd():
     if request.method == 'GET':
         return render_template('changePwd.html') # 点”修改密码“则进入修改密码页面
-    # else:
-    #     password = request.form.get('password')  #新的密码
-    #     password2 = request.form.get('password2')  #重新输入密码
-    #     if password != password2:
-    #         return u'两次密码不相等，请核对后再填写！'
-    #     else:
-    #         #修改密码
-    #         user = User.query.first() #这里不太清楚怎么获取user
-    #         user.password = password
-    #         db.session.commit()
-    #         return redirect(url_for('userCenter'))
+    else:
+        password = request.form.get('password')  #新的密码
+        password2 = request.form.get('password2')  #重新输入密码
+        if password != password2:
+             return u'两次密码不相等，请核对后再填写'
+        else:
+             #修改密码
+             user_id = session['user_id']
+             user = User.query.filter(User.id == user_id).first()
+             user.password = password
+             db.session.commit()
+             return redirect(url_for('userCenter'))
 
 @app.route('/changeName',methods=['GET','POST']) # http://127.0.0.1:5000/changeName 修改用户名
 def changeName():
-    return render_template('changeName.html')
+    if request.method == 'GET':
+        return render_template('changeName.html')
+    else:
+        name = request.form.get('username')  # 新的密码
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        user.username = name
+        db.session.commit()
+        return redirect(url_for('userCenter'))
 
 @app.route('/changePhone',methods=['GET','POST']) # http://127.0.0.1:5000/changePhone 更新手机号
 def changePhone():
-    return render_template('changePhone.html')
+    if request.method == 'GET':
+        return render_template('changePhone.html')
+    else:
+        telephone = request.form.get('telephone')  # 新的密码
+        user_id = session['user_id']
+        user = User.query.filter(User.id == user_id).first()
+        user.telephone = telephone
+        db.session.commit()
+        return redirect(url_for('userCenter'))
 
 @app.route('/register',methods=['GET','POST']) # http://127.0.0.1:5000/register 注册
 def register():
