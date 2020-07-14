@@ -10,7 +10,7 @@ from datetime import timedelta
 import config
 import re
 from exts import db
-
+import difflib
 from crawler import crawler
 from models import User, Course, Majors, Category, Attend
 from sqlalchemy import exists
@@ -246,7 +246,7 @@ def cancel_attend(cacid):
         cid = cacid
         user_id = session.get('user_id')
         if user_id:
-            course = Attend.query.filter(Attend.id == user_id and Attend.CID == cid ).first()
+            course = Attend.query.filter(Attend.CID == cid, Attend.id == user_id ).first()
             db.session.delete(course)
             db.session.commit()
         else:
@@ -303,7 +303,76 @@ def courseQueryResult():
 
 @app.route('/attendSearch')
 def attendsearch():
-    return redirect(url_for('userCenter'))
+    q = request.args.get('q')
+    print(q)
+    user_id = session['user_id']
+    user = User.query.filter(User.id == user_id).first()
+    name = user.username
+    telephone = user.telephone
+    email = user.email
+    attends = Attend.query.filter(Attend.id == user_id).all()
+    allnames = []
+    allcourses = []
+    allname = []
+    for attend in attends:
+        course = Course.query.filter(Course.CID == attend.CID).first()
+        cname = course.Cname
+        print(cname)
+        allnames.append(cname)
+    print(allnames)
+    for aname in allnames:
+        if q in aname:
+            allname.append(aname)
+            print(aname)
+    for name in allname:
+        course = Course.query.filter(Course.Cname==name).first()
+        major = Majors.query.filter(Majors.MID == course.MID).first()
+        allcourses.append(
+                        {'cid': course.CID, 'name': course.Cname, 'school': major.Sname, 'majors': major.Mname,
+                          'info': course.Cinfo})
+    return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
+
+
+
+
+
+    # course = Course.query.filter(Course.Cname.like('%' + q + '%')).all()
+    # allcourses = []
+    # if len(course) != 0:
+    #     for i in course:
+    #         acourse = Attend.query.filter(Attend.id == user_id and Attend.CID == i.CID).first()
+    #         if acourse:
+    #             major = Majors.query.filter(Majors.MID == i.MID).first()
+    #             allcourses.append(
+    #                 {'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'majors': major.Mname,
+    #                  'info': i.Cinfo})
+    #         else:
+    #             pass
+    # else:
+    #     pass
+    # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
+
+
+
+
+
+    # allattendcourses=[]
+    #
+    # allattends = Attend.query.filter(Attend.id == user_id).all()
+    # for allattend in allattends:
+    #     cid = allattend.CID
+    #     course = Course.query.filter(Course.CID == cid).first()
+    #     allattendcourses.append(course)
+    # acourse = allattendcourses.filter(like('%'+q+'%')).first()
+    #     if course:
+    #         major = Majors.query.filter(Majors.MID == course.MID).first()
+    #         allcourses.append({'cid': course.CID, 'name': course.Cname, 'school': major.Sname, 'majors':major.Mname, 'info': course.Cinfo})
+    #     else:
+    #         pass
+    # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=allcourses)
+
+
+
 
 
 
