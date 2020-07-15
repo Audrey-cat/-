@@ -25,7 +25,7 @@ class Majors(db.Model):
     Sname = db.Column(db.String(12), nullable=False)      # 学校名称
     MID = db.Column(db.Integer, primary_key=True)      # 专业ID
     Mname = db.Column(db.String(12), nullable=False)      # 专业名称
-
+    MAttend = db.Column(db.Integer)
 
 # 课程表（按专业）
 class Course(db.Model):
