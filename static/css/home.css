@@ -26,16 +26,19 @@ update: 2020-07-15
     transition: all .5s;
 }
 .item:nth-child(1){
-    background-color: lightgrey;
+    background: url("../images/teamInfo.png") no-repeat;
+    background-size: 100% 100%;
 }
 .item:nth-child(2){
     background-color: lightgrey;
 }
 .item:nth-child(3){
-    background-color: lightgrey;
+    background: url("../images/Universities.png") no-repeat;
+    background-size: 100% 100%;
 }
 .item:nth-child(4){
-    background-color: lightgrey;
+    background: url("../images/enrollCourse.png") no-repeat;
+    background-size: 100% 100%;
 }
 .item:nth-child(5){
     background-color: lightgrey;
