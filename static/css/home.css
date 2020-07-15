@@ -42,7 +42,8 @@ update: 2020-07-15
     background-size: 100% 100%;
 }
 .item:nth-child(5){
-    background-color: lightgrey;
+    background: url("../images/mooc.png") no-repeat;
+    background-size: 100% 100%;
 }
 .btnForGo{
     width: 50px;
