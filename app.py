@@ -318,7 +318,7 @@ def attend(acid):
                 print("已添加此课程")
         else:
             pass
-        return redirect(request.referrer or url_for(home), user_id=user_id)
+        return redirect(request.referrer or url_for(home))
 
 
 # 查找参与课程
@@ -441,7 +441,7 @@ def schoolQuery():
     }
 
     # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
-    return render_template('schoolQuery.html', **context)
+    return render_template('schoolQuery.html', **context, user_id=user_id)
 
 
 # 选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
@@ -491,7 +491,7 @@ def catQuery():
             'id': id
         }
 
-        return render_template('catQuery.html', **context)
+        return render_template('catQuery.html', **context, user_id=user_id)
     else:
         pass
 
@@ -527,7 +527,7 @@ def courseQueryResult():
         'id': id
     }
 
-    return render_template('courseQuery.html', **context)
+    return render_template('courseQuery.html', **context, user_id=user_id)
 
 
 # 学校专业查找显示查询结果
@@ -589,10 +589,10 @@ def schoolQueryResult():
         'courses': courses,
         'id': id
     }
-    return render_template('schoolQuery.html', **context)
+    return render_template('schoolQuery.html', **context, user_id=user_id)
     # else:
     #     pass
-    return render_template('schoolQuery.html', courses=allcourses)
+    # return render_template('schoolQuery.html', courses=allcourses, user_id=user_id)
 
 
 # 专业大类查找显示查询结果
@@ -628,7 +628,7 @@ def catQueryResult():
         'id': id
     }
 
-    return render_template('catQuery.html', **context)
+    return render_template('catQuery.html', **context, user_id=user_id)
     # allcourses = []
     # for i in category:
     #     course = Course.query.filter(i.CID == Course.CID).all()
