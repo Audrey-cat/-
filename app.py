@@ -294,6 +294,8 @@ def attend(acid):
         if user_id:
             attend = Attend(id=user_id, CID=int(cid))
             try:
+                course = Course.query.filter(Course.CID == cid).first()
+                course.Attend = course.Attend + 1
                 db.session.add(attend)
                 db.session.commit()
             except Exception:
@@ -364,6 +366,8 @@ def cancel_attend(cacid):
         user_id = session.get('user_id')
         if user_id:
             course = Attend.query.filter(Attend.CID == cid, Attend.id == user_id).first()
+            course1 = Course.query.filter(Course.CID == cid).first()
+            course1.Attend = course1.Attend - 1
             db.session.delete(course)
             db.session.commit()
         else:

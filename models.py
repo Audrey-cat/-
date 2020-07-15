@@ -34,6 +34,7 @@ class Course(db.Model):
     CID = db.Column(db.Integer, primary_key=True)     # 课程ID
     Cname = db.Column(db.String(20), nullable=False)     # 课程名称
     Cinfo = db.Column(db.String(100), nullable=False)    # 课程信息
+    Attend = db.Column(db.Integer)
 
 
 # 课程表（按大类）
