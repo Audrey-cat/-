@@ -9,7 +9,7 @@ update: 2020-07-12
 {% block title %}查询{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/catQuery.css') }}">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
 {% endblock %}
 
 {% block main %}
@@ -29,34 +29,54 @@ update: 2020-07-12
     <br>
 
     <table class="table table-striped table-bordered">
-    <thead>
-    <tr>
-        <th>全部课程</th>
-        <th>学校名称</th>
-        <th>专业名称</th>
-        <th>课程详情</th>
-        <th>参与课程</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for allcourse in allcourses %}
-    <tr>
+        <thead>
+        <tr>
+            <th>全部课程</th>
+            <th>学校名称</th>
+            <th>专业名称</th>
+            <th>课程详情</th>
+            <th>参与课程</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
 
-    <th scope="row" name="cname">{{ allcourse.name }}</th>
-        <td name="school">{{ allcourse.school }}</td>
-        <td name="majors">{{ allcourse.major }}</td>
-        <td name="cinfo"><a href="{{ allcourse.info }}"> 课程详情 </a></td>
-         <form action="{{ url_for('attend', acid = allcourse.cid) }}" method="post">
-        <td>
-            <button class="btn btn-primary btn-block" >
-               参与课程 </button>
-        </td>
-     </form>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                <th scope="row" name="cname">{{ course.name }}</th>
+                <td name="school">{{ course.school }}</td>
+                <td name="majors">{{ course.major }}</td>
+                <td name="cinfo"><a href="{{ course.info }}"> 课程详情 </a></td>
+                <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                    <td>
+                        <button class="btn btn-primary btn-block">
+                            参与课程
+                        </button>
+                    </td>
+                </form>
+            </tr>
+        {% endfor %}
+        {#        {{ pagination.links }}#}
+        </tbody>
+    </table>
 
+    {#    <nav aria-label="Page navigation">#}
+    {#        <ul class="pagination">#}
+    {#            <li {% if not paginate.has_prev %}class="disabled" {% endif %}>#}
+    {#                <a href="{{url_for('schoolQuery')}}?page={{ paginate.prev_num }}" aria-label="Previous">#}
+    {#                    <span aria-hidden="true">&laquo;</span>#}
+    {#                </a>#}
+    {#            </li>#}
+    {#            {% for num in range(1,paginate.pages+1) %}#}
+    {#            <li {% if num == paginate.page %}class="active"{% endif %} ><a href="{{url_for('schoolQuery')}}?page={{ num }}">{{ num }}</a></li>#}
+    {#            {% endfor %}#}
+    {#            <li {% if not paginate.has_next %}class="disabled" {% endif %}>#}
+    {#                <a href="{{url_for('schoolQuery')}}?page={{ paginate.next_num }}" aria-label="Next">#}
+    {#                    <span aria-hidden="true">&raquo;</span>#}
+    {#                </a>#}
+    {#            </li>#}
+    {#        </ul>#}
+    {#    </nav>#}
+    {{ pagination.links }}
 {% endblock %}
 
 {#<form class="form-inline">#}
@@ -69,9 +89,9 @@ update: 2020-07-12
 {#        <option selected="selected">上海交通大学</option>#}
 {#        <option>{{ school1.school }}</option>#}
 {#          <option>浙江大学</option>#}
-        {#  <option>3</option>#}
-        {#  <option>4</option>#}
-        {#  <option>5</option>#}
+{#  <option>3</option>#}
+{#  <option>4</option>#}
+{#  <option>5</option>#}
 {#        {% endfor %}#}
 {#    </select>#}
 {##}
