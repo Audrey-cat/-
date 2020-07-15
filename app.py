@@ -12,7 +12,7 @@ import re
 from exts import db
 import difflib
 from models import User, Course, Majors, Category, Attend
-from crawler import sjtu_life,NK_Economy,crawler
+from crawler import sjtu_life,NK_Economy,crawler, fudan_life
 import smtplib
 from email.mime.text import MIMEText
 from email.utils import formataddr
@@ -48,6 +48,7 @@ def hello_world():
     # sjtu_life.main()
     # crawler.main()
     #NK_Economy.main()
+    # fudan_life.main()
     return render_template('base.html')
 
 
