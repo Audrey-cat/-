@@ -1,13 +1,92 @@
 {#
 author: 高煜嘉
 create: 2020-07-09
-update: 2020-07-09
+update: 2020-07-15
 #}
 
 {% extends 'base.html' %}
 
 {% block title %}首页{% endblock %}
 
+{% block head %}
+{#    <meta charset="utf-8" />#}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/home.css') }}">
+{% endblock %}
+
 {% block main %}
-这是首页
+    <div class="wrap">
+        <ul class="list">
+            <li class="item active">0</li>
+            <li class="item">1</li>
+            <li class="item">2</li>
+            <li class="item">3</li>
+            <li class="item">4</li>
+        </ul>
+        <ul class="pointList">
+            <li class="point active" data-index = '0'></li>
+            <li class="point" data-index = '1'></li>
+            <li class="point" data-index = '2'></li>
+            <li class="point" data-index = '3'></li>
+            <li class="point" data-index = '4'></li>
+        </ul>
+        <button type="button" class="btnForGo btn" id="goPre"><</button>
+        <button type="button" class="btnForGo btn" id="goNext">></button>
+    </div>
+
+    <script type="text/javascript">
+        var items = document.getElementsByClassName('item'); //图片
+        var points = document.getElementsByClassName('point'); //点
+        var goPreBtn = document.getElementById('goPre');
+        var goNextBtn = document.getElementById('goNext');
+        var index = 0;
+
+        var clearActive = function (){
+            for (var i = 0; i < items.length ; i++){
+                items[i].className = 'item';
+            }
+            for (var i = 0; i < points.length ; i++){
+                points[i].className = 'point';
+            }
+        }
+
+        var goIndex = function () {
+            clearActive();
+            console.log(index)
+            points[index].className = 'point active';
+            items[index].className = 'item active';
+        }
+
+        var goNext = function () {
+            if (index < 4){
+                index++;
+            } else {
+                index = 0;
+            }
+            goIndex();
+        }
+
+        var goPre = function () {
+            if (index == 0){
+                index = 4;
+            } else {
+                index--;
+            }
+            goIndex();
+        }
+
+        goNextBtn.addEventListener('click',function () {
+            goNext();
+        })
+        goPreBtn.addEventListener('click',function () {
+            goPre();
+        })
+
+        for (var i = 0; i < points.length ; i++){
+            points[i].addEventListener('click',function () {
+                var pointIndex = this.getAttribute('data-index');
+                index = pointIndex;
+                goIndex();
+            })
+        }
+    </script>
 {% endblock %}
