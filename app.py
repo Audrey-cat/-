@@ -3,6 +3,7 @@ author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
 update: 2020-07-14
 '''
+import smtplib
 
 from flask import redirect, Flask, render_template, request, flash, session, url_for
 from datetime import timedelta
@@ -399,7 +400,10 @@ def schoolQuery():
         course = Course.query.filter(i.MID == Course.MID).all()
         for j in course:
             allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo})
-
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
     # 获取页码数 设置默认值
     # page = request.args.get('page', 1)
     # 分页器对象。页码数，每页多少条。
@@ -427,7 +431,8 @@ def schoolQuery():
 
     context = {
         'pagination': pagination,
-        'courses': courses
+        'courses': courses,
+        'id':id
     }
 
     # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
@@ -452,7 +457,10 @@ def catQuery():
         #     course = Course.query.filter(Course.MID == i.MID).all()
         #     for j in course:
         #         allcourses.append({'name':j.Cname,'school':i.Sname})
-
+        user_id = session.get('user_id')
+        id = 0
+        if user_id:
+            id = user_id
         allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
         category = Category.query.all()
         for i in category:
@@ -474,7 +482,8 @@ def catQuery():
 
         context = {
             'pagination': pagination,
-            'courses': courses
+            'courses': courses,
+            'id': id
         }
 
         return render_template('catQuery.html', **context)
@@ -487,7 +496,10 @@ def catQuery():
 def courseQueryResult():
     q = request.args.get('q')
     course = Course.query.filter(Course.Cname.like('%' + q + '%')).all()
-
+    user_id = session.get('user_id')
+    id=0
+    if user_id:
+        id=user_id
     allcourses = []  # 课程（课程名+开课大学+课程详情）
     # print(len(course))
     # if len(course) != 0:
@@ -506,7 +518,8 @@ def courseQueryResult():
 
     context = {
         'pagination': pagination,
-        'courses': courses
+        'courses': courses,
+        'id':id
     }
 
     return render_template('courseQuery.html', **context)
@@ -532,6 +545,11 @@ def schoolQueryResult():
     # else:
     #     pass
     # return render_template('schoolQuery.html', allcourses=allcourses)
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
+
     s = request.args.get('s')
     m = request.args.get('m')
     majors = Majors.query.filter(Majors.Sname.like('%' + s + '%'), Majors.Mname.like('%' + m + '%')).all()
@@ -563,7 +581,8 @@ def schoolQueryResult():
 
     context = {
         'pagination': pagination,
-        'courses': courses
+        'courses': courses,
+        'id':id
     }
     return render_template('schoolQuery.html', **context)
 # else:
@@ -575,7 +594,10 @@ def schoolQueryResult():
 def catQueryResult():
     q = request.args.get('q')
     category = Category.query.filter(Category.Tname.like('%' + q + '%')).all()
-
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
     allcourses = []  # 课程（专业大类+课程名+开课大学）
     for i in category:
         course = Course.query.filter(i.CID == Course.CID).all()
@@ -596,7 +618,8 @@ def catQueryResult():
 
     context = {
         'pagination': pagination,
-        'courses': courses
+        'courses': courses,
+        'id': id
     }
 
     return render_template('catQuery.html', **context)
