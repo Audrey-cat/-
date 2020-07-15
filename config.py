@@ -20,6 +20,3 @@ DB_URI = 'mysql+pymysql://{}:{}@{}:{}/{}?charset=utf8'.format(USERNAME, PASSWORD
 SQLALCHEMY_DATABASE_URI = DB_URI
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-
-

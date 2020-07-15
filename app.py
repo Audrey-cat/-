@@ -12,8 +12,8 @@ import config
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category , Attend
-from crawler import sjtu_life,NK_Economy,crawler, fudan_life, sjtu_cl
+from models import User, Course, Majors, Category, Attend
+from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 
 from email.mime.text import MIMEText
@@ -27,6 +27,7 @@ app.config.from_object(config)  # 完成了项目的数据库的配置
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
 db.init_app(app)
 var = []
+
 
 # 分页函数
 # def page(html, allcourses):
@@ -71,7 +72,7 @@ def home():
         courses.append({'cid': course5.CID, 'name': course5.Cname,
                         'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend})
 
-    return render_template('home.html',courses = courses)
+    return render_template('home.html', courses=courses)
 
 
 # 注册
@@ -147,8 +148,12 @@ def mail(my_sender, my_user, my_pass, verifyCode):
     except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
         ret = False
     return ret
+
+
 # 找回密码——验证邮箱
 verifyCode = str(random.randint(100000, 999999))  # 生成随机验证码
+
+
 @app.route('/vertifyEmail', methods=['GET', 'POST'])  # http://127.0.0.1:5000/vertifyEmail 验证邮箱
 def vertifyEmail():
     if request.method == 'GET':
@@ -228,7 +233,6 @@ def userCenter():
 
     total = len(attendcourses)
 
-
     PER_PAGE = 10  # 每页列表行数
     # total = allcourses.count() # 总行数
     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
@@ -243,6 +247,7 @@ def userCenter():
     }
 
     return render_template('userCenter.html', name=name, telephone=telephone, email=email, **context)
+
 
 # 修改密码
 @app.route('/changePwd', methods=['GET', 'POST'])  # http://127.0.0.1:5000/changePwd 修改密码
@@ -291,7 +296,6 @@ def changePhone():
         return redirect(url_for('userCenter'))
 
 
-
 # 参与课程
 @app.route('/attend/<acid>', methods=['GET', 'POST'])
 def attend(acid):
@@ -300,13 +304,13 @@ def attend(acid):
     else:
         cid = acid
         course = Course.query.filter(Course.CID == cid).first()
-        mid=course.MID
-        major=Majors.query.filter(Majors.MID==mid).first()
+        mid = course.MID
+        major = Majors.query.filter(Majors.MID == mid).first()
         user_id = session.get('user_id')
         if user_id:
             attend = Attend(id=user_id, CID=int(cid))
             try:
-                major.MAttend = major.MAttend+1
+                major.MAttend = major.MAttend + 1
                 course.Attend = course.Attend + 1
                 db.session.add(attend)
                 db.session.commit()
@@ -314,7 +318,7 @@ def attend(acid):
                 print("已添加此课程")
         else:
             pass
-        return redirect(request.referrer or url_for(home),user_id=user_id)
+        return redirect(request.referrer or url_for(home), user_id=user_id)
 
 
 # 查找参与课程
@@ -363,7 +367,7 @@ def attendsearch():
         'courses': courses
     }
 
-    return render_template('userCenter.html',**context)
+    return render_template('userCenter.html', **context)
 
 
 # 取消参与课程
@@ -389,6 +393,7 @@ def cancel_attend(cacid):
         else:
             pass
         return redirect(url_for('userCenter'))
+
 
 # 选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET'])
@@ -432,7 +437,7 @@ def schoolQuery():
     context = {
         'pagination': pagination,
         'courses': courses,
-        'id':id
+        'id': id
     }
 
     # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
@@ -497,9 +502,9 @@ def courseQueryResult():
     q = request.args.get('q')
     course = Course.query.filter(Course.Cname.like('%' + q + '%')).all()
     user_id = session.get('user_id')
-    id=0
+    id = 0
     if user_id:
-        id=user_id
+        id = user_id
     allcourses = []  # 课程（课程名+开课大学+课程详情）
     # print(len(course))
     # if len(course) != 0:
@@ -519,7 +524,7 @@ def courseQueryResult():
     context = {
         'pagination': pagination,
         'courses': courses,
-        'id':id
+        'id': id
     }
 
     return render_template('courseQuery.html', **context)
@@ -582,12 +587,13 @@ def schoolQueryResult():
     context = {
         'pagination': pagination,
         'courses': courses,
-        'id':id
+        'id': id
     }
     return render_template('schoolQuery.html', **context)
-# else:
-#     pass
+    # else:
+    #     pass
     return render_template('schoolQuery.html', courses=allcourses)
+
 
 # 专业大类查找显示查询结果
 @app.route('/catQueryResult')
