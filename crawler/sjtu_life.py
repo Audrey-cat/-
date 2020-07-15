@@ -56,7 +56,6 @@ def saveData(datalist):
     # 检查专业是否已经在专业表中
     majors1 = Majors.query.filter(Majors.Mname == '生命科学技术学院', Majors.Sname == '上海交通大学').first()
     if majors1:
-        print("111")
         # 如果存在，获取专业编号
         mid = majors1.MID
     else:
