@@ -34,13 +34,11 @@ def getData(baseurl):
     html = askURL(baseurl)  # 保存获取到的网页源码
     # 2逐一解析数据
     soup = BeautifulSoup(html, "html.parser")
-    names = []
     for item in soup.find_all('li' ,class_="dot"):  # 查找符合要求的字符串，形成列表
 
         # print(item)  #测试：查课程item全部信息
         item = str(item)
         coursename = re.findall(findCourseName, item)[0]
-        print(coursename)
         datalist.append(coursename)
 
     return datalist
