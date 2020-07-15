@@ -314,7 +314,7 @@ def attend(acid):
                 print("已添加此课程")
         else:
             pass
-        return redirect(request.referrer or url_for(home))
+        return redirect(request.referrer or url_for(home),user_id=user_id)
 
 
 # 查找参与课程

@@ -51,6 +51,7 @@ update: 2020-07-12
                 <td name="school">{{ course.school }}</td>
                 <td name="majors">{{ course.major }}</td>
                 <td name="cinfo"><a href="{{ course.info }}"> 课程详情 </a></td>
+                {% if user_id %}
                 <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
                     <td>
                         <button class="btn btn-primary btn-block">
@@ -58,6 +59,15 @@ update: 2020-07-12
                         </button>
                     </td>
                 </form>
+                {% else %}
+                <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                    <td>
+                        <button class="btn btn-primary btn-block" disabled="disabled" title="参与课程请先登录！">
+                            参与课程
+                        </button>
+                    </td>
+                </form>
+                {% endif %}
             </tr>
 
         {% endfor %}
