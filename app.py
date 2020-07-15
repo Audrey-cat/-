@@ -46,7 +46,7 @@ var = []
 # 打开网站时页面
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
-    sjtu_life.main()
+    # sjtu_life.main()
     # crawler.main()
     return render_template('base.html')
 
