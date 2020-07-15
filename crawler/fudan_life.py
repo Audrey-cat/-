@@ -13,9 +13,10 @@ from flask import session
 from models import Majors,Course,Category
 from exts import db
 def main():
-    baseurl = "https:http://life.fudan.edu.cn/Data/View/3309"
+    baseurl = "http://life.fudan.edu.cn/Data/View/3309"
     #1爬取网页
     datalist = getData(baseurl)
+    print(datalist)
     #3保存数据
     saveData(datalist)
 
@@ -30,7 +31,11 @@ def getData(baseurl):
     for item in soup.find_all('td', width="208", class_="xl25"):  #查找符合要求的字符串，形成列表
         item = str(item)
         courseName = re.findall(findCourse,item)
-        datalist.append(courseName)
+        if len(courseName):
+            print(courseName[0])
+            coursename = str(courseName[0])
+            datalist.append(coursename)
+        else: pass
     return datalist
 
 #得到一个指定url的网页内容
@@ -68,8 +73,9 @@ def saveData(datalist):
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
+
         # 检查该课程是否已经存在
-        course1 = Course.query.filter(Course.MID == mid and Course.Cname == data).first()
+        course1 = Course.query.filter(Course.MID == mid, Course.Cname == data).first()
         if course1:
             pass
         else:
