@@ -13,7 +13,7 @@ import re
 import difflib
 from models import User, Course, Majors, Category , Attend
 from crawler import sjtu_life,NK_Economy,crawler, fudan_life, sjtu_cl
-from crawler import seu_math, xmu_cpst, uibe_law,seu_building, zs_cs
+from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 
 from email.mime.text import MIMEText
 from email.utils import formataddr
@@ -56,6 +56,7 @@ def hello_world():
     # uibe_law.main()
     # seu_building.main()
     # zs_cs.main()
+    # uibe_it.main()
     return render_template('base.html')
 
 

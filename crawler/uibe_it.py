@@ -11,16 +11,15 @@ from exts import db
 
 
 def main():
-    baseurl = "http://law.uibe.edu.cn/jwjx/jpkc/index.htm"
+    baseurl = "http://it.uibe.edu.cn/bksjx/kcjs/index1.htm"
     # 1.爬取网页
     datalist = getData(baseurl)
     # 3.保存数据
     saveData(datalist)
 
-# 课程链接
-findLink = re.compile(r'<a href="(.*)">')
-# 课程名
-findName = re.compile(r'">(.*)</a>')
+
+findLink = re.compile(r'href="(.*)" id')
+findName = re.compile(r'title="【(.*)】"')
 
 
 # 爬取网页
@@ -31,24 +30,28 @@ def getData(baseurl):
 
     # 2.逐一解析数据
     soup = BeautifulSoup(html, "html.parser")
-    for item in soup.find_all('ul', class_="newlist"):  # 查找符合要求的字符串，形成列表
+    for item in soup.find_all('ul', class_="list cntList"):  # 查找符合要求的字符串，形成列表
         # data = [] # 保存所有信息
         item = str(item)
-        # print('---------------------------')
-        #
-        # print(item)
-        # print('---------------------------')
+        print('---------------------------')
+
+        print(item)
+        print('---------------------------')
 
         link = re.findall(findLink, item)
         name = re.findall(findName, item)
+        print(link)
+        print(name)
 
         for i in range(0, len(link)):
-            link[i] = "http://law.uibe.edu.cn/jwjx/jpkc/" + link[i]
+            link[i] = "http://it.uibe.edu.cn/bksjx/kcjs/" + link[i]
             datalist.append({'name': name[i], 'link': link[i]})
 
-    print(datalist)
-    return datalist
+        # for data in datalist:
+        #     print(data['link'])
 
+    # print(datalist)
+    return datalist
 
 # 得到指定一个URL的网页内容
 def askURL(url):
@@ -70,10 +73,11 @@ def askURL(url):
 
     return html
 
-#保存数据
+
+# 保存数据
 def saveData(datalist):
     # 检查专业是否已经在专业表中
-    majors1 = Majors.query.filter(Majors.Mname == '法学', Majors.Sname == '对外经济贸易大学').first()
+    majors1 = Majors.query.filter(Majors.Mname == '信息学', Majors.Sname == '对外经济贸易大学').first()
     if majors1:
         # 如果存在，获取专业编号
         mid = majors1.MID
@@ -81,7 +85,7 @@ def saveData(datalist):
         # 不存在，获取当前最大专业编号值，继续编码，专业存入表中
         mmajors = Majors.query.order_by(Majors.MID.desc()).first()
         mid = mmajors.MID + 1
-        majors = Majors(SID=1007, Sname='对外经济贸易大学', MID=mid, Mname='法学')
+        majors = Majors(SID=1007, Sname='对外经济贸易大学', MID=mid, Mname='信息学')
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
@@ -97,7 +101,7 @@ def saveData(datalist):
             course = Course(MID=mid, CID=cid, Cname=data['name'], Cinfo=data['link'])
             db.session.add(course)
             db.session.commit()
-            category = Category(TID=1007, Tname='法学类', CID=cid)
+            category = Category(TID=1010, Tname='信息学类', CID=cid)
             db.session.add(category)
             db.session.commit()
 
