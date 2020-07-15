@@ -13,7 +13,8 @@ import re
 import difflib
 from models import User, Course, Majors, Category , Attend
 from crawler import sjtu_life,NK_Economy,crawler, fudan_life, sjtu_cl
-from crawler import seu_math, xmu_cpst, uibe_law
+from crawler import seu_math, xmu_cpst, uibe_law,seu_building
+
 from email.mime.text import MIMEText
 from email.utils import formataddr
 import random
@@ -53,6 +54,7 @@ def hello_world():
     # seu_math.main()
     # xmu_cpst.main()
     # uibe_law.main()
+    #seu_building.main()
     return render_template('base.html')
 
 
