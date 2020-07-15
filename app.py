@@ -290,10 +290,15 @@ def attend(acid):
         return redirect(url_for('schoolQuery'))
     else:
         cid = acid
+        course = Course.query.filter(Course.CID == cid).first()
+        mid=course.MID
+        major=Majors.query.filter(Majors.MID==mid).first()
         user_id = session.get('user_id')
         if user_id:
             attend = Attend(id=user_id, CID=int(cid))
             try:
+                major.MAttend = major.MAttend+1
+                course.Attend = course.Attend + 1
                 db.session.add(attend)
                 db.session.commit()
             except Exception:
@@ -360,10 +365,16 @@ def cancel_attend(cacid):
     else:
         # print(cacid)
         # length=len(cacid)-1
+
         cid = cacid
+        course1 = Course.query.filter(Course.CID == cid).first()
+        mid = course1.MID
+        major = Majors.query.filter(Majors.MID == mid).first()
         user_id = session.get('user_id')
         if user_id:
             course = Attend.query.filter(Attend.CID == cid, Attend.id == user_id).first()
+            major.MAttend = major.MAttend - 1
+            course1.Attend = course1.Attend - 1
             db.session.delete(course)
             db.session.commit()
         else:
