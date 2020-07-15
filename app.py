@@ -227,7 +227,6 @@ def userCenter():
 
     return render_template('userCenter.html', name=name, telephone=telephone, email=email, **context)
 
-
 # 修改密码
 @app.route('/changePwd', methods=['GET', 'POST'])  # http://127.0.0.1:5000/changePwd 修改密码
 def changePwd():
