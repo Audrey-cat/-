@@ -39,6 +39,7 @@ update: 2020-07-15
         var goPreBtn = document.getElementById('goPre');
         var goNextBtn = document.getElementById('goNext');
         var index = 0;
+        var time = 0;//定时器图片跳转参数
 
         var clearActive = function (){
             for (var i = 0; i < items.length ; i++){
@@ -63,6 +64,7 @@ update: 2020-07-15
                 index = 0;
             }
             goIndex();
+            time = 0;
         }
 
         var goPre = function () {
@@ -72,6 +74,7 @@ update: 2020-07-15
                 index--;
             }
             goIndex();
+            time = 0;
         }
 
         goNextBtn.addEventListener('click',function () {
@@ -86,7 +89,21 @@ update: 2020-07-15
                 var pointIndex = this.getAttribute('data-index');
                 index = pointIndex;
                 goIndex();
+                time = 0;
             })
         }
+
+        //2000ms跳转一次
+
+        setInterval(function () {
+            time++;
+            if(time == 20){
+                goNext();
+            }
+            if(time > 20){
+                time = 0;
+                goNext();
+            }
+        }, 100)
     </script>
 {% endblock %}
