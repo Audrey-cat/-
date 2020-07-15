@@ -16,7 +16,6 @@ def main():
     baseurl = "http://life.fudan.edu.cn/Data/View/3309"
     #1爬取网页
     datalist = getData(baseurl)
-    print(datalist)
     #3保存数据
     saveData(datalist)
 
@@ -32,7 +31,6 @@ def getData(baseurl):
         item = str(item)
         courseName = re.findall(findCourse,item)
         if len(courseName):
-            print(courseName[0])
             coursename = str(courseName[0])
             datalist.append(coursename)
         else: pass
