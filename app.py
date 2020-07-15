@@ -13,8 +13,7 @@ from exts import db
 import difflib
 from crawler import crawler
 from models import User, Course, Majors, Category, Attend
-from sqlalchemy import exists
-
+from crawler import sjtu_life
 import smtplib
 from email.mime.text import MIMEText
 from email.utils import formataddr
@@ -47,6 +46,7 @@ var = []
 # 打开网站时页面
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
+    # sjtu_life.main()
     # crawler.main()
     return render_template('base.html')
 
