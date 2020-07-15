@@ -8,8 +8,8 @@ from flask import redirect, Flask, render_template, request, flash, session, url
 from datetime import timedelta
 # import其他py文件
 import config
-import re
 from exts import db
+import re
 import difflib
 from models import User, Course, Majors, Category , Attend
 from crawler import sjtu_life,NK_Economy,crawler, fudan_life, sjtu_cl
@@ -47,12 +47,12 @@ var = []
 def hello_world():
     # sjtu_life.main()
     # crawler.main()
-    #NK_Economy.main()
+    # NK_Economy.main()
     # fudan_life.main()
     # sjtu_cl.main()
-    #seu_math.main()
+    # seu_math.main()
     # xmu_cpst.main()
-    uibe_law.main()
+    # uibe_law.main()
     return render_template('base.html')
 
 
