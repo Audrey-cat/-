@@ -290,6 +290,7 @@ def changePhone():
         return redirect(url_for('userCenter'))
 
 
+
 # 参与课程
 @app.route('/attend/<acid>', methods=['GET', 'POST'])
 def attend(acid):
