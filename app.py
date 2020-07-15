@@ -63,7 +63,14 @@ def hello_world():
 # 点击首页，进入首页页面
 @app.route('/home')  # http://127.0.0.1:5000/home 首页
 def home():
-    return render_template('home.html')
+    courses = []
+    courses5 = Course.query.order_by(Course.Attend.desc())[0:5]
+    for course5 in courses5:
+        major = Majors.query.filter(Majors.MID == course5.MID).first()
+        courses.append({'cid': course5.CID, 'name': course5.Cname,
+                        'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend})
+
+    return render_template('home.html',courses = courses)
 
 
 # 注册
