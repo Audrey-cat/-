@@ -9,7 +9,7 @@ update: 2020-07-15
 {% block title %}首页{% endblock %}
 
 {% block head %}
-{#    <meta charset="utf-8" />#}
+    {#    <meta charset="utf-8" />#}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/home.css') }}">
 {% endblock %}
 
@@ -19,15 +19,19 @@ update: 2020-07-15
             <li class="item active">团队介绍</li>
             <li class="item">网站介绍</li>
             <li class="item">大学介绍</li>
-            <a href="{{ url_for('login') }}"><li class="item">立即参与</li></a>
-            <a href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#"><li class="item">慕课平台</li></a>
+            <a href="{{ url_for('login') }}">
+                <li class="item">立即参与</li>
+            </a>
+            <a href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#">
+                <li class="item">慕课平台</li>
+            </a>
         </ul>
         <ul class="pointList">
-            <li class="point active" data-index = '0'></li>
-            <li class="point" data-index = '1'></li>
-            <li class="point" data-index = '2'></li>
-            <li class="point" data-index = '3'></li>
-            <li class="point" data-index = '4'></li>
+            <li class="point active" data-index='0'></li>
+            <li class="point" data-index='1'></li>
+            <li class="point" data-index='2'></li>
+            <li class="point" data-index='3'></li>
+            <li class="point" data-index='4'></li>
         </ul>
         <button type="button" class="btnForGo btn" id="goPre"><</button>
         <button type="button" class="btnForGo btn" id="goNext">></button>
@@ -41,11 +45,11 @@ update: 2020-07-15
         var index = 0;
         var time = 0;//定时器图片跳转参数
 
-        var clearActive = function (){
-            for (var i = 0; i < items.length ; i++){
+        var clearActive = function () {
+            for (var i = 0; i < items.length; i++) {
                 items[i].className = 'item';
             }
-            for (var i = 0; i < points.length ; i++){
+            for (var i = 0; i < points.length; i++) {
                 points[i].className = 'point';
             }
         }
@@ -58,7 +62,7 @@ update: 2020-07-15
         }
 
         var goNext = function () {
-            if (index < 4){
+            if (index < 4) {
                 index++;
             } else {
                 index = 0;
@@ -68,7 +72,7 @@ update: 2020-07-15
         }
 
         var goPre = function () {
-            if (index == 0){
+            if (index == 0) {
                 index = 4;
             } else {
                 index--;
@@ -77,15 +81,15 @@ update: 2020-07-15
             time = 0;
         }
 
-        goNextBtn.addEventListener('click',function () {
+        goNextBtn.addEventListener('click', function () {
             goNext();
         })
-        goPreBtn.addEventListener('click',function () {
+        goPreBtn.addEventListener('click', function () {
             goPre();
         })
 
-        for (var i = 0; i < points.length ; i++){
-            points[i].addEventListener('click',function () {
+        for (var i = 0; i < points.length; i++) {
+            points[i].addEventListener('click', function () {
                 var pointIndex = this.getAttribute('data-index');
                 index = pointIndex;
                 goIndex();
@@ -97,40 +101,40 @@ update: 2020-07-15
 
         setInterval(function () {
             time++;
-            if(time == 20){
+            if (time == 20) {
                 goNext();
             }
-            if(time > 20){
+            if (time > 20) {
                 time = 0;
                 goNext();
             }
         }, 100)
     </script>
-<br><br>
-     <h3 class="page-title">热点课程TOP5</h3>
+    <br><br>
+    <h3 class="page-title">热点课程TOP5</h3>
 
 
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
             <th>课程名称</th>
-        <th>学校名称</th>
-        <th>专业名称</th>
-        <th>课程详情</th>
-        <th>参与人数</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for course in courses %}
-    <tr>
+            <th>学校名称</th>
+            <th>专业名称</th>
+            <th>课程详情</th>
+            <th>参与人数</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for course in courses %}
+            <tr>
 
-    <th scope="row">{{ course.name }}</th>
-        <td>{{course.school}}</td>
-        <td>{{ course.major }}</td>
-        <td><a href="{{ course.info }}">课程详情 </a></td>
-         <td>{{ course.attend }}</td>
-    </tr>
-     {% endfor %}
+                <th scope="row">{{ course.name }}</th>
+                <td>{{ course.school }}</td>
+                <td>{{ course.major }}</td>
+                <td><a href="{{ course.info }}">课程详情 </a></td>
+                <td>{{ course.attend }}</td>
+            </tr>
+        {% endfor %}
 
         </tbody>
     </table>

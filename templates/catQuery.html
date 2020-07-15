@@ -48,9 +48,12 @@ update: 2020-07-12
         </tr>
         </thead>
         <tbody>
-        {% if id==0 %}<div class="alert alert-warning alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Warning!</strong> 请先登录再参与课程</div>
+        {% if id==0 %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Warning!</strong> 请先登录再参与课程
+            </div>
         {% endif %}
 
 
@@ -61,11 +64,23 @@ update: 2020-07-12
                 <td>{{ course.name }}</td>
                 <td>{{ course.school }}</td>
                 <td><a href="{{ course.info }}">课程详情</a></td>
-                <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
-                    <td>
-                        <button class="btn btn-primary btn-block"> 参与课程</button>
-                    </td>
-                </form>
+                {% if user_id %}
+                    <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                        <td>
+                            <button class="btn btn-primary btn-block">
+                                参与课程
+                            </button>
+                        </td>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                        <td>
+                            <button class="btn btn-primary btn-block" disabled="disabled" title="参与课程请先登录！">
+                                参与课程
+                            </button>
+                        </td>
+                    </form>
+                {% endif %}
             </tr>
 
         {% endfor %}
