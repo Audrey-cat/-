@@ -1,3 +1,9 @@
+'''
+author: 黄祉琪
+create: 2020-07-15
+update: 2020-07-15
+'''
+
 from bs4 import BeautifulSoup
 import re
 import urllib.request,urllib.error
