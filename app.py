@@ -23,6 +23,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
 # from apscheduler.schedulers.background import BackgroundScheduler
 import jieba
+import numpy as np
+import matplotlib.pyplot as plt
+from wordcloud import  WordCloud, STOPWORDS
+from os import path
+from PIL import  Image
 
 
 
@@ -95,6 +100,41 @@ def hello_world():
     #     f.write(word+' '+count+'\n')
     #
     #     # print("{0:<5}{1:>5}".format(word,count))
+
+    # 按照网上代码做词云
+    # d = path.dirname(__file__)#当前文件路径
+    #
+    # # file = open(path.join(d,'static\\templates\words.txt')).read()
+    # file = open('templates/words.txt', 'r', encoding='utf-8').read()
+    #
+    # # 进行分词
+    # default_mode = jieba.cut(file)
+    # text = " ".join(default_mode)
+    # # alice_mark = np.array(Image.open(path.join(d,"static\\images\courseUpdate.png")))
+    # alice_mark = np.array(Image.open('static/images/coursePredict.jpg'))
+    # stopwords = set(STOPWORDS)
+    # stopwords.add("said")
+    # wc = WordCloud(
+    # #     设置字体，不指定就会出现乱码
+    #     font_path=r'D:\DownloadFromInternet\DownloadedByMe\dd\msyh.ttf',
+    #     background_color = "white",
+    #     max_words=10,
+    #     mask=alice_mark,
+    #     stopwords=stopwords
+    # )
+    # # 生成词云
+    # wc.generate(text)
+    #
+    # #存到文件里
+    # wc.to_file(path.join(d,"result.jpg"))
+    #
+    # #展示
+    # plt.imshow(wc, interpolation="bilinear")
+    # plt.axis("off")
+    # plt.figure()
+    # plt.imshow(alice_mark,cmap=plt.cm.gray,interpolation='bilinear')
+    # plt.axis("off")
+    # plt.show()
 
     return render_template('base.html')
 
