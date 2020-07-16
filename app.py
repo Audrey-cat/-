@@ -75,6 +75,23 @@ def home():
     return render_template('home.html', courses=courses)
 
 
+@app.route('/course') # http://127.0.0.1:5000/course 课程页
+def course():
+    return  render_template('course.html')
+
+@app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
+def courseUpdate():
+    return  render_template('course.html')
+
+@app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
+def coursePredict():
+    return  render_template('course.html')
+
+@app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
+def courseRecommend():
+    return  render_template('course.html')
+
+
 # 注册
 @app.route('/register', methods=['GET', 'POST'])  # http://127.0.0.1:5000/register 注册
 def register():
