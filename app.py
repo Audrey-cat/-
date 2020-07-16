@@ -467,15 +467,11 @@ def catQuery():
         if user_id:
             id = user_id
         allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
-        category = Category.query.all()
-        for i in category:
-            course = Course.query.filter(i.CID == Course.CID).all()
-            for j in course:
-                majors = Majors.query.filter(j.MID == Majors.MID).all()
-                for m in majors:
-                    allcourses.append(
-                        {'cid': j.CID, 'category': i.Tname, 'name': j.Cname, 'school': m.Sname, 'info': j.Cinfo})
-
+        for i in Category.query.all():
+            course = Course.query.filter(i.CID == Course.CID).first()
+            majors = Majors.query.filter(course.MID == Majors.MID).first()
+            allcourses.append(
+                        {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
         total = len(allcourses)
         PER_PAGE = 10  # 每页列表行数
         # total = allcourses.count() # 总行数
