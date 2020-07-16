@@ -12,7 +12,7 @@ import config
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category, Attend
+from models import User, Course, Majors, Category, Attend,newCourse
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 from email.mime.text import MIMEText
@@ -21,7 +21,13 @@ import random
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
+import jieba
+import numpy as np
+import matplotlib.pyplot as plt
+from wordcloud import  WordCloud, STOPWORDS
+from os import path
+from PIL import  Image
 
 
 
@@ -40,6 +46,7 @@ var = []
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
 
+    # 使用爬虫
     # def docrawler():
     #     sjtu_life.main()
     #     crawler.main()
@@ -53,10 +60,81 @@ def hello_world():
     #     zs_cs.main()
     #     uibe_it.main()
     #     print('爬虫数据更新')
-    #
+
+    # 定时器更新爬虫
     # sched = BackgroundScheduler()
     # sched.add_job(docrawler, 'cron', hour='12', minute='14', second='00')
     # sched.start()
+
+
+    # 取出数据库数据，存入txt
+    # course = Course.query.with_entities(Course.Cname).all()
+    #
+    # f = open('templates/words.txt','w',encoding='utf-8')
+    # for i in course:
+    #     f.write(i[0])
+
+    # 进行词频分析
+    # f = open('templates/words.txt','r',encoding='utf-8')
+    # txt = f.read()
+    # words = jieba.lcut(txt) # 使用精确模式对文本进行分词
+    # counts = {} # 使用键值对的的形式存储词语及其出现的次数
+    #
+    # for word in words:
+    #     if len(word) == 1: # 单个词语不计算在内
+    #         continue
+    #     else:
+    #         counts[word] = counts.get(word,0) + 1 # 遍历所有词语，每出现一次其对应的值加1
+    #
+    # items = list(counts.items())
+    # items.sort(key=lambda x: x[1], reverse=True) # 根据词语出现的次数进行从大到小排序
+    # print(len(items))
+    #
+    # f.close()
+    #
+    # f = open('templates/wordsana.txt', 'w', encoding='utf-8')
+    # number = len(items)
+    # for i in range(number):
+    #     word, count = items[i]
+    #     count = str(count)
+    #     f.write(word+' '+count+'\n')
+    #
+    #     # print("{0:<5}{1:>5}".format(word,count))
+
+    # 按照网上代码做词云
+    # d = path.dirname(__file__)#当前文件路径
+    #
+    # # file = open(path.join(d,'static\\templates\words.txt')).read()
+    # file = open('templates/words.txt', 'r', encoding='utf-8').read()
+    #
+    # # 进行分词
+    # default_mode = jieba.cut(file)
+    # text = " ".join(default_mode)
+    # # alice_mark = np.array(Image.open(path.join(d,"static\\images\courseUpdate.png")))
+    # alice_mark = np.array(Image.open('static/images/coursePredict.jpg'))
+    # stopwords = set(STOPWORDS)
+    # stopwords.add("said")
+    # wc = WordCloud(
+    # #     设置字体，不指定就会出现乱码
+    #     font_path=r'D:\DownloadFromInternet\DownloadedByMe\dd\msyh.ttf',
+    #     background_color = "white",
+    #     max_words=10,
+    #     mask=alice_mark,
+    #     stopwords=stopwords
+    # )
+    # # 生成词云
+    # wc.generate(text)
+    #
+    # #存到文件里
+    # wc.to_file(path.join(d,"result.jpg"))
+    #
+    # #展示
+    # plt.imshow(wc, interpolation="bilinear")
+    # plt.axis("off")
+    # plt.figure()
+    # plt.imshow(alice_mark,cmap=plt.cm.gray,interpolation='bilinear')
+    # plt.axis("off")
+    # plt.show()
 
     return render_template('base.html')
 
@@ -79,10 +157,42 @@ def home():
 @app.route('/course') # http://127.0.0.1:5000/course 课程页
 def course():
     return  render_template('course.html')
-
+#爬虫函数
+def docrawler():
+    uibe_law.main()
+    seu_building.main()
 @app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
-    return  render_template('course.html')
+    #执行爬虫函数，获取更新的课程
+    docrawler()
+    allcourses = []  # 存放课程名、学校名、专业名和课程详情
+    newcourse = newCourse.query.all()
+    #获取更新的课程
+    for i in newcourse:
+        course = Course.query.filter(i.CID == Course.CID).first()
+        majors = Majors.query.filter(course.MID ==Majors.MID).all()
+        for j in majors:
+            allcourses.append({'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
+
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
+    total = len(allcourses)
+    PER_PAGE = 10  # 每页列表行数
+    page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
+    start = (page - 1) * PER_PAGE  # 每一页开始位置
+    end = start + PER_PAGE  # 每一页结束位置
+    pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
+    courses = allcourses[start:end]  # 进行切片处理
+
+    context = {
+        'pagination': pagination,
+        'courses': courses,
+        'id': id
+    }
+
+    return  render_template('course.html', user_id=user_id,**context)
 
 @app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():
