@@ -36,7 +36,11 @@ update: 2020-07-16
 {#    <input name="imgbtn" type="image" src="images/Home.jpg" width="50" height="35" border="0">#}
 {#    <input name="imgbtn" type="image" src="images/Home.jpg" width="50" height="35" border="0">#}
 {#    </div>#}
-
+ <span>
+                {% for msg in get_flashed_messages() %}
+                    {{ msg }}
+                {% endfor %}
+            </span>
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
