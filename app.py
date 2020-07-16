@@ -12,7 +12,7 @@ import config
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category, Attend
+from models import User, Course, Majors, Category, Attend,newCourse
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 from email.mime.text import MIMEText
@@ -78,10 +78,42 @@ def home():
 @app.route('/course') # http://127.0.0.1:5000/course 课程页
 def course():
     return  render_template('course.html')
-
+#爬虫函数
+def docrawler():
+    uibe_law.main()
+    seu_building.main()
 @app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
-    return  render_template('course.html')
+    #执行爬虫函数，获取更新的课程
+    docrawler()
+    allcourses = []  # 存放课程名、学校名、专业名和课程详情
+    newcourse = newCourse.query.all()
+    #获取更新的课程
+    for i in newcourse:
+        course = Course.query.filter(i.CID == Course.CID).first()
+        majors = Majors.query.filter(course.MID ==Majors.MID).all()
+        for j in majors:
+            allcourses.append({'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
+
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
+    total = len(allcourses)
+    PER_PAGE = 10  # 每页列表行数
+    page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
+    start = (page - 1) * PER_PAGE  # 每一页开始位置
+    end = start + PER_PAGE  # 每一页结束位置
+    pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
+    courses = allcourses[start:end]  # 进行切片处理
+
+    context = {
+        'pagination': pagination,
+        'courses': courses,
+        'id': id
+    }
+
+    return  render_template('course.html', user_id=user_id,**context)
 
 @app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():

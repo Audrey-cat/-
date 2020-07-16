@@ -10,7 +10,7 @@ import urllib.request, urllib.error
 
 from flask import session
 
-from models import Majors,Course,Category
+from models import Majors,Course,Category,newCourse
 from exts import db
 def main():
     baseurl = "https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm"
@@ -102,7 +102,9 @@ def saveData(datalist):
             cid = mcourse.CID + 1
             # 将课程存入表中
             course = Course(MID=mid, CID=cid, Cname=data, Cinfo="https://www.tsinghua.edu.cn/hjxy/jxjw/bksjx/kcjs.htm")
+            newcourse = newCourse(CID=cid)
             db.session.add(course)
+            db.session.add(newcourse)
             db.session.commit()
             category = Category(TID=1001, Tname='环境类', CID=cid)
             db.session.add(category)
