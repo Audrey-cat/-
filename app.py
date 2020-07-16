@@ -192,7 +192,7 @@ def courseUpdate():
 
 @app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():
-    return  render_template('course.html')
+    return  render_template('coursePredict.html')
 
 @app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
