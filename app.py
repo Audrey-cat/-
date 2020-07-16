@@ -202,7 +202,7 @@ def coursePredict():
 def courseRecommend():
     user_id = session['user_id']
     courses = course_analyze.calculate(user_id)
-    return  render_template('course.html',courses = courses)
+    return  render_template('course.html',courses = courses,user_id=user_id)
 
 
 # 注册
