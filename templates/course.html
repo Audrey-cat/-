@@ -10,6 +10,7 @@ update: 2020-07-16
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/course.css') }}">
+
 {% endblock %}
 
 {% block main %}
@@ -74,6 +75,8 @@ update: 2020-07-16
             </tr>
 
         {% endfor %}
+
+
         {#        {{ pagination.links }}#}
         </tbody>
     </table>

@@ -27,7 +27,10 @@ import numpy as np #numpy数据处理库
 import matplotlib.pyplot as plt # 图像展示库
 from wordcloud import  WordCloud, STOPWORDS # 词云展示库
 from os import path
+
 from PIL import  Image # 图像处理库
+
+import course_analyze
 
 
 
@@ -137,6 +140,7 @@ def hello_world():
 
 
 
+
 # 点击首页，进入首页页面
 @app.route('/home')  # http://127.0.0.1:5000/home 首页
 def home():
@@ -196,7 +200,9 @@ def coursePredict():
 
 @app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
-    return  render_template('course.html')
+    user_id = session['user_id']
+    courses = course_analyze.calculate(user_id)
+    return  render_template('course.html',courses = courses)
 
 
 # 注册
