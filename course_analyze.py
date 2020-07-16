@@ -17,6 +17,7 @@ def calculate(id):
     res = Counter(user_list)
     most_sameusers = res.most_common(3)
     cidset=[]
+    ratelist=[]
     common_courses = []
     for user_id in most_sameusers:
 
@@ -29,13 +30,43 @@ def calculate(id):
                 if rate == 1:
                     pass
                 else:
-                    if course1.CID not in cidset:
-                        cidset.append(course1.CID)
-                        major = Majors.query.filter(Majors.MID == course1.MID).first()
-                        common_courses.append({'cid': course1.CID, 'name': course1.Cname, 'major': major.Mname,
-                                               'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
+                    if len(ratelist)<6:
+                        ratelist.append(rate)
+                        if course1.CID not in cidset:
+                            cidset.append(course1.CID)
+                            major = Majors.query.filter(Majors.MID == course1.MID).first()
+                            common_courses.append({'cid': course1.CID, 'name': course1.Cname, 'major': major.Mname,
+                                                   'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
+                        else:
+                            pass
                     else:
-                        pass
+                        for i in range(5):
+                            if ratelist[i]<rate:
+                                ratelist[i]=rate
+                                if course1.CID not in cidset:
+                                    cidset.append(course1.CID)
+                                    major = Majors.query.filter(Majors.MID == course1.MID).first()
+                                    common_courses.append(
+                                        {'cid': course1.CID, 'name': course1.Cname, 'major': major.Mname,
+                                         'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
+                                else:
+                                    pass
+                                break
+
+                            else:
+                                pass
+
+
+
+
+
+                    # if course1.CID not in cidset:
+                    #     cidset.append(course1.CID)
+                    #     major = Majors.query.filter(Majors.MID == course1.MID).first()
+                    #     common_courses.append({'cid': course1.CID, 'name': course1.Cname, 'major': major.Mname,
+                    #                            'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
+                    # else:
+                    #     pass
 
 
         # len = len(common_courses)
