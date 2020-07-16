@@ -22,12 +22,12 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
 # from apscheduler.schedulers.background import BackgroundScheduler
-import jieba
-import numpy as np
-import matplotlib.pyplot as plt
-from wordcloud import  WordCloud, STOPWORDS
+import jieba # 结巴分词
+import numpy as np #numpy数据处理库
+import matplotlib.pyplot as plt # 图像展示库
+from wordcloud import  WordCloud, STOPWORDS # 词云展示库
 from os import path
-from PIL import  Image
+from PIL import  Image # 图像处理库
 
 
 
@@ -38,9 +38,6 @@ db.init_app(app)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
 
 var = []
-
-
-
 
 
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
@@ -102,39 +99,39 @@ def hello_world():
     #     # print("{0:<5}{1:>5}".format(word,count))
 
     # 按照网上代码做词云
-    # d = path.dirname(__file__)#当前文件路径
-    #
-    # # file = open(path.join(d,'static\\templates\words.txt')).read()
-    # file = open('templates/words.txt', 'r', encoding='utf-8').read()
-    #
-    # # 进行分词
-    # default_mode = jieba.cut(file)
-    # text = " ".join(default_mode)
-    # # alice_mark = np.array(Image.open(path.join(d,"static\\images\courseUpdate.png")))
-    # alice_mark = np.array(Image.open('static/images/coursePredict.jpg'))
-    # stopwords = set(STOPWORDS)
-    # stopwords.add("said")
-    # wc = WordCloud(
-    # #     设置字体，不指定就会出现乱码
-    #     font_path=r'D:\DownloadFromInternet\DownloadedByMe\dd\msyh.ttf',
-    #     background_color = "white",
-    #     max_words=10,
-    #     mask=alice_mark,
-    #     stopwords=stopwords
-    # )
-    # # 生成词云
-    # wc.generate(text)
-    #
-    # #存到文件里
-    # wc.to_file(path.join(d,"result.jpg"))
-    #
-    # #展示
-    # plt.imshow(wc, interpolation="bilinear")
-    # plt.axis("off")
-    # plt.figure()
-    # plt.imshow(alice_mark,cmap=plt.cm.gray,interpolation='bilinear')
-    # plt.axis("off")
-    # plt.show()
+    d = path.dirname(__file__)#当前文件路径
+
+    # file = open(path.join(d,'static\\templates\words.txt')).read()
+    file = open('templates/words.txt', 'r', encoding='utf-8').read()
+
+    # 进行分词
+    default_mode = jieba.cut(file)
+    text = " ".join(default_mode)
+    # alice_mark = np.array(Image.open(path.join(d,"static\\images\courseUpdate.png")))
+    alice_mark = np.array(Image.open('static/images/coursePredict.jpg.jpg'))
+    stopwords = set(STOPWORDS)
+    stopwords.add("said")
+    wc = WordCloud(
+    #     设置字体，不指定就会出现乱码
+        font_path=r'D:\DownloadFromInternet\DownloadedByMe\dd\msyh.ttf',
+        background_color = "white",
+        max_words=50,
+        mask=alice_mark,
+        stopwords=stopwords
+    )
+    # 生成词云
+    wc.generate(text)
+
+    #存到文件里
+    wc.to_file(path.join(d,"result1.jpg"))
+
+    #展示
+    plt.imshow(wc, interpolation="bilinear")
+    plt.axis("off")
+    plt.figure()
+    plt.imshow(alice_mark,cmap=plt.cm.gray,interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
 
     return render_template('base.html')
 
