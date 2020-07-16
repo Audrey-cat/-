@@ -15,51 +15,51 @@ import difflib
 from models import User, Course, Majors, Category, Attend
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
-
 from email.mime.text import MIMEText
 from email.utils import formataddr
 import random
-
+from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
 
 app = Flask(__name__)
 app.config.from_object(config)  # 完成了项目的数据库的配置
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
 db.init_app(app)
+
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
+
 var = []
 
 
-# 分页函数
-# def page(html, allcourses):
-#     total = len(allcourses)
-#     PER_PAGE = 10  # 每页列表行数
-#     # total = allcourses.count() # 总行数
-#     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
-#     start = (page - 1) * PER_PAGE  # 每一页开始位置
-#     end = start + PER_PAGE  # 每一页结束位置
-#     pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-#     courses = allcourses[start:end]  # 进行切片处理
-#     context = {
-#         'pagination': pagination,
-#         'courses': courses
-#     }
-#     return render_template(html, **context)
 
-# 打开网站时页面
+
+
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
-    # sjtu_life.main()
-    # crawler.main()
-    # NK_Economy.main()
-    # fudan_life.main()
-    # sjtu_cl.main()
-    # seu_math.main()
-    # xmu_cpst.main()
-    # uibe_law.main()
-    # seu_building.main()
-    # zs_cs.main()
-    # uibe_it.main()
+
+    # def docrawler():
+    #     sjtu_life.main()
+    #     crawler.main()
+    #     NK_Economy.main()
+    #     fudan_life.main()
+    #     sjtu_cl.main()
+    #     seu_math.main()
+    #     xmu_cpst.main()
+    #     uibe_law.main()
+    #     seu_building.main()
+    #     zs_cs.main()
+    #     uibe_it.main()
+    #     print('爬虫数据更新')
+    #
+    # sched = BackgroundScheduler()
+    # sched.add_job(docrawler, 'cron', hour='12', minute='14', second='00')
+    # sched.start()
+
     return render_template('base.html')
+
 
 
 # 点击首页，进入首页页面
@@ -670,6 +670,7 @@ def my_context_processor():
 
 
 if __name__ == '__main__':
-    # main()
+
+    # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
     app.run()
-    # main()
+
