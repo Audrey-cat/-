@@ -62,6 +62,7 @@ def hello_world():
 
 
 
+
 # 点击首页，进入首页页面
 @app.route('/home')  # http://127.0.0.1:5000/home 首页
 def home():
