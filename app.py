@@ -154,13 +154,13 @@ def home():
 def course():
     return  render_template('course.html')
 #爬虫函数
-def docrawler():
-    uibe_law.main()
-    seu_building.main()
+# def docrawler():
+#     uibe_law.main()
+#     seu_building.main()
 @app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
     #执行爬虫函数，获取更新的课程
-    docrawler()
+    # docrawler()
     allcourses = []  # 存放课程名、学校名、专业名和课程详情
     newcourse = newCourse.query.all()
     #获取更新的课程
