@@ -21,7 +21,8 @@ import random
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
+import jieba
 
 
 
@@ -40,6 +41,7 @@ var = []
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
 
+    # 使用爬虫
     # def docrawler():
     #     sjtu_life.main()
     #     crawler.main()
@@ -53,10 +55,46 @@ def hello_world():
     #     zs_cs.main()
     #     uibe_it.main()
     #     print('爬虫数据更新')
-    #
+
+    # 定时器更新爬虫
     # sched = BackgroundScheduler()
     # sched.add_job(docrawler, 'cron', hour='12', minute='14', second='00')
     # sched.start()
+
+
+    # 取出数据库数据，存入txt
+    # course = Course.query.with_entities(Course.Cname).all()
+    #
+    # f = open('templates/words.txt','w',encoding='utf-8')
+    # for i in course:
+    #     f.write(i[0])
+
+    # 进行词频分析
+    # f = open('templates/words.txt','r',encoding='utf-8')
+    # txt = f.read()
+    # words = jieba.lcut(txt) # 使用精确模式对文本进行分词
+    # counts = {} # 使用键值对的的形式存储词语及其出现的次数
+    #
+    # for word in words:
+    #     if len(word) == 1: # 单个词语不计算在内
+    #         continue
+    #     else:
+    #         counts[word] = counts.get(word,0) + 1 # 遍历所有词语，每出现一次其对应的值加1
+    #
+    # items = list(counts.items())
+    # items.sort(key=lambda x: x[1], reverse=True) # 根据词语出现的次数进行从大到小排序
+    # print(len(items))
+    #
+    # f.close()
+    #
+    # f = open('templates/wordsana.txt', 'w', encoding='utf-8')
+    # number = len(items)
+    # for i in range(number):
+    #     word, count = items[i]
+    #     count = str(count)
+    #     f.write(word+' '+count+'\n')
+    #
+    #     # print("{0:<5}{1:>5}".format(word,count))
 
     return render_template('base.html')
 
