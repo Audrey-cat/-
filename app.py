@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 from wordcloud import  WordCloud, STOPWORDS
 from os import path
 from PIL import  Image
-
+import course_analyze
 
 
 app = Flask(__name__)
@@ -140,6 +140,7 @@ def hello_world():
 
 
 
+
 # 点击首页，进入首页页面
 @app.route('/home')  # http://127.0.0.1:5000/home 首页
 def home():
@@ -199,7 +200,9 @@ def coursePredict():
 
 @app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
-    return  render_template('course.html')
+    user_id = session['user_id']
+    courses = course_analyze.calculate(user_id)
+    return  render_template('course.html',courses = courses)
 
 
 # 注册
