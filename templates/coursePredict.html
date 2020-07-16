@@ -1,0 +1,24 @@
+{#
+author: 黄祉琪
+create: 2020-07-16
+update: 2020-07-16
+#}
+
+{% extends 'base.html' %}
+
+{% block title %}课程{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/coursepredict.css') }}">
+{% endblock %}
+
+{% block main %}
+    <a href="{{ url_for('courseRecommend') }}"><img class="coursepimg" src="{{ url_for('static',filename='images/courseRecommend.jpg') }}" alt="..." ></a>
+    <a href="{{ url_for('courseUpdate') }}"><img class="coursepimg" src="{{ url_for('static',filename='images/courseUpdate.png') }}" alt="..." ></a>
+    <a href="{{ url_for('coursePredict') }}"><img class="coursepimg" src="{{ url_for('static',filename='images/coursePredict.jpg') }}" alt="..." ></a>
+
+    <br><br>
+        <h3  class="page-title",style="text-align:center;">未来课程趋势分析图</h3>
+    <br><br><br>
+        <img class="courseprimg" src="{{ url_for('static',filename='images/result.jpg') }}" alt="...">
+{% endblock %}
