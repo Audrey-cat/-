@@ -1,0 +1,21 @@
+/*
+author: 黄祉琪
+create: 2020-07-16
+update: 2020-07-16
+*/
+.coursepimg{
+    height: 130px;
+    /*height: 212.99px;*/
+    width: 212.99px;
+    margin: 10.5px;
+}
+
+.page-title{
+    text-align: center;
+}
+.courseprimg{
+    height: 432px;
+    /*height: 212.99px;*/
+    width: 720px;
+    margin: 10.5px;
+}
