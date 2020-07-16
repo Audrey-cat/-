@@ -164,7 +164,7 @@ def docrawler():
 @app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
     #执行爬虫函数，获取更新的课程
-    docrawler()
+    #docrawler()
     allcourses = []  # 存放课程名、学校名、专业名和课程详情
     newcourse = newCourse.query.all()
     #获取更新的课程
@@ -202,8 +202,13 @@ def coursePredict():
 def courseRecommend():
     user_id = session.get('user_id')
     if user_id:
-        courses = course_analyze.calculate(user_id)
-        return render_template('course.html', courses=courses, user_id=user_id)
+        attend = Attend.query.filter(Attend.id==user_id).first()
+        if attend:
+            courses = course_analyze.calculate(user_id)
+            return render_template('course.html', courses=courses, user_id=user_id)
+        else:
+            flash("没有参与课程无法推荐课程哦")
+            return render_template('course.html')
     else:
         flash("未登录无法推荐课程哦")
         return render_template('course.html')
