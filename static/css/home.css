@@ -26,11 +26,12 @@ update: 2020-07-15
     transition: all .5s;
 }
 .item:nth-child(1){
-    background: url("../images/teamInfo.png") no-repeat;
+    background: url("../images/WebInfo.png") no-repeat;
     background-size: 100% 100%;
 }
 .item:nth-child(2){
-    background-color: lightgrey;
+    background: url("../images/TeamInfo.png") no-repeat;
+    background-size: 100% 100%;
 }
 .item:nth-child(3){
     background: url("../images/Universities.png") no-repeat;
@@ -41,7 +42,8 @@ update: 2020-07-15
     background-size: 100% 100%;
 }
 .item:nth-child(5){
-    background-color: lightgrey;
+    background: url("../images/mooc.png") no-repeat;
+    background-size: 100% 100%;
 }
 .btnForGo{
     width: 50px;
