@@ -200,9 +200,13 @@ def coursePredict():
 
 @app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
-    user_id = session['user_id']
-    courses = course_analyze.calculate(user_id)
-    return  render_template('course.html',courses = courses)
+    user_id = session.get('user_id')
+    if user_id:
+        courses = course_analyze.calculate(user_id)
+        return render_template('course.html', courses=courses, user_id=user_id)
+    else:
+        flash("未登录无法推荐课程哦")
+        return render_template('course.html')
 
 
 # 注册
