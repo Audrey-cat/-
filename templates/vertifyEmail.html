@@ -21,10 +21,10 @@ update: 2020-07-14
             </div>
             <span>
                 {% for msg in get_flashed_messages() %}
-                {{ msg }}
+                    {{ msg }}
                 {% endfor %}
             </span>
-             <div>
+            <div>
                  <span>
                      <button class="btn btn-primary btn-block">点击发送验证码验证</button>
                 </span>

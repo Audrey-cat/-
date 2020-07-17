@@ -6,7 +6,7 @@ update: 2020-07-15
 from bs4 import BeautifulSoup
 import re
 import urllib.request,urllib.error
-from models import Majors,Course,Category
+from models import Majors,Course,Category,newCourse
 from exts import db
 
 
@@ -92,7 +92,9 @@ def saveData(datalist):
             cid = mcourse.CID + 1
             # 将课程存入表中
             course = Course(MID=mid, CID=cid, Cname=data['name'], Cinfo=data['link'])
+            newcourse = newCourse(CID=cid)
             db.session.add(course)
+            db.session.add(newcourse)
             db.session.commit()
             category = Category(TID=1005, Tname='数学类', CID=cid)
             db.session.add(category)

@@ -1,13 +1,144 @@
 {#
-author: 高煜嘉
+author: 高煜嘉，文天尧
 create: 2020-07-09
-update: 2020-07-09
+update: 2020-07-16
 #}
 
 {% extends 'base.html' %}
 
 {% block title %}首页{% endblock %}
 
-{% block main %}
-这是首页
+{% block head %}
+{#    <meta charset="utf-8" />#}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/home.css') }}">
+
 {% endblock %}
+
+{% block main %}
+    <div class="wrap">
+        <ul class="list">
+            <li class="item active"></li>
+            <li class="item"></li>
+            <li class="item"></li>
+{#            <a href="{{ url_for('login') }}"><li class="item"></li></a>#}
+            <li class="item"><a href="{{ url_for('schoolQuery') }}"></a></li>
+{#            <a href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#"><li class="item"></li></a>#}
+            <li class="item"><a href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#"></a></li>
+        </ul>
+        <ul class="pointList">
+            <li class="point active" data-index = '0'></li>
+            <li class="point" data-index = '1'></li>
+            <li class="point" data-index = '2'></li>
+            <li class="point" data-index = '3'></li>
+            <li class="point" data-index = '4'></li>
+        </ul>
+        <button type="button" class="btnForGo btn" id="goPre"><</button>
+        <button type="button" class="btnForGo btn" id="goNext">></button>
+    </div>
+
+    <script type="text/javascript">
+        var items = document.getElementsByClassName('item'); //图片
+        var points = document.getElementsByClassName('point'); //点
+        var goPreBtn = document.getElementById('goPre');
+        var goNextBtn = document.getElementById('goNext');
+        var index = 0;
+        var time = 0;//定时器图片跳转参数
+
+        var clearActive = function (){
+            for (var i = 0; i < items.length ; i++){
+                items[i].className = 'item';
+            }
+            for (var i = 0; i < points.length ; i++){
+                points[i].className = 'point';
+            }
+        }
+
+        var goIndex = function () {
+            clearActive();
+            console.log(index)
+            points[index].className = 'point active';
+            items[index].className = 'item active';
+        }
+
+        var goNext = function () {
+            if (index < 4){
+                index++;
+            } else {
+                index = 0;
+            }
+            goIndex();
+            time = 0;
+        }
+
+        var goPre = function () {
+            if (index == 0){
+                index = 4;
+            } else {
+                index--;
+            }
+            goIndex();
+            time = 0;
+        }
+
+        goNextBtn.addEventListener('click',function () {
+            goNext();
+        })
+        goPreBtn.addEventListener('click',function () {
+            goPre();
+        })
+
+        for (var i = 0; i < points.length ; i++){
+            points[i].addEventListener('click',function () {
+                var pointIndex = this.getAttribute('data-index');
+                index = pointIndex;
+                goIndex();
+                time = 0;
+            })
+        }
+
+        //2000ms跳转一次
+
+        setInterval(function () {
+            time++;
+            if(time == 20){
+                goNext();
+            }
+            if(time > 20){
+                time = 0;
+                goNext();
+            }
+        }, 200)
+    </script>
+<br><br>
+     <h3 class="page-title">热点课程TOP5</h3>
+
+
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>课程名称</th>
+        <th>学校名称</th>
+        <th>专业名称</th>
+        <th>课程详情</th>
+        <th>参与人数</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for course in courses %}
+    <tr>
+
+    <th scope="row">{{ course.name }}</th>
+        <td>{{course.school}}</td>
+        <td>{{ course.major }}</td>
+        <td><a href="{{ course.info }}">课程详情 </a></td>
+         <td>{{ course.attend }}</td>
+    </tr>
+     {% endfor %}
+
+        </tbody>
+    </table>
+
+
+
+{% endblock %}
+

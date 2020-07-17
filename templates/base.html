@@ -1,7 +1,7 @@
 {#
 author: 高煜嘉，徐婉青，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-12
+update: 2020-07-16
 #}
 
 <!DOCTYPE html>
@@ -39,8 +39,8 @@ update: 2020-07-12
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="{{ url_for('home') }}">首页 <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">课程</a></li>
+                <li><a href="{{ url_for('home') }}">首页 <span class="sr-only">(current)</span></a></li>
+                <li><a href="{{ url_for('course') }}">课程</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false">检索方式 <span class="caret"></span></a>
@@ -48,8 +48,8 @@ update: 2020-07-12
                         <li><a href="{{ url_for('schoolQuery') }}">按学校专业查询</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{ url_for('catQuery') }}">按专业大类查询</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">按课程名称查询</a></li>
+{#                        <li role="separator" class="divider"></li>#}
+{#                        <li><a href="#">按课程名称查询</a></li>#}
                     </ul>
                 </li>
             </ul>

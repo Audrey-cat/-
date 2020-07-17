@@ -1,7 +1,7 @@
 {#
 author: 文天尧，黄祉琪，徐婉青
 create: 2020-07-09
-update: 2020-07-12
+update: 2020-07-15
 #}
 
 {% extends 'base.html' %}
@@ -41,13 +41,22 @@ update: 2020-07-12
         <thead>
         <tr>
             <th>专业大类</th>
-            <th>全部课程</th>
+            <th>课程名称</th>
             <th>开课大学</th>
             <th>课程详情</th>
             <th>参与课程</th>
         </tr>
         </thead>
         <tbody>
+        {% if id==0 %}
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Warning!</strong> 请先登录再参与课程
+            </div>
+        {% endif %}
+
+
         {% for course in courses %}
             <tr>
 
@@ -55,11 +64,23 @@ update: 2020-07-12
                 <td>{{ course.name }}</td>
                 <td>{{ course.school }}</td>
                 <td><a href="{{ course.info }}">课程详情</a></td>
-                <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
-                    <td>
-                        <button class="btn btn-primary btn-block"> 参与课程</button>
-                    </td>
-                </form>
+                {% if user_id %}
+                    <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                        <td>
+                            <button class="btn btn-primary btn-block">
+                                参与课程
+                            </button>
+                        </td>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
+                        <td>
+                            <button class="btn btn-primary btn-block" disabled="disabled" title="参与课程请先登录！">
+                                参与课程
+                            </button>
+                        </td>
+                    </form>
+                {% endif %}
             </tr>
 
         {% endfor %}

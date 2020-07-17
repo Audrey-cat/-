@@ -4,13 +4,13 @@ create: 2020-07-09
 update: 2020-07-09
 '''
 
-from flask_script import Manager # 存放在终端写的脚本
+from flask_script import Manager  # 存放在终端写的脚本
 from flask_migrate import Migrate, MigrateCommand
-from app import app # manager初始化需要app
+from app import app  # manager初始化需要app
 from exts import db
 from models import User
 
-manager = Manager(app) # 初始化
+manager = Manager(app)  # 初始化
 
 # 使用migrate绑定app和db
 migrate = Migrate(app, db)

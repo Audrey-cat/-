@@ -24,7 +24,7 @@ update: 2020-07-14
             </div>
             <span>
                 {% for msg in get_flashed_messages() %}
-                {{ msg }}
+                    {{ msg }}
                 {% endfor %}
             </span>
             <ul class="list-inline">
@@ -32,7 +32,7 @@ update: 2020-07-14
                 <li><a href="{{ url_for('register') }}">注册新用户</a></li>
             </ul>
             <div class="form-group">
-                 <button class="btn btn-primary btn-block"> 登录 </button>
+                <button class="btn btn-primary btn-block"> 登录</button>
             </div>
         </div>
     </form>

@@ -1,0 +1,103 @@
+/*
+author: 高煜嘉，文天尧
+create: 2020-07-15
+update: 2020-07-16
+*/
+
+.wrap{
+    width: 700px;
+    height: 350px;
+    position: relative;
+}
+.list{
+    width: 700px;
+    height: 350px;
+    list-style: none;
+    position: relative;
+    padding-left: 0px;
+}
+.item{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    color: white;
+    font-size: 50px;
+    opacity: 0;
+    transition: all .5s;
+}
+.item:nth-child(1){
+    background: url("../images/WebInfo.png") no-repeat;
+    background-size: 100% 100%;
+}
+.item:nth-child(2){
+    background: url("../images/TeamInfo.png") no-repeat;
+    background-size: 100% 100%;
+}
+.item:nth-child(3){
+    background: url("../images/Universities.png") no-repeat;
+    background-size: 100% 100%;
+}
+.item:nth-child(4){
+    background: url("../images/enrollCourse.png") no-repeat;
+    background-size: 100% 100%;
+}
+.item:nth-child(4) a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+    cursor: hand;
+}
+.item:nth-child(5){
+    background: url("../images/mooc.png") no-repeat;
+    background-size: 100% 100%;
+}
+
+.item:nth-child(5) a{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+    cursor: hand;
+}
+
+.btnForGo{
+    width: 50px;
+    height: 100px;
+    position: absolute;
+    top: 100px;
+    z-index: 100;
+}
+#goPre{
+    left: 0px;
+}
+#goNext{
+    right: 0px;
+}
+.item.active{
+    opacity: 1;
+    z-index: 10;
+}
+.pointList{
+    padding-left: 0px;
+    list-style: none;
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
+    z-index: 1000;
+}
+.point{
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 100%;
+    float: left;
+    margin-right: 14px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(255,255,255,0.6);
+    cursor: pointer;
+}
+.point.active{
+    background-color: rgba(255,255,255,0.4);
+}
