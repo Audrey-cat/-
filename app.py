@@ -194,6 +194,12 @@ def courseUpdate():
 
     return  render_template('course.html', user_id=user_id,**context)
 
+# 点击首页图标，进入大学介绍页面
+@app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
+def getUniversityInfo():
+    return render_template('universities.html')
+
+
 @app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():
     return  render_template('coursePredict.html')
