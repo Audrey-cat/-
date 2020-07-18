@@ -1,7 +1,7 @@
 {#
 author: 文天尧，高煜嘉，徐婉青
 create: 2020-07-14
-update: 2020-07-14
+update: 2020-07-18
 #}
 {% extends 'base.html' %}
 
@@ -9,33 +9,43 @@ update: 2020-07-14
 
 {% block head %}
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/userCenter.css') }}">
 {% endblock %}
 
 {% block main %}
     <h3 class="page-title">个人中心</h3>
 
-    <div class=" top-box f-f0" id="j-self-content">
-        <div class="u-userInfo-container">
-            <div class="u-ui-img user-head e-hover-source">
-                {#                <a><img width="72" height="36" class="user-head-img" alt="用户头像" src="{{url_for('static',filename='images/Tsia.JPG')}}" ></a>&nbsp;&nbsp;#}
-                <span>用户名：{{ name }}</span>
-                <a href="{{ url_for('changeName') }}">修改用户名</a><br>
-                <span>手机号码：{{ telephone }}</span>
-                <a href="{{ url_for('changePhone') }}">更新手机号</a><br>
-                <span>邮箱：{{ email }}</span><br>
-                <a href="{{ url_for('changePwd') }}">修改密码</a>
+    {#    <div class="wrap">#}
+    {#        <ul class="userinfo">#}
+    {#            <span>用户名：{{ name }}</span>#}
+    {#            <a href="{{ url_for('changeName') }}">修改用户名</a><br>#}
+    {#            <span>手机号码：{{ telephone }}</span>#}
+    {#            <a href="{{ url_for('changePhone') }}">更新手机号</a><br>#}
+    {#            <span>邮箱：{{ email }}</span><br>#}
+    {#            <a href="{{ url_for('changePwd') }}">修改密码</a>#}
+    {#        </ul>#}
+    {#    </div>#}
+    {#    <div class=" top-box f-f0" id="j-self-content">#}
+    {#                <div class="u-userInfo-container">#}
+    {#                    <div class="u-ui-img user-head e-hover-source">#}
+    {#                        <span>用户名：{{ name }}</span>#}
+    {#                        <a href="{{ url_for('changeName') }}">修改用户名</a><br>#}
+    {#                        <span>手机号码：{{ telephone }}</span>#}
+    {#                        <a href="{{ url_for('changePhone') }}">更新手机号</a><br>#}
+    {#                        <span>邮箱：{{ email }}</span><br>#}
+    {#                        <a href="{{ url_for('changePwd') }}">修改密码</a>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#    </div>#}
 
-                {#                <div class="e-hover-code"><a#}
-                {#                        href="//www.icourse163.org/user/setting/personInfoEdit.htm#/setting">编辑头像</a><!--Regular if5-->#}
-                {#                </div>#}
-            </div>
-            {#            <div class="u-ui-name"><span class="f-thide">Mine_RIA</span></div>#}
-            {#            <div class="u-ui-desc "><span class="f-2lines"></span></div>#}
-            {#            <div class="u-ui-box f-fr">#}
-            {#                <div class="u-ui-box-i">#}
-            {#                    <div class="u-userInfoBox-container">#}
-        </div>
-    </div><br><br>
+    <div style="position: relative; width: 600px; height: 150px;">
+        <img class="logo" src="{{ url_for('static',filename='images/pika.jpg') }}" alt="..." style="left: 0;top: 10px;width: 108px;height: 108px">
+        <span style="position: absolute; top: 0; left: 123px;">用户名：{{ name }}</span>
+        <span style="position: absolute; top: 30px; left: 123px;">手机号码：{{ telephone }}</span>
+        <span style="position: absolute; top: 60px; left: 123px;"></font> 邮箱：{{ email }}</span>
+        <span style="position: absolute; top: 90px; left: 123px;"></font> 更新账户信息：<a href="{{ url_for('changeName') }}">修改用户名</a>&nbsp;&nbsp;<a href="{{ url_for('changePhone') }}">更新手机号</a>&nbsp;&nbsp;<a href="{{ url_for('changePwd') }}">修改密码</a></span>
+    </div>
+
     <form class="form-inline" action="attendSearch" method="get">
         <div class="form-group">
             <label for="exampleInputName2">课程名称</label>
