@@ -441,11 +441,16 @@ def changePhone():
         return render_template('changePhone.html')
     else:
         telephone = request.form.get('telephone')  # 新的手机号
-        user_id = session['user_id']
-        user = User.query.filter(User.id == user_id).first()
-        user.telephone = telephone
-        db.session.commit()
-        return redirect(url_for('userCenter'))
+        user = User.query.filter(User.telephone == telephone).first()
+        if user:
+            flash("该手机号已经被注册")
+            return redirect(url_for('changePhone'))
+        else:
+            user_id = session['user_id']
+            user = User.query.filter(User.id == user_id).first()
+            user.telephone = telephone
+            db.session.commit()
+            return redirect(url_for('userCenter'))
 
 
 # 参与课程
