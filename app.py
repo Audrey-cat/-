@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-14
+update: 2020-07-18
 '''
 import smtplib
 
@@ -611,20 +611,25 @@ def catQuery():
         id = 0
         if user_id:
             id = user_id
-        allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
+        courses = []  # 课程（专业大类+课程名+开课大学+课程详情）
+        courseNum = []  # 全部课程号
         for i in Category.query.all():
-            course = Course.query.filter(i.CID == Course.CID).first()
-            majors = Majors.query.filter(course.MID == Majors.MID).first()
-            allcourses.append(
-                        {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
-        total = len(allcourses)
+            courseNum.append(i.CID)
+            total = len(courseNum)
+
         PER_PAGE = 10  # 每页列表行数
-        # total = allcourses.count() # 总行数
         page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
         start = (page - 1) * PER_PAGE  # 每一页开始位置
         end = start + PER_PAGE  # 每一页结束位置
         pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-        courses = allcourses[start:end]  # 进行切片处理
+        courseRange = courseNum[start:end]  #获取该分页所包含的课程号数组
+        category = Category.query.filter(Category.CID.in_(courseRange)).all()  #该分页所包含的category信息
+
+        for j in category:
+            course = Course.query.filter(j.CID == Course.CID).first()
+            majors = Majors.query.filter(course.MID == Majors.MID).first()
+            courses.append(
+                        {'cid': course.CID, 'category': j.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
 
         context = {
             'pagination': pagination,
