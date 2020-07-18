@@ -1,3 +1,8 @@
+'''
+author: ĞìÍñÇà
+create: 2020-07-16
+update: 2020-07-16
+'''
 
 from models import Attend,Course,Category,Majors,User
 from collections import Counter

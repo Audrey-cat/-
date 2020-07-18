@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-14
+update: 2020-07-17
 '''
 import smtplib
 
@@ -199,7 +199,7 @@ def courseUpdate():
 
     return  render_template('course.html', user_id=user_id,**context)
 
-# 点击首页图标，进入大学介绍页面
+# 点击首页轮播图图3，进入大学介绍页面
 @app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
 def getUniversityInfo():
     return render_template('universities.html')
@@ -594,7 +594,7 @@ def schoolQuery():
     # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
     return render_template('schoolQuery.html', **context, user_id=user_id)
 
-cat_allcourses = [] # 存放取出的课程信息
+at_allcourses = [] # 存放取出的课程信息
 # 选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
