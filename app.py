@@ -30,6 +30,8 @@ from os import path
 
 from PIL import  Image # 图像处理库
 
+from sqlalchemy import func
+
 import course_analyze
 
 
@@ -45,6 +47,8 @@ var = []
 
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
+    # rows = db.session.query(func.count(Category.CID)).scalar()  # 查询表的总行数
+    # print(rows)
 
     # 使用爬虫
     # def docrawler():
@@ -584,7 +588,7 @@ def schoolQuery():
     # 先引入schoolQuery.html，同时根据后面传入的参数，对html进行修改渲染。
     return render_template('schoolQuery.html', **context, user_id=user_id)
 
-
+cat_allcourses = [] # 存放取出的课程信息
 # 选择“专业大类查询”显示课程列表：专业大类+全部课程+开课大学+课程详情
 @app.route('/catQuery', methods=['GET', 'POST'])
 def catQuery():
@@ -607,20 +611,37 @@ def catQuery():
         id = 0
         if user_id:
             id = user_id
-        allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
-        for i in Category.query.all():
-            course = Course.query.filter(i.CID == Course.CID).first()
-            majors = Majors.query.filter(course.MID == Majors.MID).first()
-            allcourses.append(
-                        {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
-        total = len(allcourses)
+        # rows = session.query(Category).all() # 查询表的总行数
+        # cat_allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
+        # for i in Category.query.all():
+        #     course = Course.query.filter(i.CID == Course.CID).first()
+        #     majors = Majors.query.filter(course.MID == Majors.MID).first()
+        #     allcourses.append(
+        #                 {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
+
+        rows = db.session.query(func.count(Category.CID)).scalar()  # 查询表的总行数
+        print(rows)
+
+        # total = len(allcourses)
+        total = rows
         PER_PAGE = 10  # 每页列表行数
         # total = allcourses.count() # 总行数
         page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
         start = (page - 1) * PER_PAGE  # 每一页开始位置
         end = start + PER_PAGE  # 每一页结束位置
         pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-        courses = allcourses[start:end]  # 进行切片处理
+
+        if page == 1 and len(cat_allcourses) == 0:
+            for i in Category.query.all():
+                course = Course.query.filter(i.CID == Course.CID).first()
+                majors = Majors.query.filter(course.MID == Majors.MID).first()
+                cat_allcourses.append(
+                    {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname,
+                    'info': course.Cinfo})
+        else:
+            pass
+
+        courses = cat_allcourses[start:end]  # 进行切片处理
 
         context = {
             'pagination': pagination,
