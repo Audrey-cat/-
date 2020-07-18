@@ -1,12 +1,9 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-<<<<<<< HEAD
-update: 2020-07-17
-=======
 update: 2020-07-18
->>>>>>> origin/xwq
 '''
+
 import smtplib
 
 from flask import redirect, Flask, render_template, request, flash, session, url_for
@@ -626,8 +623,8 @@ def catQuery():
         courseNum = []  # 全部课程号
         for i in Category.query.all():
             courseNum.append(i.CID)
-            total = len(courseNum)
 
+        total = len(courseNum)
         PER_PAGE = 10  # 每页列表行数
         page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
         start = (page - 1) * PER_PAGE  # 每一页开始位置
