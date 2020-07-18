@@ -10,7 +10,6 @@ import difflib
 import operator
 
 # 获得字符串匹配度
-
 def get_equal_rate(str1, str2):
     return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
 
