@@ -750,23 +750,27 @@ def catQueryResult():
     id = 0
     if user_id:
         id = user_id
-    allcourses = []  # 课程（专业大类+课程名+开课大学）
+    courses = []  # 课程（专业大类+课程名+开课大学）
+    courseNum = []  # 全部课程号
     for i in category:
-        course = Course.query.filter(i.CID == Course.CID).all()
-        for j in course:
-            majors = Majors.query.filter(j.MID == Majors.MID).all()
-            for m in majors:
-                allcourses.append(
-                    {'cid': j.CID, 'category': i.Tname, 'name': j.Cname, 'school': m.Sname, 'info': j.Cinfo})
+        courseNum.append(i.CID)
+        total = len(courseNum)
 
-    total = len(allcourses)
     PER_PAGE = 10  # 每页列表行数
-    # total = allcourses.count() # 总行数
     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
     start = (page - 1) * PER_PAGE  # 每一页开始位置
     end = start + PER_PAGE  # 每一页结束位置
     pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-    courses = allcourses[start:end]  # 进行切片处理
+    courseRange = courseNum[start:end]
+    category = Category.query.filter(Category.CID.in_(courseRange)).all()  # 该分页所包含的category信息
+
+    for j in category:
+        course = Course.query.filter(j.CID == Course.CID).all()
+        for n in course:
+            majors = Majors.query.filter(n.MID == Majors.MID).all()
+            for m in majors:
+                courses.append(
+                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo})
 
     context = {
         'pagination': pagination,
@@ -775,9 +779,6 @@ def catQueryResult():
     }
 
     return render_template('catQuery.html', **context, user_id=user_id)
-    # allcourses = []
-    # for i in category:
-    #     course = Course.query.filter(i.CID == Course.CID).all()
 
 
 @app.context_processor
