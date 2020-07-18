@@ -1,5 +1,5 @@
 # '''
-# author: ������
+# author: ������
 # create: 2020-07-16
 # update: 2020-07-16
 # '''
@@ -8,10 +8,12 @@ from models import Attend,Course,Category,Majors,User
 from collections import Counter
 import difflib
 import operator
-
+# 获得字符串匹配度
 def get_equal_rate(str1, str2):
    return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
 
+
+#分析相似课程
 def calculate(id):
     user_list=[]
     allcourses =  Attend.query.filter(Attend.id ==id).all()
