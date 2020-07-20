@@ -6,6 +6,7 @@ update: 2020-07-11
 
 from exts import db
 from sqlalchemy import ForeignKey
+from datetime import datetime
 
 
 # 用户表
@@ -54,3 +55,12 @@ class Attend(db.Model):
     __tablename__ = "Attend"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     CID = db.Column(db.Integer, ForeignKey("Course.CID"), primary_key=True, nullable=False)
+
+
+class Comments(db.Model):
+    __tablename__ = "Comments"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer,nullable=False)
+    content = db.Column(db.Text,nullable=False)
+    create_time=db.Column(db.DateTime,default=datetime.now())
+    CID = db.Column(db.Integer, ForeignKey("Course.CID"), nullable=False)

@@ -13,7 +13,7 @@ import config
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category, Attend, newCourse
+from models import User, Course, Majors, Category, Attend, newCourse, Comments
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 from email.mime.text import MIMEText
@@ -805,25 +805,18 @@ def my_context_processor():
     return {}
 
 
-# @app.route('/doLogin',methods=['GET','POST'])
-# def doLogin():
-#     name = request.form.get("uname")
-#     pwd = request.form.get("upwd")
-#     # conn = pymysql.connect(
-#     #     host="127.0.0.1",
-#     #     port=3306,
-#     #     db="pcmp1",
-#     #     user="root",
-#     #     password="root",
-#     #     charset="utf8"
-#     # )
-#     if name=="pea" and pwd=="111":
-#         session['name']=name
-#         return "登陆成功"
-#         # return render_template("main.html")
-#     else:
-#         flash("密码不正确")
-#         return render_template("login.html")
+@app.route('/addcomment',methods=['GET','POST'])
+def addComment():
+    if request.method == 'GET':
+        return render_template('addComment.html')
+    else:
+        content = request.form.get('content')
+        user_id = session.get('user_id')
+        comment = Comments(content=content,user_id=user_id,create_time=datetime.now(),CID=1)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for('home'))
+
 
 
 #
