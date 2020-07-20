@@ -67,7 +67,7 @@ def askURL(url):
 
 def saveData(datalist):
     # 检查专业是否已经在专业表中
-    majors1 = Majors.query.filter(Majors.Mname == '计算机科学与技术', Majors.Sname == '中山大学').first()
+    majors1 = Majors.query.filter(Majors.Mname == '计算机科学与技术', Majors.Sname == '华中科技大学').first()
     if majors1:
         # 如果存在，获取专业编号
         mid = majors1.MID
@@ -75,7 +75,7 @@ def saveData(datalist):
         # 不存在，获取当前最大专业编号值，继续编码，专业存入表中
         mmajors = Majors.query.order_by(Majors.MID.desc()).first()
         mid = mmajors.MID + 1
-        majors = Majors(SID=1008, Sname='中山大学', MID=mid, Mname='计算机科学与技术')
+        majors = Majors(SID=1008, Sname='华中科技大学', MID=mid, Mname='计算机科学与技术')
         db.session.add(majors)
         db.session.commit()
     for data in datalist:
