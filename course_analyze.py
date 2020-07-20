@@ -4,27 +4,29 @@
 # update: 2020-07-16
 # '''
 
-from models import Attend,Course,Category,Majors,User
+from models import Attend, Course, Category, Majors, User
 from collections import Counter
 import difflib
 import operator
+
 # 获得字符串匹配度
 def get_equal_rate(str1, str2):
-   return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
+    return difflib.SequenceMatcher(None, str1, str2).quick_ratio()
+
 
 
 #分析相似课程
 def calculate(id):
-    user_list=[]
-    allcourses =  Attend.query.filter(Attend.id ==id).all()
+    user_list = []
+    allcourses = Attend.query.filter(Attend.id == id).all()
     for attendcourse in allcourses:
         samecourses = Attend.query.filter(Attend.id != id, Attend.CID == attendcourse.CID).all()
         for samecourse in samecourses:
             user_list.append(samecourse.id)
     res = Counter(user_list)
     most_sameusers = res.most_common(3)
-    cidset=[]
-    ratelist=[]
+    cidset = []
+    ratelist = []
     common_courses = []
     for user_id in most_sameusers:
 
@@ -76,12 +78,6 @@ def calculate(id):
                             else:
                                 pass
 
-
-
-
-
-
-
                     # if course1.CID not in cidset:
                     #     cidset.append(course1.CID)
                     #     major = Majors.query.filter(Majors.MID == course1.MID).first()
@@ -89,7 +85,6 @@ def calculate(id):
                     #                            'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
                     # else:
                     #     pass
-
 
         # len = len(common_courses)
 
@@ -104,16 +99,9 @@ def calculate(id):
         #     return common[0:5]
         return common_courses
 
-
-
-            # same = Attend.query.filter(attend.CID == same.CID, same.id == id).first()
-            # if same:
-            #     pass
-            # else:
-            #     courses = Course.query.filter(attends.CID == Course.CID)
-            #     commoncourse =
-
-
-
-
-
+        # same = Attend.query.filter(attend.CID == same.CID, same.id == id).first()
+        # if same:
+        #     pass
+        # else:
+        #     courses = Course.query.filter(attends.CID == Course.CID)
+        #     commoncourse =
