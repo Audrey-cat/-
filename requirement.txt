@@ -2,3 +2,8 @@ pymysql
 flask-sqlalchemy
 flask-script
 flask-migrate
+flask-paginate
+jieba
+wordcloud
+matplotlib
+numpy

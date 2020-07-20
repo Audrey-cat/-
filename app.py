@@ -1,8 +1,9 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-14
+update: 2020-07-18
 '''
+
 import smtplib
 
 from flask import redirect, Flask, render_template, request, flash, session, url_for
@@ -12,7 +13,7 @@ import config
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category, Attend,newCourse
+from models import User, Course, Majors, Category, Attend, newCourse
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 from email.mime.text import MIMEText
@@ -22,14 +23,17 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_paginate import Pagination, get_page_parameter
 # from apscheduler.schedulers.background import BackgroundScheduler
-import jieba
-import numpy as np
-import matplotlib.pyplot as plt
-from wordcloud import  WordCloud, STOPWORDS
+import jieba  # 结巴分词
+import numpy as np  # numpy数据处理库
+import matplotlib.pyplot as plt  # 图像展示库
+from wordcloud import WordCloud, STOPWORDS  # 词云展示库
 from os import path
-from PIL import  Image
-import course_analyze
 
+from PIL import Image  # 图像处理库
+
+from sqlalchemy import func
+
+import course_analyze
 
 app = Flask(__name__)
 app.config.from_object(config)  # 完成了项目的数据库的配置
@@ -40,11 +44,10 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存�
 var = []
 
 
-
-
-
 @app.route('/')  # http://127.0.0.1:5000/ 打开网站时页面
 def hello_world():
+    # rows = db.session.query(func.count(Category.CID)).scalar()  # 查询表的总行数
+    # print(rows)
 
     # 使用爬虫
     # def docrawler():
@@ -65,7 +68,6 @@ def hello_world():
     # sched = BackgroundScheduler()
     # sched.add_job(docrawler, 'cron', hour='12', minute='14', second='00')
     # sched.start()
-
 
     # 取出数据库数据，存入txt
     # course = Course.query.with_entities(Course.Cname).all()
@@ -111,14 +113,14 @@ def hello_world():
     # default_mode = jieba.cut(file)
     # text = " ".join(default_mode)
     # # alice_mark = np.array(Image.open(path.join(d,"static\\images\courseUpdate.png")))
-    # alice_mark = np.array(Image.open('static/images/coursePredict.jpg'))
+    # alice_mark = np.array(Image.open('static/images/coursePredict.jpg.jpg'))
     # stopwords = set(STOPWORDS)
     # stopwords.add("said")
     # wc = WordCloud(
     # #     设置字体，不指定就会出现乱码
     #     font_path=r'D:\DownloadFromInternet\DownloadedByMe\dd\msyh.ttf',
     #     background_color = "white",
-    #     max_words=10,
+    #     max_words=50,
     #     mask=alice_mark,
     #     stopwords=stopwords
     # )
@@ -126,7 +128,7 @@ def hello_world():
     # wc.generate(text)
     #
     # #存到文件里
-    # wc.to_file(path.join(d,"result.jpg"))
+    # wc.to_file(path.join(d,"result1.jpg"))
     #
     # #展示
     # plt.imshow(wc, interpolation="bilinear")
@@ -137,8 +139,6 @@ def hello_world():
     # plt.show()
 
     return render_template('base.html')
-
-
 
 
 # 点击首页，进入首页页面
@@ -154,25 +154,29 @@ def home():
     return render_template('home.html', courses=courses)
 
 
-@app.route('/course') # http://127.0.0.1:5000/course 课程页
+@app.route('/course')  # http://127.0.0.1:5000/course 课程页
 def course():
-    return  render_template('course.html')
-#爬虫函数
-def docrawler():
-    uibe_law.main()
-    seu_building.main()
-@app.route('/course/courseUpdate') # http://127.0.0.1:5000/course/courseUpdate 更新课程页
+    return render_template('course.html')
+
+
+# 爬虫函数
+# def docrawler():
+#     uibe_law.main()
+#     seu_building.main()
+@app.route('/course/courseUpdate')  # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
-    #执行爬虫函数，获取更新的课程
-    #docrawler()
+    # 执行爬虫函数，获取更新的课程
+    # docrawler()
+
     allcourses = []  # 存放课程名、学校名、专业名和课程详情
     newcourse = newCourse.query.all()
-    #获取更新的课程
+    # 获取更新的课程
     for i in newcourse:
         course = Course.query.filter(i.CID == Course.CID).first()
-        majors = Majors.query.filter(course.MID ==Majors.MID).all()
+        majors = Majors.query.filter(course.MID == Majors.MID).all()
         for j in majors:
-            allcourses.append({'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
+            allcourses.append(
+                {'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
 
     user_id = session.get('user_id')
     id = 0
@@ -192,17 +196,25 @@ def courseUpdate():
         'id': id
     }
 
-    return  render_template('course.html', user_id=user_id,**context)
+    return render_template('course.html', user_id=user_id, **context)
 
-@app.route('/course/coursePredict') # http://127.0.0.1:5000/course/coursePredict 课程预测页
+
+# 点击首页轮播图图3，进入大学介绍页面
+@app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
+def getUniversityInfo():
+    return render_template('universities.html')
+
+
+@app.route('/course/coursePredict')  # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():
-    return  render_template('coursePredict.html')
+    return render_template('coursePredict.html')
 
-@app.route('/course/courseRecommend') # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
+
+@app.route('/course/courseRecommend')  # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
     user_id = session.get('user_id')
     if user_id:
-        attend = Attend.query.filter(Attend.id==user_id).first()
+        attend = Attend.query.filter(Attend.id == user_id).first()
         if attend:
             courses = course_analyze.calculate(user_id)
             return render_template('course.html', courses=courses, user_id=user_id)
@@ -428,11 +440,16 @@ def changePhone():
         return render_template('changePhone.html')
     else:
         telephone = request.form.get('telephone')  # 新的手机号
-        user_id = session['user_id']
-        user = User.query.filter(User.id == user_id).first()
-        user.telephone = telephone
-        db.session.commit()
-        return redirect(url_for('userCenter'))
+        user = User.query.filter(User.telephone == telephone).first()
+        if user:
+            flash("该手机号已经被注册")
+            return redirect(url_for('changePhone'))
+        else:
+            user_id = session['user_id']
+            user = User.query.filter(User.id == user_id).first()
+            user.telephone = telephone
+            db.session.commit()
+            return redirect(url_for('userCenter'))
 
 
 # 参与课程
@@ -605,20 +622,28 @@ def catQuery():
         id = 0
         if user_id:
             id = user_id
-        allcourses = []  # 课程（专业大类+课程名+开课大学+课程详情）
+
+        courses = []  # 课程（专业大类+课程名+开课大学+课程详情）
+        courseNum = []  # 全部课程号
         for i in Category.query.all():
-            course = Course.query.filter(i.CID == Course.CID).first()
-            majors = Majors.query.filter(course.MID == Majors.MID).first()
-            allcourses.append(
-                        {'cid': course.CID, 'category': i.Tname, 'name': course.Cname, 'school': majors.Sname, 'info': course.Cinfo})
-        total = len(allcourses)
+            courseNum.append(i.CID)
+
+        total = len(courseNum)
         PER_PAGE = 10  # 每页列表行数
-        # total = allcourses.count() # 总行数
         page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
         start = (page - 1) * PER_PAGE  # 每一页开始位置
         end = start + PER_PAGE  # 每一页结束位置
         pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-        courses = allcourses[start:end]  # 进行切片处理
+
+        courseRange = courseNum[start:end]  # 获取该分页所包含的课程号数组
+        category = Category.query.filter(Category.CID.in_(courseRange)).all()  # 该分页所包含的category信息
+
+        for j in category:
+            course = Course.query.filter(j.CID == Course.CID).first()
+            majors = Majors.query.filter(course.MID == Majors.MID).first()
+            courses.append(
+                {'cid': course.CID, 'category': j.Tname, 'name': course.Cname, 'school': majors.Sname,
+                 'info': course.Cinfo})
 
         context = {
             'pagination': pagination,
@@ -739,23 +764,27 @@ def catQueryResult():
     id = 0
     if user_id:
         id = user_id
-    allcourses = []  # 课程（专业大类+课程名+开课大学）
+    courses = []  # 课程（专业大类+课程名+开课大学）
+    courseNum = []  # 全部课程号
     for i in category:
-        course = Course.query.filter(i.CID == Course.CID).all()
-        for j in course:
-            majors = Majors.query.filter(j.MID == Majors.MID).all()
-            for m in majors:
-                allcourses.append(
-                    {'cid': j.CID, 'category': i.Tname, 'name': j.Cname, 'school': m.Sname, 'info': j.Cinfo})
+        courseNum.append(i.CID)
 
-    total = len(allcourses)
+    total = len(courseNum)
     PER_PAGE = 10  # 每页列表行数
-    # total = allcourses.count() # 总行数
     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
     start = (page - 1) * PER_PAGE  # 每一页开始位置
     end = start + PER_PAGE  # 每一页结束位置
     pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-    courses = allcourses[start:end]  # 进行切片处理
+    courseRange = courseNum[start:end]
+    category = Category.query.filter(Category.CID.in_(courseRange)).all()  # 该分页所包含的category信息
+
+    for j in category:
+        course = Course.query.filter(j.CID == Course.CID).all()
+        for n in course:
+            majors = Majors.query.filter(n.MID == Majors.MID).all()
+            for m in majors:
+                courses.append(
+                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo})
 
     context = {
         'pagination': pagination,
@@ -764,9 +793,6 @@ def catQueryResult():
     }
 
     return render_template('catQuery.html', **context, user_id=user_id)
-    # allcourses = []
-    # for i in category:
-    #     course = Course.query.filter(i.CID == Course.CID).all()
 
 
 @app.context_processor
@@ -809,7 +835,5 @@ def my_context_processor():
 
 
 if __name__ == '__main__':
-
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
     app.run()
-
