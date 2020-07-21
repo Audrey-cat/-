@@ -60,6 +60,7 @@ update: 2020-07-18
             <th>学校名称</th>
             <th>专业名称</th>
             <th>课程详情</th>
+             <th>查看评论</th>
             <th>取消参与</th>
         </tr>
         </thead>
@@ -71,6 +72,7 @@ update: 2020-07-18
                 <td>{{ course.school }}</td>
                 <td>{{ course.majors }}</td>
                 <td><a href="{{ course.info }}">课程详情 </a></td>
+                 <td><a href ="{{ url_for('comment',ccid = course.cid) }}">评论({{ course.comments }})</a></td>
                 <form action="{{ url_for('cancel_attend', cacid = course.cid) }}" method="POST">
                     <td>
                         <button class="btn btn-primary btn-block"> 取消参与</button>

@@ -4,7 +4,7 @@ create: 2020-07-16
 update: 2020-07-16
 '''
 
-from models import Attend, Course, Category, Majors, User
+from models import Attend, Course, Category, Majors, User, Comments
 from collections import Counter
 import difflib
 import operator
@@ -48,9 +48,11 @@ def calculate(id):
                             if course1.CID not in cidset:
                                 cidset.append(course1.CID)
                                 major = Majors.query.filter(Majors.MID == course1.MID).first()
+                                comment = Comments.query.filter(Comments.CID == course1.CID).all()
+                                comments = len(comment)
                                 common_courses.append(
                                     {'cid': course1.CID, 'name': course1.Cname, 'major': major.Mname,
-                                     'school': major.Sname, 'rate': rate, 'info': course1.Cinfo})
+                                     'school': major.Sname, 'rate': rate, 'info': course1.Cinfo,'comments':comments})
                             else:
                                 pass
                         else:
@@ -66,11 +68,13 @@ def calculate(id):
                                 ratelist[mindex] = rate
                                 if course1.CID not in cidset:
                                     cidset.append(course1.CID)
+                                    comment = Comments.query.filter(Comments.CID == course1.CID).all()
+                                    comments = len(comment)
                                     major = Majors.query.filter(Majors.MID == course1.MID).first()
                                     common_courses[mindex] = {'cid': course1.CID, 'name': course1.Cname,
                                                               'major': major.Mname,
                                                               'school': major.Sname, 'rate': rate,
-                                                              'info': course1.Cinfo}
+                                                              'info': course1.Cinfo,'comments':comments}
                                 else:
                                     pass
 

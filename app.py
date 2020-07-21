@@ -15,7 +15,7 @@ from captcha import validate_picture
 from exts import db
 import re
 import difflib
-from models import User, Course, Majors, Category, Attend, newCourse
+from models import User, Course, Majors, Category, Attend, newCourse, Comments
 from crawler import sjtu_life, NK_Economy, crawler, fudan_life, sjtu_cl
 from crawler import seu_math, xmu_cpst, uibe_law, seu_building, zs_cs, uibe_it
 from email.mime.text import MIMEText
@@ -149,9 +149,11 @@ def home():
     courses = []
     courses5 = Course.query.order_by(Course.Attend.desc())[0:5]
     for course5 in courses5:
+        comment = Comments.query.filter(Comments.CID == course5.CID).all()
+        comments = len(comment)
         major = Majors.query.filter(Majors.MID == course5.MID).first()
         courses.append({'cid': course5.CID, 'name': course5.Cname,
-                        'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend})
+                        'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend,'comments':comments})
 
     return render_template('home.html', courses=courses)
 
@@ -177,10 +179,12 @@ def courseUpdate():
     # 获取更新的课程
     for i in newcourse:
         course = Course.query.filter(i.CID == Course.CID).first()
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         majors = Majors.query.filter(course.MID == Majors.MID).all()
         for j in majors:
             allcourses.append(
-                {'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
+                {'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo,'comments':comments})
 
     user_id = session.get('user_id')
     id = 0
@@ -230,6 +234,26 @@ def courseRecommend():
         return render_template('course.html')
 
 
+
+rCode = str(random.randint(100000, 999999))
+def domail(my_sender, my_user, my_pass,rCode):
+    ret = True
+    try:
+        text="您已经成功的注册了皮卡丘课程平台，并绑定了本邮箱，验证码为："+ str(rCode)+ "。请您返回页面来验证，若非本人操作，请忽略此信息。"
+        msg = MIMEText(text, 'plain', 'utf-8')
+        msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['Subject'] = "验证码"  # 邮件的主题，也可以说是标题
+
+        server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器，端口是25
+        server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
+        server.sendmail(my_sender, [my_user, ], msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+        server.quit()  # 关闭连接
+    except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+        ret = False
+    return ret
+
+
 # 注册
 @app.route('/register', methods=['GET', 'POST'])  # http://127.0.0.1:5000/register 注册
 def register():
@@ -242,9 +266,13 @@ def register():
         password2 = request.form.get('password2')
         email = request.form.get('email')
         # 手机号码验证，如果被注册了，就不能再注册
+        my_sender = '919849055@qq.com'  # 发件人邮箱账号
+        my_pass = 'ibufdqkojmgsbcig'  # 发件人邮箱密码
+        my_user = str(email)  # 收件人邮箱账号
+
         user = User.query.filter(User.telephone == telephone).first()
         user2 = User.query.filter(User.email == email).first()
-        if user and user2:
+        if  user or user2:
             return u'手机号码或邮箱已被注册，请更换！'
         else:
 
@@ -252,13 +280,38 @@ def register():
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
             else:
-                user = User(telephone=telephone, username=username, password=password1, email=email)
-                db.session.add(user)
-                db.session.commit()
+                ret = domail(my_sender, my_user, my_pass,rCode)
+                if ret:
+                    print("邮件发送成功")  # 邮件发送成功，跳转到修改密码界面
+                    return redirect(url_for('registerCode',telephone=telephone, username=username, password=password1, email=email))
+
+                else:
+                    print("邮件发送失败")  # 邮件发送失败可以选择重新发送
+                    return u'邮件发送失败'
+
+                    #return render_template('register.html')
+
 
                 # 注册成功，跳转到登录界面
 
-                return redirect(url_for('login'))
+@app.route('/registerCode?email=<email>?telephone=<telephone>?username=<username>?password=<password>', methods=['GET', 'POST'])  # http://127.0.0.1:5000/retrievePwd 找回密码
+def registerCode(telephone,username,password,email):
+    if request.method == 'GET':
+        return render_template('registerCode.html')  # 点”发送验证码验证“则返回到找回密码页面
+    else:
+        vertifynum = request.form.get('vertifynum')  # 检测验证码
+        # 若验证码与之前发送的一致
+        if vertifynum == rCode:
+            print('验证成功')
+            user = User(telephone=telephone, username=username, password=password, email=email)
+            db.session.add(user)
+            db.session.commit()
+            # 查看该用户的密码
+            return redirect(url_for('login'))
+        else:
+            print('验证失败')
+            flash("验证码错误，请核准填写")
+            return render_template('registerCode.html')
 
 # 生成验证码图片
 @app.route('/pic')
@@ -312,7 +365,7 @@ def login():
 def mail(my_sender, my_user, my_pass, verifyCode):
     ret = True
     try:
-        text = "验证码为:" + str(verifyCode)
+        text = "验证码为:" + str(verifyCode)+"。您正在找回密码，请勿将验证码告知他人，若非本人操作请忽略此信息。"
         msg = MIMEText(text, 'plain', 'utf-8')
         msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
         msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
@@ -402,10 +455,12 @@ def userCenter():
     acourses = Attend.query.filter(Attend.id == user_id).all()
     for acourse in acourses:
         course = Course.query.filter(Course.CID == acourse.CID).first()
+        comment = Comments.query.filter(Comments.CID == acourse.CID).all()
+        comments = len(comment)
         majors = Majors.query.filter(Majors.MID == course.MID).first()
         attendcourses.append(
             {'cid': course.CID, 'name': course.Cname, 'school': majors.Sname, 'majors': majors.Mname,
-             'info': course.Cinfo})
+             'info': course.Cinfo,'comments':comments})
     # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=attendcourses)
 
     total = len(attendcourses)
@@ -586,7 +641,9 @@ def schoolQuery():
     for i in majors:
         course = Course.query.filter(i.MID == Course.MID).all()
         for j in course:
-            allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo})
+            comment = Comments.query.filter(Comments.CID == j.CID).all()
+            comments = len(comment)
+            allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo,'comments':comments})
     user_id = session.get('user_id')
     id = 0
     if user_id:
@@ -667,9 +724,11 @@ def catQuery():
         for j in category:
             course = Course.query.filter(j.CID == Course.CID).first()
             majors = Majors.query.filter(course.MID == Majors.MID).first()
+            comment = Comments.query.filter(Comments.CID == j.CID).all()
+            comments = len(comment)
             courses.append(
                 {'cid': course.CID, 'category': j.Tname, 'name': course.Cname, 'school': majors.Sname,
-                 'info': course.Cinfo})
+                 'info': course.Cinfo,'comments':comments})
 
         context = {
             'pagination': pagination,
@@ -695,8 +754,10 @@ def courseQueryResult():
     # print(len(course))
     # if len(course) != 0:
     for i in course:
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         major = Majors.query.filter(Majors.MID == i.MID).first()
-        allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'info': i.Cinfo})
+        allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'info': i.Cinfo,'comments':comments})
 
     total = len(allcourses)
     PER_PAGE = 10  # 每页列表行数
@@ -754,12 +815,14 @@ def schoolQueryResult():
     # if len(majors) != 0:
     course = Course.query.all()
     for i in course:
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         # for j in s_m:
         #     if i.MID == j['mid']:
         #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
         for j in majors:
             if i.MID == j.MID:
-                allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': j.Sname, 'major': j.Mname, 'info': i.Cinfo})
+                allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': j.Sname, 'major': j.Mname, 'info': i.Cinfo,'comments':comments})
 
     total = len(allcourses)
     PER_PAGE = 10  # 每页列表行数
@@ -807,10 +870,12 @@ def catQueryResult():
     for j in category:
         course = Course.query.filter(j.CID == Course.CID).all()
         for n in course:
+            comment = Comments.query.filter(Comments.CID == n.CID).all()
+            comments = len(comment)
             majors = Majors.query.filter(n.MID == Majors.MID).all()
             for m in majors:
                 courses.append(
-                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo})
+                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo,'comments':comments})
 
     context = {
         'pagination': pagination,
@@ -831,25 +896,35 @@ def my_context_processor():
     return {}
 
 
-# @app.route('/doLogin',methods=['GET','POST'])
-# def doLogin():
-#     name = request.form.get("uname")
-#     pwd = request.form.get("upwd")
-#     # conn = pymysql.connect(
-#     #     host="127.0.0.1",
-#     #     port=3306,
-#     #     db="pcmp1",
-#     #     user="root",
-#     #     password="root",
-#     #     charset="utf8"
-#     # )
-#     if name=="pea" and pwd=="111":
-#         session['name']=name
-#         return "登陆成功"
-#         # return render_template("main.html")
-#     else:
-#         flash("密码不正确")
-#         return render_template("login.html")
+@app.route('/comment/<ccid>',methods=['GET','POST'])
+def comment(ccid):
+    if request.method == 'GET':
+        course=Course.query.filter(Course.CID==ccid).first()
+        cname= course.Cname
+        allcomments=[]
+        comments = Comments.query.filter(Comments.CID==ccid).all()
+        for comment in comments:
+            user = User.query.filter(User.id==comment.user_id).first()
+            allcomments.append({'user_name':user.username,'content':comment.content,
+                                'datetime':comment.create_time})
+        return render_template('comment.html',allcomments=allcomments,cname=cname)
+    else:
+        user_id = session.get('user_id')
+        if user_id:
+            content = request.form.get('content')
+            if len(content)==0:
+                flash('评论内容不能为空！')
+            else:
+                comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
+                db.session.add(comment)
+                db.session.commit()
+
+            return redirect(url_for('comment', ccid=ccid))
+        else:
+            flash('请先登录再进行评论！')
+            return redirect(url_for('comment', ccid=ccid))
+
+
 
 
 #
@@ -862,4 +937,5 @@ def my_context_processor():
 
 if __name__ == '__main__':
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
+    #app.run(host='0.0.0.0',port=80)
     app.run()

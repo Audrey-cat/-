@@ -1,12 +1,12 @@
 {#
-author: 高煜嘉
-create: 2020-07-14
-update: 2020-07-14
+author: 黄祉琪
+create: 2020-07-21
+update: 2020-07-21
 #}
 
 {% extends 'base.html' %}
 
-{% block title %}修改用户名{% endblock %}
+{% block title %}注册邮箱验证{% endblock %}
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/login_register.css') }}">
@@ -14,11 +14,11 @@ update: 2020-07-14
 
 {% block main %}
     <br><br><br><br><br>
-    <h3 class="page-title">修改用户名</h3><br>
+    <h3 class="page-title">验证邮箱发送的验证码</h3><br>
     <form action="" method="post">
         <div class="form-container">
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="请输入新的用户名" name="username">
+                <input type="text" class="form-control" placeholder="请输入验证码" name="vertifynum">
             </div>
             <span>
                 {% for msg in get_flashed_messages() %}
@@ -26,7 +26,9 @@ update: 2020-07-14
                 {% endfor %}
             </span>
             <div>
-                <button class="btn btn-primary btn-block"> 确认修改用户名</button>
+                 <span>
+                     <button class="btn btn-primary btn-block">点击验证</button>
+                </span>
             </div>
         </div>
     </form>

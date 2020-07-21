@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}发表评论{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/comment.css') }}">
+{% endblock %}
+
+{% block main %}
+ <h3 class="page-title">{{ cname }}的评论</h3>
+    <br>
+    <ul>
+      {% for comment in allcomments %}
+    <li>
+        <div class="comment-container">
+            <div class = "comment-group">
+                <p class="comment-user_name">{{ comment.user_name }}:</p>
+                <p class="comment-content">{{ comment.content }}</p>
+                </div>
+                <div class="comment-info">
+                <span class="comment-datatime">{{ comment.datetime }}
+                </span>
+            </div>
+        </div>
+    </li>
+          <br>
+        {% endfor %}
+    </ul>
+<br>
+    <h4 class="page-title">发表你的评论</h4>
+    <br>
+    <span>
+                {% for msg in get_flashed_messages() %}
+                    {{ msg }}
+                {% endfor %}
+            </span>
+    <form action="" method ="post">
+
+            <div class="form-container">
+                <div class="form-group">
+                    <textarea name="content" rows="5" cols="87" placeholder="请输入您的评论" class=""form-control></textarea>
+                </div>
+                 <div class="form-group">
+                     <button class="btn btn-primary">提交</button>
+                </div>
+            </div>
+    </form>
+{% endblock %}

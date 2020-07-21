@@ -116,6 +116,7 @@ update: 2020-07-17
             <th>学校名称</th>
             <th>专业名称</th>
             <th>课程详情</th>
+            <th>查看评论</th>
             <th>参与人数</th>
         </tr>
         </thead>
@@ -126,6 +127,7 @@ update: 2020-07-17
                 <td>{{course.school}}</td>
                 <td>{{ course.major }}</td>
                 <td><a href="{{ course.info }}">课程详情 </a></td>
+                <td><a href ="{{ url_for('comment',ccid = course.cid) }}">评论({{ course.comments }})</a></td>
                 <td>{{ course.attend }}</td>
             </tr>
         {% endfor %}
