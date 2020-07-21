@@ -204,7 +204,7 @@ def courseUpdate():
         'id': id
     }
 
-    return render_template('course.html', user_id=user_id, **context)
+    return render_template('courseUpdate.html', user_id=user_id, **context)
 
 
 # 点击首页轮播图图3，进入大学介绍页面
@@ -225,7 +225,7 @@ def courseRecommend():
         attend = Attend.query.filter(Attend.id == user_id).first()
         if attend:
             courses = course_analyze.calculate(user_id)
-            return render_template('course.html', courses=courses, user_id=user_id)
+            return render_template('courseRecommend.html', courses=courses, user_id=user_id)
         else:
             flash("没有参与课程无法推荐课程哦")
             return render_template('course.html')
@@ -292,8 +292,7 @@ def register():
                     #return render_template('register.html')
 
 
-                # 注册成功，跳转到登录界面
-
+# 注册成功，跳转到登录界面
 @app.route('/registerCode?email=<email>?telephone=<telephone>?username=<username>?password=<password>', methods=['GET', 'POST'])  # http://127.0.0.1:5000/retrievePwd 找回密码
 def registerCode(telephone,username,password,email):
     if request.method == 'GET':
@@ -869,15 +868,39 @@ def my_context_processor():
 @app.route('/comment/<ccid>',methods=['GET','POST'])
 def comment(ccid):
     if request.method == 'GET':
-        course=Course.query.filter(Course.CID==ccid).first()
-        cname= course.Cname
-        allcomments=[]
-        comments = Comments.query.filter(Comments.CID==ccid).all()
+        # course=Course.query.filter(Course.CID==ccid).first()
+        courses = Comments.query.filter(Comments.CID==ccid).all()
+
+        commentNum = []
+        for i in courses:
+            commentNum.append(i.id)
+
+        total = len(commentNum)
+        PER_PAGE = 10  # 每页列表行数
+        page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
+        start = (page - 1) * PER_PAGE  # 每一页开始位置
+        end = start + PER_PAGE  # 每一页结束位置
+        pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
+        commentRange = commentNum[start:end]
+        # category = Category.query.filter(Category.CID.in_(commentRange)).all()  # 该分页所包含的category信息
+        comments = Comments.query.filter(Comments.id.in_(commentRange)).all()
+
+        course = Course.query.filter(Course.CID == ccid).first()
+        cname = course.Cname
+        allcomments = []
+        # comments = Comments.query.filter(Comments.CID == ccid).all()
         for comment in comments:
-            user = User.query.filter(User.id==comment.user_id).first()
-            allcomments.append({'user_name':user.username,'content':comment.content,
-                                'datetime':comment.create_time})
-        return render_template('comment.html',allcomments=allcomments,cname=cname)
+            user = User.query.filter(User.id == comment.user_id).first()
+            allcomments.append({'user_name': user.username, 'content': comment.content,
+                                'datetime': comment.create_time})
+
+        context = {
+            'pagination': pagination,
+            'allcomments': allcomments,
+            'id': id
+        }
+
+        return render_template('comment.html',**context,cname=cname)
     else:
         user_id = session.get('user_id')
         if user_id:
