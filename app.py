@@ -886,10 +886,13 @@ def comment(ccid):
         user_id = session.get('user_id')
         if user_id:
             content = request.form.get('content')
+            if len(content)==0:
+                flash('评论内容不能为空！')
+            else:
+                comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
+                db.session.add(comment)
+                db.session.commit()
 
-            comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
-            db.session.add(comment)
-            db.session.commit()
             return redirect(url_for('comment', ccid=ccid))
         else:
             flash('请先登录再进行评论！')
