@@ -1,3 +1,9 @@
+{#
+author: 徐婉青，文天尧
+create: 2020-07-21
+update: 2020-07-21
+#}
+
 {% extends 'base.html' %}
 
 {% block title %}发表评论{% endblock %}
@@ -28,6 +34,7 @@
         {% endfor %}
     </ul>
     <br>
+    {{ pagination.links }}
     <h4 class="page-title">发表你的评论</h4>
     <br>
     <span>
@@ -46,5 +53,5 @@
             </div>
         </div>
     </form>
-    {{ pagination.links }}
+
 {% endblock %}
