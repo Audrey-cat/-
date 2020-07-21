@@ -5,11 +5,13 @@ update: 2020-07-18
 '''
 
 import smtplib
+from io import BytesIO
 
-from flask import redirect, Flask, render_template, request, flash, session, url_for
+from flask import redirect, Flask, render_template, request, flash, session, url_for, make_response
 from datetime import timedelta
 # import其他py文件
 import config
+from captcha import validate_picture
 from exts import db
 import re
 import difflib
@@ -163,6 +165,8 @@ def course():
 # def docrawler():
 #     uibe_law.main()
 #     seu_building.main()
+
+# 课程更新
 @app.route('/course/courseUpdate')  # http://127.0.0.1:5000/course/courseUpdate 更新课程页
 def courseUpdate():
     # 执行爬虫函数，获取更新的课程
@@ -204,12 +208,12 @@ def courseUpdate():
 def getUniversityInfo():
     return render_template('universities.html')
 
-
+# 课程预测
 @app.route('/course/coursePredict')  # http://127.0.0.1:5000/course/coursePredict 课程预测页
 def coursePredict():
     return render_template('coursePredict.html')
 
-
+# 课程推荐
 @app.route('/course/courseRecommend')  # http://127.0.0.1:5000/course/courseUpdate 课程推荐页
 def courseRecommend():
     user_id = session.get('user_id')
@@ -256,6 +260,21 @@ def register():
 
                 return redirect(url_for('login'))
 
+# 生成验证码图片
+@app.route('/pic')
+def get_pic():
+    # 造图片
+    im, s = validate_picture(4)  # im表示验证码图片，s表示验证码的字符串
+    # 把图片转成二进制形式存入内存，防止将图片放在文件中占用大量磁盘
+    buffer = BytesIO()
+    im.save(buffer, 'jpeg')
+    buf_bytes = buffer.getvalue()
+    # 构建response
+    response = make_response(buf_bytes)
+    response.headers['Content-Type'] = 'image/jpg'
+    # 保存s
+    session['pic_code'] = s
+    return response
 
 # 登录
 @app.route('/login', methods=['GET', 'POST'])  # http://127.0.0.1:5000/login 登陆
@@ -265,6 +284,13 @@ def login():
     else:
         telephone = request.form.get('telephone')  # 获取登录输入信息
         password = request.form.get('password')
+        captcha = request.form.get('captcha') # 获取输入的验证码
+        # 从session中取值
+        code = session.get('pic_code')
+        if code.lower() != captcha.lower():
+            flash('验证码错误！')
+            return render_template('login.html')
+
         user = User.query.filter(User.telephone == telephone,
                                  User.password == password).first()
         user2 = User.query.filter(User.email == telephone,
