@@ -10,9 +10,16 @@ update: 2020-07-14
 
 {% block head %}
     <link rel="stylesheet" href="{{ url_for('static',filename='css/login_register.css') }}">
+
 {% endblock %}
 
 {% block main %}
+    <style>
+        body{
+        background-image:url("../static/images/updatephone.png");
+        background-repeat: no-repeat;
+        background-position: center;
+    }</style>
     <br><br><br><br><br>
     <h3 class="page-title">更新手机号</h3><br>
     <form action="" method="post">
