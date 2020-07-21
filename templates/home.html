@@ -13,20 +13,23 @@ update: 2020-07-17
 {% endblock %}
 
 {% block main %}
+
     <div class="wrap">
         <ul class="list">
             <li class="item active"></li>
             <li class="item"></li>
             <li class="item"><a href="{{ url_for('getUniversityInfo') }}"></a></li>
             <li class="item"><a href="{{ url_for('schoolQuery') }}"></a></li>
-            <li class="item"><a href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#"></a></li>
+            <li class="item"><a
+                    href="https://www.icourse163.org/member/login.htm?returnUrl=aHR0cHM6Ly93d3cuaWNvdXJzZTE2My5vcmcvaW5kZXguaHRt#"></a>
+            </li>
         </ul>
         <ul class="pointList">
-            <li class="point active" data-index = '0'></li>
-            <li class="point" data-index = '1'></li>
-            <li class="point" data-index = '2'></li>
-            <li class="point" data-index = '3'></li>
-            <li class="point" data-index = '4'></li>
+            <li class="point active" data-index='0'></li>
+            <li class="point" data-index='1'></li>
+            <li class="point" data-index='2'></li>
+            <li class="point" data-index='3'></li>
+            <li class="point" data-index='4'></li>
         </ul>
         <button type="button" class="btnForGo btn" id="goPre"><h4><</h4></button>
         <button type="button" class="btnForGo btn" id="goNext"><h4>></h4></button>
@@ -40,11 +43,11 @@ update: 2020-07-17
         var index = 0;
         var time = 0;//定时器图片跳转参数
 
-        var clearActive = function (){
-            for (var i = 0; i < items.length ; i++){
+        var clearActive = function () {
+            for (var i = 0; i < items.length; i++) {
                 items[i].className = 'item';
             }
-            for (var i = 0; i < points.length ; i++){
+            for (var i = 0; i < points.length; i++) {
                 points[i].className = 'point';
             }
         }
@@ -57,7 +60,7 @@ update: 2020-07-17
         }
 
         var goNext = function () {
-            if (index < 4){
+            if (index < 4) {
                 index++;
             } else {
                 index = 0;
@@ -67,7 +70,7 @@ update: 2020-07-17
         }
 
         var goPre = function () {
-            if (index == 0){
+            if (index == 0) {
                 index = 4;
             } else {
                 index--;
@@ -76,15 +79,15 @@ update: 2020-07-17
             time = 0;
         }
 
-        goNextBtn.addEventListener('click',function () {
+        goNextBtn.addEventListener('click', function () {
             goNext();
         })
-        goPreBtn.addEventListener('click',function () {
+        goPreBtn.addEventListener('click', function () {
             goPre();
         })
 
-        for (var i = 0; i < points.length ; i++){
-            points[i].addEventListener('click',function () {
+        for (var i = 0; i < points.length; i++) {
+            points[i].addEventListener('click', function () {
                 var pointIndex = this.getAttribute('data-index');
                 index = pointIndex;
                 goIndex();
@@ -96,10 +99,10 @@ update: 2020-07-17
 
         setInterval(function () {
             time++;
-            if(time == 20){
+            if (time == 20) {
                 goNext();
             }
-            if(time > 20){
+            if (time > 20) {
                 time = 0;
                 goNext();
             }
@@ -124,10 +127,10 @@ update: 2020-07-17
         {% for course in courses %}
             <tr>
                 <th scope="row">{{ course.name }}</th>
-                <td>{{course.school}}</td>
+                <td>{{ course.school }}</td>
                 <td>{{ course.major }}</td>
                 <td><a href="{{ course.info }}">课程详情 </a></td>
-                <td><a href ="{{ url_for('comment',ccid = course.cid) }}">评论({{ course.comments }})</a></td>
+                <td><a href="{{ url_for('comment',ccid = course.cid) }}">评论({{ course.comments }})</a></td>
                 <td>{{ course.attend }}</td>
             </tr>
         {% endfor %}
