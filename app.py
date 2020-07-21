@@ -204,7 +204,7 @@ def courseUpdate():
         'id': id
     }
 
-    return render_template('course.html', user_id=user_id, **context)
+    return render_template('courseUpdate.html', user_id=user_id, **context)
 
 
 # 点击首页轮播图图3，进入大学介绍页面
@@ -225,7 +225,7 @@ def courseRecommend():
         attend = Attend.query.filter(Attend.id == user_id).first()
         if attend:
             courses = course_analyze.calculate(user_id)
-            return render_template('course.html', courses=courses, user_id=user_id)
+            return render_template('courseRecommend.html', courses=courses, user_id=user_id)
         else:
             flash("没有参与课程无法推荐课程哦")
             return render_template('course.html')
