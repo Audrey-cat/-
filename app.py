@@ -637,45 +637,35 @@ def cancel_attend(cacid):
 def schoolQuery():
     # if request.method == 'GET':
     allcourses = []  # 存放课程名、学校名、专业名和课程详情
-    majors = Majors.query.all()
-    for i in majors:
-        course = Course.query.filter(i.MID == Course.MID).all()
-        for j in course:
-            comment = Comments.query.filter(Comments.CID == j.CID).all()
-            comments = len(comment)
-            allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo,'comments':comments})
-    user_id = session.get('user_id')
-    id = 0
-    if user_id:
-        id = user_id
-    # 获取页码数 设置默认值
-    # page = request.args.get('page', 1)
-    # 分页器对象。页码数，每页多少条。
-    # paginate = Course.query.paginate(page=int(page), per_page=5)
+    courseNum = []  # 全部课程号
 
-    # print(paginate.pages) # 一共多少页
-    # print(paginate.has_next) # 是否有下一页
-    # print(paginate.has_prev) # 是否有前一页
+    for i in Course.query.all():
+        courseNum.append(i.CID)
 
-    # print(paginate.next_num) # 获取下一页的页码数
-    # print(paginate.prev_num) # 获取上一页的页码数
-
-    # print(paginate.items) # 获取当前页码的数据对象
-    # print(paginate.page) # 当前页码数
-
-    # page('schoolQuery.html', allcourses)
-    total = len(allcourses)
+    total = len(courseNum)
     PER_PAGE = 10  # 每页列表行数
-    # total = allcourses.count() # 总行数
     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
     start = (page - 1) * PER_PAGE  # 每一页开始位置
     end = start + PER_PAGE  # 每一页结束位置
     pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-    courses = allcourses[start:end]  # 进行切片处理
+
+    courseRange = courseNum[start:end]  # 获取该分页所包含的课程号数组
+    courses = Course.query.filter(Course.CID.in_(courseRange)).all()  # 该分页所包含的course信息
+
+    for j in courses:
+        majors = Majors.query.filter(Majors.MID == j.MID).first()
+        comment = Comments.query.filter(Comments.CID == j.CID).all()
+        comments = len(comment)
+        allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': majors.Sname, 'major': majors.Mname, 'info': j.Cinfo,'comments':comments})
+
+    user_id = session.get('user_id')
+    id = 0
+    if user_id:
+        id = user_id
 
     context = {
         'pagination': pagination,
-        'courses': courses,
+        'courses': allcourses,
         'id': id
     }
 
@@ -780,23 +770,6 @@ def courseQueryResult():
 # 学校专业查找显示查询结果
 @app.route('/schoolQueryResult')
 def schoolQueryResult():
-    # s = request.args.get('s')
-    # m = request.args.get('m')
-    # majors = Majors.query.filter(Majors.Sname == s, Majors.Mname == m).all()
-    # mid = []
-    # for i in majors:
-    #     mid.append({'mid': i.MID})
-    #
-    # allcourses = []
-    # if len(mid) != 0:
-    #     course = Course.query.all()
-    #     for i in course:
-    #         if {'mid': i.MID} in mid:
-    #             allcourses.append({'name': i.Cname, 'school': s, 'major': m})
-    #
-    # else:
-    #     pass
-    # return render_template('schoolQuery.html', allcourses=allcourses)
     user_id = session.get('user_id')
     id = 0
     if user_id:
@@ -806,42 +779,39 @@ def schoolQueryResult():
     m = request.args.get('m')
     majors = Majors.query.filter(Majors.Sname.like('%' + s + '%'), Majors.Mname.like('%' + m + '%')).all()
 
-    # s_m = []
-    # for i in majors:
-    #     s_m.append({'mid':i.MID,'school':i.Sname,'major':i.Mname})
-
     allcourses = []  # 存放课程名、学校名、专业名和课程详情
-    # if len(s_m) != 0:
-    # if len(majors) != 0:
-    course = Course.query.all()
-    for i in course:
-        comment = Comments.query.filter(Comments.CID == i.CID).all()
-        comments = len(comment)
-        # for j in s_m:
-        #     if i.MID == j['mid']:
-        #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
+    courseNum = []  # 全部课程号
+
+    for i in Course.query.all():
         for j in majors:
             if i.MID == j.MID:
-                allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': j.Sname, 'major': j.Mname, 'info': i.Cinfo,'comments':comments})
+                courseNum.append(i.CID)
 
-    total = len(allcourses)
+    total = len(courseNum)
     PER_PAGE = 10  # 每页列表行数
-    # total = allcourses.count() # 总行数
     page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
     start = (page - 1) * PER_PAGE  # 每一页开始位置
     end = start + PER_PAGE  # 每一页结束位置
     pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-    courses = allcourses[start:end]  # 进行切片处理
+
+    courseRange = courseNum[start:end]  # 获取该分页所包含的课程号数组
+    courses = Course.query.filter(Course.CID.in_(courseRange)).all()  # 该分页所包含的course信息
+
+    for m in courses:
+        comment = Comments.query.filter(Comments.CID == m.CID).all()
+        comments = len(comment)
+        for n in majors:
+            if m.MID == n.MID:
+                allcourses.append({'cid': m.CID, 'name': m.Cname, 'school': n.Sname, 'major': n.Mname, 'info': m.Cinfo,
+                                   'comments': comments})
 
     context = {
         'pagination': pagination,
-        'courses': courses,
+        'courses': allcourses,
         'id': id
     }
+
     return render_template('schoolQuery.html', **context, user_id=user_id)
-    # else:
-    #     pass
-    # return render_template('schoolQuery.html', courses=allcourses, user_id=user_id)
 
 
 # 专业大类查找显示查询结果
