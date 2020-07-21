@@ -147,9 +147,11 @@ def home():
     courses = []
     courses5 = Course.query.order_by(Course.Attend.desc())[0:5]
     for course5 in courses5:
+        comment = Comments.query.filter(Comments.CID == course5.CID).all()
+        comments = len(comment)
         major = Majors.query.filter(Majors.MID == course5.MID).first()
         courses.append({'cid': course5.CID, 'name': course5.Cname,
-                        'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend})
+                        'school': major.Sname, 'major': major.Mname, 'info': course5.Cinfo, 'attend': course5.Attend,'comments':comments})
 
     return render_template('home.html', courses=courses)
 
@@ -173,10 +175,12 @@ def courseUpdate():
     # 获取更新的课程
     for i in newcourse:
         course = Course.query.filter(i.CID == Course.CID).first()
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         majors = Majors.query.filter(course.MID == Majors.MID).all()
         for j in majors:
             allcourses.append(
-                {'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo})
+                {'cid': course.CID, 'name': course.Cname, 'school': j.Sname, 'major': j.Mname, 'info': course.Cinfo,'comments':comments})
 
     user_id = session.get('user_id')
     id = 0
@@ -376,10 +380,12 @@ def userCenter():
     acourses = Attend.query.filter(Attend.id == user_id).all()
     for acourse in acourses:
         course = Course.query.filter(Course.CID == acourse.CID).first()
+        comment = Comments.query.filter(Comments.CID == acourse.CID).all()
+        comments = len(comment)
         majors = Majors.query.filter(Majors.MID == course.MID).first()
         attendcourses.append(
             {'cid': course.CID, 'name': course.Cname, 'school': majors.Sname, 'majors': majors.Mname,
-             'info': course.Cinfo})
+             'info': course.Cinfo,'comments':comments})
     # return render_template('userCenter.html', name=name, telephone=telephone, email=email, allcourses=attendcourses)
 
     total = len(attendcourses)
@@ -560,7 +566,9 @@ def schoolQuery():
     for i in majors:
         course = Course.query.filter(i.MID == Course.MID).all()
         for j in course:
-            allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo})
+            comment = Comments.query.filter(Comments.CID == j.CID).all()
+            comments = len(comment)
+            allcourses.append({'cid': j.CID, 'name': j.Cname, 'school': i.Sname, 'major': i.Mname, 'info': j.Cinfo,'comments':comments})
     user_id = session.get('user_id')
     id = 0
     if user_id:
@@ -641,9 +649,11 @@ def catQuery():
         for j in category:
             course = Course.query.filter(j.CID == Course.CID).first()
             majors = Majors.query.filter(course.MID == Majors.MID).first()
+            comment = Comments.query.filter(Comments.CID == j.CID).all()
+            comments = len(comment)
             courses.append(
                 {'cid': course.CID, 'category': j.Tname, 'name': course.Cname, 'school': majors.Sname,
-                 'info': course.Cinfo})
+                 'info': course.Cinfo,'comments':comments})
 
         context = {
             'pagination': pagination,
@@ -669,8 +679,10 @@ def courseQueryResult():
     # print(len(course))
     # if len(course) != 0:
     for i in course:
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         major = Majors.query.filter(Majors.MID == i.MID).first()
-        allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'info': i.Cinfo})
+        allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': major.Sname, 'info': i.Cinfo,'comments':comments})
 
     total = len(allcourses)
     PER_PAGE = 10  # 每页列表行数
@@ -728,12 +740,14 @@ def schoolQueryResult():
     # if len(majors) != 0:
     course = Course.query.all()
     for i in course:
+        comment = Comments.query.filter(Comments.CID == i.CID).all()
+        comments = len(comment)
         # for j in s_m:
         #     if i.MID == j['mid']:
         #         allcourses.append({'name': i.Cname, 'school': j['school'], 'major': j['major']})
         for j in majors:
             if i.MID == j.MID:
-                allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': j.Sname, 'major': j.Mname, 'info': i.Cinfo})
+                allcourses.append({'cid': i.CID, 'name': i.Cname, 'school': j.Sname, 'major': j.Mname, 'info': i.Cinfo,'comments':comments})
 
     total = len(allcourses)
     PER_PAGE = 10  # 每页列表行数
@@ -781,10 +795,12 @@ def catQueryResult():
     for j in category:
         course = Course.query.filter(j.CID == Course.CID).all()
         for n in course:
+            comment = Comments.query.filter(Comments.CID == n.CID).all()
+            comments = len(comment)
             majors = Majors.query.filter(n.MID == Majors.MID).all()
             for m in majors:
                 courses.append(
-                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo})
+                    {'cid': n.CID, 'category': j.Tname, 'name': n.Cname, 'school': m.Sname, 'info': n.Cinfo,'comments':comments})
 
     context = {
         'pagination': pagination,
@@ -805,17 +821,31 @@ def my_context_processor():
     return {}
 
 
-@app.route('/addcomment',methods=['GET','POST'])
-def addComment():
+@app.route('/comment/<ccid>',methods=['GET','POST'])
+def comment(ccid):
     if request.method == 'GET':
-        return render_template('addComment.html')
+        course=Course.query.filter(Course.CID==ccid).first()
+        cname= course.Cname
+        allcomments=[]
+        comments = Comments.query.filter(Comments.CID==ccid).all()
+        for comment in comments:
+            user = User.query.filter(User.id==comment.user_id).first()
+            allcomments.append({'user_name':user.username,'content':comment.content,
+                                'datetime':comment.create_time})
+        return render_template('comment.html',allcomments=allcomments,cname=cname)
     else:
-        content = request.form.get('content')
         user_id = session.get('user_id')
-        comment = Comments(content=content,user_id=user_id,create_time=datetime.now(),CID=1)
-        db.session.add(comment)
-        db.session.commit()
-        return redirect(url_for('home'))
+        if user_id:
+            content = request.form.get('content')
+
+            comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
+            db.session.add(comment)
+            db.session.commit()
+            return redirect(url_for('comment', ccid=ccid))
+        else:
+            flash('请先登录再进行评论！')
+            return redirect(url_for('comment', ccid=ccid))
+
 
 
 

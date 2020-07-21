@@ -1,0 +1,32 @@
+.form-container{
+    width: 660px;
+    margin: 0 auto;
+    text-align: right;
+}
+
+.page-title{
+    text-align: center;
+}
+
+.comment-group{
+    width: 660px;
+    height: 100%;
+    text-align: left;
+    margin-left: 10px;
+    margin-right: 10px;
+
+
+}
+.comment-container{
+    background: #F5F5F5;
+    width: 660px;
+    text-align: center;
+}
+
+.comment-info{
+    text-align: right;
+    margin-right: 10px;
+}
+.comment-user_name{
+    color: #259
+}
