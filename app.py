@@ -230,6 +230,26 @@ def courseRecommend():
         return render_template('course.html')
 
 
+
+rCode = str(random.randint(100000, 999999))
+def domail(my_sender, my_user, my_pass,rCode):
+    ret = True
+    try:
+        text="您已经成功的注册了皮卡丘课程平台，并绑定了本邮箱，验证码为："+ str(rCode)+ "。请您返回页面来验证，若非本人操作，请忽略此信息。"
+        msg = MIMEText(text, 'plain', 'utf-8')
+        msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
+        msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['Subject'] = "验证码"  # 邮件的主题，也可以说是标题
+
+        server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器，端口是25
+        server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
+        server.sendmail(my_sender, [my_user, ], msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+        server.quit()  # 关闭连接
+    except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+        ret = False
+    return ret
+
+
 # 注册
 @app.route('/register', methods=['GET', 'POST'])  # http://127.0.0.1:5000/register 注册
 def register():
@@ -242,9 +262,13 @@ def register():
         password2 = request.form.get('password2')
         email = request.form.get('email')
         # 手机号码验证，如果被注册了，就不能再注册
+        my_sender = '919849055@qq.com'  # 发件人邮箱账号
+        my_pass = 'ibufdqkojmgsbcig'  # 发件人邮箱密码
+        my_user = str(email)  # 收件人邮箱账号
+
         user = User.query.filter(User.telephone == telephone).first()
         user2 = User.query.filter(User.email == email).first()
-        if user and user2:
+        if  user or user2:
             return u'手机号码或邮箱已被注册，请更换！'
         else:
 
@@ -252,13 +276,38 @@ def register():
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
             else:
-                user = User(telephone=telephone, username=username, password=password1, email=email)
-                db.session.add(user)
-                db.session.commit()
+                ret = domail(my_sender, my_user, my_pass,rCode)
+                if ret:
+                    print("邮件发送成功")  # 邮件发送成功，跳转到修改密码界面
+                    return redirect(url_for('registerCode',telephone=telephone, username=username, password=password1, email=email))
+
+                else:
+                    print("邮件发送失败")  # 邮件发送失败可以选择重新发送
+                    return u'邮件发送失败'
+
+                    #return render_template('register.html')
+
 
                 # 注册成功，跳转到登录界面
 
-                return redirect(url_for('login'))
+@app.route('/registerCode?email=<email>?telephone=<telephone>?username=<username>?password=<password>', methods=['GET', 'POST'])  # http://127.0.0.1:5000/retrievePwd 找回密码
+def registerCode(telephone,username,password,email):
+    if request.method == 'GET':
+        return render_template('registerCode.html')  # 点”发送验证码验证“则返回到找回密码页面
+    else:
+        vertifynum = request.form.get('vertifynum')  # 检测验证码
+        # 若验证码与之前发送的一致
+        if vertifynum == rCode:
+            print('验证成功')
+            user = User(telephone=telephone, username=username, password=password, email=email)
+            db.session.add(user)
+            db.session.commit()
+            # 查看该用户的密码
+            return redirect(url_for('login'))
+        else:
+            print('验证失败')
+            flash("验证码错误，请核准填写")
+            return render_template('registerCode.html')
 
 
 # 登录
@@ -290,7 +339,7 @@ def login():
 def mail(my_sender, my_user, my_pass, verifyCode):
     ret = True
     try:
-        text = "验证码为:" + str(verifyCode)
+        text = "验证码为:" + str(verifyCode)+"。您正在找回密码，请勿将验证码告知他人，若非本人操作请忽略此信息。"
         msg = MIMEText(text, 'plain', 'utf-8')
         msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
         msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
@@ -859,4 +908,5 @@ def comment(ccid):
 
 if __name__ == '__main__':
     # app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)  # 默认缓存控制的最大期限
+    #app.run(host='0.0.0.0',port=80)
     app.run()
