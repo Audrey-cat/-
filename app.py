@@ -140,6 +140,8 @@ def hello_world():
     # plt.axis("off")
     # plt.show()
 
+    # 查询数据库记录条数！！！
+    # attended = db.session.query(func.count(Attend.id)).filter(Attend.id == user_id,Attend.CID == int(cid)).scalar()
     return render_template('base.html')
 
 
@@ -545,17 +547,20 @@ def attend(acid):
         user_id = session.get('user_id')
         if user_id:
             attend = Attend(id=user_id, CID=int(cid))
+            # attended = Attend.query.filter(Attend.id == user_id,Attend.CID == int(cid)).first()
+            # attended = db.session.query(func.count(Attend.id)).filter(Attend.id == user_id,Attend.CID == int(cid)).scalar()
             try:
                 major.MAttend = major.MAttend + 1
                 course.Attend = course.Attend + 1
                 db.session.add(attend)
                 db.session.commit()
+                session['attended'] = 0
             except Exception:
                 print("已添加此课程")
         else:
             pass
-        return redirect(request.referrer or url_for(home))
 
+        return redirect(request.referrer or url_for(home))
 
 # 查找参与课程
 @app.route('/attendSearch')

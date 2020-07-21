@@ -1,7 +1,7 @@
 {#
 author: 文天尧，黄祉琪，徐婉青
 create: 2020-07-09
-update: 2020-07-15
+update: 2020-07-21
 #}
 
 {% extends 'base.html' %}
@@ -59,7 +59,8 @@ update: 2020-07-15
                 {% if user_id %}
                     <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
                         <td>
-                            <button class="btn btn-primary btn-block">
+{#                            <input type="button" class="btn btn-primary btn-block" value="参与课程" onclick=alert('已加入参与课程，请到个人中心查看！') >#}
+                            <button class="btn btn-primary btn-block" id="btn" onclick=alert('已加入参与课程，请到个人中心查看！')>
                                 参与课程
                             </button>
                         </td>
@@ -67,7 +68,7 @@ update: 2020-07-15
                 {% else %}
                     <form action="{{ url_for('attend', acid = course.cid) }}" method="post">
                         <td>
-                            <button class="btn btn-primary btn-block" disabled="disabled" title="参与课程请先登录！" id="btn">
+                            <button class="btn btn-primary btn-block" disabled="disabled" title="参与课程请先登录！">
                                 参与课程
                             </button>
                         </td>
@@ -98,13 +99,14 @@ update: 2020-07-15
     {#        </ul>#}
     {#    </nav>#}
 
-
-    <script type="text/javascript">
-        $('#btn').click(function () {
-           alert("参与成功！");
-        })
-    </script>
     {{ pagination.links }}
+
+{#    <script type="text/javascript">#}
+{#        $('#btn').click(function () {#}
+{#            alert("已加入参与课程，请到个人中心查看");#}
+{#        })#}
+{#    </script>#}
+
 {% endblock %}
 
 {#<form class="form-inline">#}
