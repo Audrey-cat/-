@@ -7,7 +7,7 @@ update: 2020-07-21
 .form-container{
     width: 660px;
     margin: 0 auto;
-    text-align: right;
+
 }
 
 .page-title{
@@ -34,5 +34,11 @@ update: 2020-07-21
     margin-right: 10px;
 }
 .comment-user_name{
-    color: #259
+    color: #259;
+}
+.form-content{
+     text-align: center;
+}
+.form-button{
+    text-align: right;
 }
