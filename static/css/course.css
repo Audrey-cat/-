@@ -1,7 +1,7 @@
 /*
-author: 文天尧
+author: 文天尧，高煜嘉
 create: 2020-07-16
-update: 2020-07-16
+update: 2020-07-21
 */
 
 .courseimg{
@@ -11,3 +11,35 @@ update: 2020-07-16
     margin: 10.5px;
 }
 
+.courseimg2{
+    height: 175px;
+    margin: 10.5px;
+}
+
+.introduce{
+    width:700px;
+    margin:0 auto
+}
+.introduce-l{
+    float:left
+}
+.introduce-l p{
+    width:300px;
+    height:420px;
+    line-height:400px;
+    margin: 10.5px;
+}
+.introduce-r{
+    float:left;
+}
+.introduce-r h3{
+    padding-top:10px;
+}
+/*.introduce-r p,span{height:60px; line-height:22px; width:350px; font-size:14px;}*/
+
+.introduce-r p{
+    height:60px;
+    line-height:22px;
+    width:350px;
+    font-size:14px;
+}
