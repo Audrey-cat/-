@@ -277,7 +277,7 @@ def register():
         if  user or user2:
             return u'手机号码或邮箱已被注册，请更换！'
         else:
-
+            # 密码不符合
             # 两次密码不相等
             if password1 != password2:
                 return u'两次密码不相等，请核对后再填写！'
