@@ -1,7 +1,7 @@
 {#
 author: 文天尧，黄祉琪，徐婉青
 create: 2020-07-09
-update: 2020-07-21
+update: 2020-07-23
 #}
 
 {% extends 'base.html' %}
@@ -71,7 +71,6 @@ update: 2020-07-21
                 {% if user_id %}
                     <form action="{{ url_for('attend', acid = course.cid) }}" method="post" id="btn">
                         <td>
-                            {#                            <input type="button" class="btn btn-primary btn-block" value="参与课程" onclick=alert('已加入参与课程，请到个人中心查看！')>#}
                             <button class="btn btn-primary btn-block" id="btn" onclick=alert('已加入参与课程，请到个人中心查看！')>
                                 参与课程
                             </button>
@@ -102,5 +101,5 @@ update: 2020-07-21
     {##}
     {#    </script>#}
 
-    {{ pagination.links }}
+    <nav style="text-align: center"> {{ pagination.links }} </nav>
 {% endblock %}

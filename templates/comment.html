@@ -1,7 +1,7 @@
 {#
 author: 徐婉青，文天尧
 create: 2020-07-21
-update: 2020-07-21
+update: 2020-07-23
 #}
 
 {% extends 'base.html' %}
@@ -33,24 +33,31 @@ update: 2020-07-21
             <br>
         {% endfor %}
     </ul>
-    <br>
-    {{ pagination.links }}
+    {#    <br>#}
+    <nav style="text-align: center"> {{ pagination.links }} </nav>
     <h4 class="page-title">发表你的评论</h4>
     <br>
     <span>
                 {% for msg in get_flashed_messages() %}
                     {{ msg }}
                 {% endfor %}
-            </span>
-    <form action="" method="post">
+    </span>
 
+    <form action="" method="post">
         <div class="form-container">
             <div class="form-content">
                 <textarea name="content" rows="5" cols="88" placeholder="请输入您的评论" class="" form-control></textarea>
             </div>
+            <br>
+            {% if user_id %}
             <div class="form-button">
                 <button class="btn btn-primary">提交</button>
             </div>
+            {% else %}
+            <div class="form-button">
+                <button class="btn btn-primary" disabled="disabled" title="评论课程请先登录！">提交</button>
+            </div>
+            {% endif %}
         </div>
     </form>
 

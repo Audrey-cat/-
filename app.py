@@ -908,7 +908,8 @@ def comment(ccid):
             'id': id
         }
 
-        return render_template('comment.html',**context,cname=cname)
+        user_id = session.get('user_id')
+        return render_template('comment.html',**context,cname=cname,user_id=user_id)
     else:
         user_id = session.get('user_id')
         if user_id:
