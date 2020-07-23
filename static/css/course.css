@@ -25,8 +25,8 @@ update: 2020-07-21
 }
 .introduce-l p{
     width:300px;
-    height:420px;
-    line-height:400px;
+    /*height:250px;*/
+    /*line-height:250px;*/
     margin: 10.5px;
 }
 .introduce-r{
@@ -38,8 +38,8 @@ update: 2020-07-21
 /*.introduce-r p,span{height:60px; line-height:22px; width:350px; font-size:14px;}*/
 
 .introduce-r p{
-    height:60px;
-    line-height:22px;
+    /*height:220px;*/
+    /*line-height:22px;*/
     width:350px;
     font-size:14px;
 }
