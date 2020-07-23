@@ -1,7 +1,7 @@
 {#
 author: 高煜嘉，徐婉青，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-16
+update: 2020-07-23
 #}
 
 <!DOCTYPE html>
@@ -78,7 +78,7 @@ update: 2020-07-16
 </nav>
 <div class="main">
     {% block main %}
-        <img src="{{ url_for('static',filename='images/Home.JPG') }}" alt="..." ><br>
+        <a href="{{ url_for('login') }}"><img src="{{ url_for('static',filename='images/Home.JPG') }}" alt="..." ><br></a>
     {% endblock %}
 </div>
 {#<script src="./try.js"></script>#}

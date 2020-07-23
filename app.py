@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-21
+update: 2020-07-23
 '''
 
 import smtplib
@@ -241,7 +241,7 @@ rCode = str(random.randint(100000, 999999))
 def domail(my_sender, my_user, my_pass,rCode):
     ret = True
     try:
-        text="您已经成功的注册了皮卡丘课程平台，并绑定了本邮箱，验证码为："+ str(rCode)+ "。请您返回页面来验证，若非本人操作，请忽略此信息。"
+        text="您已经成功的注册了皮卡丘课程管理平台，并绑定了本邮箱，验证码为："+ str(rCode)+ "。请您返回页面来验证，若非本人操作，请忽略此信息。"
         msg = MIMEText(text, 'plain', 'utf-8')
         msg['From'] = formataddr(["From nicead.top", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
         msg['To'] = formataddr(["FK", my_user])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
@@ -275,12 +275,14 @@ def register():
         user = User.query.filter(User.telephone == telephone).first()
         user2 = User.query.filter(User.email == email).first()
         if  user or user2:
-            return u'手机号码或邮箱已被注册，请更换！'
+            flash("手机号码或邮箱已被注册，请更换!")
+            return redirect(url_for('register'))
         else:
             # 密码不符合
             # 两次密码不相等
             if password1 != password2:
-                return u'两次密码不相等，请核对后再填写！'
+                flash("两次密码不相等，请核对后再填写!")
+                return redirect(url_for('register'))
             else:
                 ret = domail(my_sender, my_user, my_pass,rCode)
                 if ret:
@@ -289,7 +291,8 @@ def register():
 
                 else:
                     print("邮件发送失败")  # 邮件发送失败可以选择重新发送
-                    return u'邮件发送失败'
+                    flash("邮件发送失败")
+                    return redirect(url_for('register'))
 
                     #return render_template('register.html')
 
