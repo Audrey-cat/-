@@ -1,7 +1,7 @@
 {#
-author: 高煜嘉，黄祉琪
+author: 高煜嘉，黄祉琪，文天尧
 create: 2020-07-14
-update: 2020-07-21
+update: 2020-07-23
 #}
 
 {% extends 'base.html' %}
@@ -24,11 +24,13 @@ update: 2020-07-21
     <form action="" method="post">
         <div class="form-container">
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="新密码" name="password">
-            </div>
-            <div class="form-group">
+                <input type="password" class="form-control ipt" placeholder="新密码" name="password">
+                <p class="message">6~16位字符（数字、字母、下划线），区分大小写</p>
                 <input type="password" class="form-control" placeholder="确认新密码" name="password2">
             </div>
+{#            <div class="form-group">#}
+{#                <input type="password" class="form-control" placeholder="确认新密码" name="password2">#}
+{#            </div>#}
             <span>
                 {% for msg in get_flashed_messages() %}
                     {{ msg }}
@@ -39,4 +41,32 @@ update: 2020-07-21
             </div>
         </div>
     </form>
+
+    <script>
+        // 首先判断的事件是表单失去焦点 onblur
+        // 如果输入正确则提示正确的信息颜色为绿色
+        // 如果输入不是6到16位，则提示错误信息颜色为红色
+        // 因为里面变化样式较多，我们采取className修改样式
+        // 1.获取元素
+        var ipt = document.querySelector('.ipt');
+        var message = document.querySelector('.message');
+        {#var str = /(^[a-zA-Z]\w{5,17}$)/#}
+        //2. 注册事件 失去焦点
+        ipt.onblur = function () {
+            // 根据表单里面值的长度 ipt.value.length
+            if (this.value.length < 6 || this.value.length > 16) {
+                // console.log('错误');
+                message.className = 'message wrong';
+                message.innerHTML = '× 密码最短支持6个字符，最长支持16个字符';
+            }
+            else if (/^\w+$/.test(this.value) == false) {
+                message.className = 'message wrong';
+                message.innerHTML = '× 密码只能包含数字、字母和下划线';
+            }
+            else {
+                message.className = 'message right';
+                message.innerHTML = '√ 密码格式正确';
+            }
+        }
+    </script>
 {% endblock %}
