@@ -1,7 +1,7 @@
 '''
 author: 徐婉青
 create: 2020-07-09
-update: 2020-07-09
+update: 2020-07-20
 '''
 
 from flask_script import Manager  # 存放在终端写的脚本

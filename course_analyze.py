@@ -1,7 +1,7 @@
 '''
 author: 徐婉青
 create: 2020-07-16
-update: 2020-07-16
+update: 2020-07-21
 '''
 
 from models import Attend, Course, Category, Majors, User, Comments

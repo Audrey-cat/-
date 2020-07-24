@@ -1,7 +1,7 @@
 '''
 author: 徐婉青，高煜嘉，黄祉琪，文天尧
 create: 2020-07-09
-update: 2020-07-23
+update: 2020-07-24
 '''
 
 import smtplib
@@ -160,6 +160,13 @@ def home():
     return render_template('home.html', courses=courses)
 
 
+# 点击首页轮播图图3，进入大学介绍页面
+@app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
+def getUniversityInfo():
+    return render_template('universities.html')
+
+
+# 课程页面
 @app.route('/course')  # http://127.0.0.1:5000/course 课程页
 def course():
     return render_template('course.html')
@@ -210,9 +217,9 @@ def courseUpdate():
 
 
 # 点击首页轮播图图3，进入大学介绍页面
-@app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
-def getUniversityInfo():
-    return render_template('universities.html')
+# @app.route('/universityInfo')  # http://127.0.0.1:5000/universityInfo 大学介绍页面
+# def getUniversityInfo():
+#     return render_template('universities.html')
 
 # 课程预测
 @app.route('/course/coursePredict')  # http://127.0.0.1:5000/course/coursePredict 课程预测页
@@ -639,6 +646,61 @@ def cancel_attend(cacid):
         return redirect(url_for('userCenter'))
 
 
+# 课程评论
+@app.route('/comment/<ccid>',methods=['GET','POST'])
+def comment(ccid):
+    if request.method == 'GET':
+        # course=Course.query.filter(Course.CID==ccid).first()
+        courses = Comments.query.filter(Comments.CID==ccid).all()
+
+        commentNum = []
+        for i in courses:
+            commentNum.append(i.id)
+
+        total = len(commentNum)
+        PER_PAGE = 10  # 每页列表行数
+        page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
+        start = (page - 1) * PER_PAGE  # 每一页开始位置
+        end = start + PER_PAGE  # 每一页结束位置
+        pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
+        commentRange = commentNum[start:end]
+        # category = Category.query.filter(Category.CID.in_(commentRange)).all()  # 该分页所包含的category信息
+        comments = Comments.query.filter(Comments.id.in_(commentRange)).all()
+
+        course = Course.query.filter(Course.CID == ccid).first()
+        cname = course.Cname
+        allcomments = []
+        # comments = Comments.query.filter(Comments.CID == ccid).all()
+        for comment in comments:
+            user = User.query.filter(User.id == comment.user_id).first()
+            allcomments.append({'user_name': user.username, 'content': comment.content,
+                                'datetime': comment.create_time})
+
+        context = {
+            'pagination': pagination,
+            'allcomments': allcomments,
+            'id': id
+        }
+
+        user_id = session.get('user_id')
+        return render_template('comment.html',**context,cname=cname,user_id=user_id)
+    else:
+        user_id = session.get('user_id')
+        if user_id:
+            content = request.form.get('content')
+            if len(content)==0:
+                flash('评论内容不能为空！')
+            else:
+                comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
+                db.session.add(comment)
+                db.session.commit()
+
+            return redirect(url_for('comment', ccid=ccid))
+        else:
+            flash('请先登录再进行评论！')
+            return redirect(url_for('comment', ccid=ccid))
+
+
 # 选择“学校专业查询”显示课程列表：全部课程+学校名称+专业名称+课程详情
 @app.route('/schoolQuery', methods=['GET'])
 def schoolQuery():
@@ -872,60 +934,60 @@ def my_context_processor():
             return {'user': user}
     return {}
 
-
-@app.route('/comment/<ccid>',methods=['GET','POST'])
-def comment(ccid):
-    if request.method == 'GET':
-        # course=Course.query.filter(Course.CID==ccid).first()
-        courses = Comments.query.filter(Comments.CID==ccid).all()
-
-        commentNum = []
-        for i in courses:
-            commentNum.append(i.id)
-
-        total = len(commentNum)
-        PER_PAGE = 10  # 每页列表行数
-        page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
-        start = (page - 1) * PER_PAGE  # 每一页开始位置
-        end = start + PER_PAGE  # 每一页结束位置
-        pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
-        commentRange = commentNum[start:end]
-        # category = Category.query.filter(Category.CID.in_(commentRange)).all()  # 该分页所包含的category信息
-        comments = Comments.query.filter(Comments.id.in_(commentRange)).all()
-
-        course = Course.query.filter(Course.CID == ccid).first()
-        cname = course.Cname
-        allcomments = []
-        # comments = Comments.query.filter(Comments.CID == ccid).all()
-        for comment in comments:
-            user = User.query.filter(User.id == comment.user_id).first()
-            allcomments.append({'user_name': user.username, 'content': comment.content,
-                                'datetime': comment.create_time})
-
-        context = {
-            'pagination': pagination,
-            'allcomments': allcomments,
-            'id': id
-        }
-
-        user_id = session.get('user_id')
-        return render_template('comment.html',**context,cname=cname,user_id=user_id)
-    else:
-        user_id = session.get('user_id')
-        if user_id:
-            content = request.form.get('content')
-            if len(content)==0:
-                flash('评论内容不能为空！')
-            else:
-                comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
-                db.session.add(comment)
-                db.session.commit()
-
-            return redirect(url_for('comment', ccid=ccid))
-        else:
-            flash('请先登录再进行评论！')
-            return redirect(url_for('comment', ccid=ccid))
-
+# 课程评论
+# @app.route('/comment/<ccid>',methods=['GET','POST'])
+# def comment(ccid):
+#     if request.method == 'GET':
+#         # course=Course.query.filter(Course.CID==ccid).first()
+#         courses = Comments.query.filter(Comments.CID==ccid).all()
+#
+#         commentNum = []
+#         for i in courses:
+#             commentNum.append(i.id)
+#
+#         total = len(commentNum)
+#         PER_PAGE = 10  # 每页列表行数
+#         page = request.args.get(get_page_parameter(), type=int, default=1)  # 获取页码，默认为第一页
+#         start = (page - 1) * PER_PAGE  # 每一页开始位置
+#         end = start + PER_PAGE  # 每一页结束位置
+#         pagination = Pagination(bs_version=3, page=page, total=total)  # Bootstrap的版本，默认为3
+#         commentRange = commentNum[start:end]
+#         # category = Category.query.filter(Category.CID.in_(commentRange)).all()  # 该分页所包含的category信息
+#         comments = Comments.query.filter(Comments.id.in_(commentRange)).all()
+#
+#         course = Course.query.filter(Course.CID == ccid).first()
+#         cname = course.Cname
+#         allcomments = []
+#         # comments = Comments.query.filter(Comments.CID == ccid).all()
+#         for comment in comments:
+#             user = User.query.filter(User.id == comment.user_id).first()
+#             allcomments.append({'user_name': user.username, 'content': comment.content,
+#                                 'datetime': comment.create_time})
+#
+#         context = {
+#             'pagination': pagination,
+#             'allcomments': allcomments,
+#             'id': id
+#         }
+#
+#         user_id = session.get('user_id')
+#         return render_template('comment.html',**context,cname=cname,user_id=user_id)
+#     else:
+#         user_id = session.get('user_id')
+#         if user_id:
+#             content = request.form.get('content')
+#             if len(content)==0:
+#                 flash('评论内容不能为空！')
+#             else:
+#                 comment = Comments(content=content, user_id=user_id, create_time=datetime.now(), CID=ccid)
+#                 db.session.add(comment)
+#                 db.session.commit()
+#
+#             return redirect(url_for('comment', ccid=ccid))
+#         else:
+#             flash('请先登录再进行评论！')
+#             return redirect(url_for('comment', ccid=ccid))
+#
 
 
 
